@@ -2,6 +2,8 @@ libs
 bin
 _deps
 _deps/*
+CPackConfig.cmake
+CPackSourceConfig.cmake
 .cache
 .idea
 .vs
