@@ -21,10 +21,12 @@ sudo apt install \
 git clone the project.
 
 In the same folder, run:
-For linux:
-`cmake -S . -B build -DCMAKE_BUILD_TYPE=Release && cmake --build build`
-For windows:
-`cmake -S . -B build && cmake --build build --config Release`
+For linux:  
+`cmake -S . -B build -DCMAKE_BUILD_TYPE=Release &&  
+cmake --build build`  
+For windows:  
+`cmake -S . -B build &&   
+cmake --build build --config Release`  
 
 This template was followed in the repo from the original SFML creators:
 [link](https://github.com/SFML/cmake-sfml-project/tree/master)
