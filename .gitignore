@@ -1,1 +1,6 @@
-libs/SDL
+libs
+bin
+.cache
+.idea
+.vs
+.vscode

@@ -1,21 +1,25 @@
-cmake_minimum_required(VERSION 3.5)
-project(lolmacrogame)
+cmake_minimum_required(VERSION 3.16)
+project(lolmacrogame LANGUAGES CXX)
 
-# Create an option to switch between a system sdl library and a vendored SDL library
-option(MYGAME_VENDORED "Use vendored libraries" ON)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
 
-if(MYGAME_VENDORED)
-    # This assumes you have added SDL as a submodule in vendored/SDL
-    add_subdirectory(libs/SDL2 EXCLUDE_FROM_ALL)
-else()
-    # 1. Look for a SDL3 package,
-    # 2. look for the SDL3-shared component, and
-    # 3. fail if the shared component cannot be found.
-    find_package(SDL2 REQUIRED CONFIG REQUIRED COMPONENTS SDL3-shared)
+include(FetchContent)
+FetchContent_Declare(SFML
+    GIT_REPOSITORY https://github.com/SFML/SFML.git
+    GIT_TAG 2.6.x)
+FetchContent_MakeAvailable(SFML)
+
+add_executable(lolmacrogame.exe src/main.cpp)
+target_link_libraries(CMakeSFMLProject PRIVATE sfml-graphics)
+target_compile_features(CMakeSFMLProject PRIVATE cxx_std_17)
+
+if(WIN32)
+    add_custom_command(
+        TARGET CMakeSFMLProject
+        COMMENT "Copy OpenAL DLL"
+        PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${SFML_SOURCE_DIR}/extlibs/bin/$<IF:$<EQUAL:${CMAKE_SIZEOF_VOID_P},8>,x64,x86>/openal32.dll $<TARGET_FILE_DIR:CMakeSFMLProject>
+        VERBATIM)
 endif()
 
-# Create your game executable target as usual
-add_executable(lolmacrogame src/main.cpp)
-
-# Link to the actual SDL2 library.
-target_link_libraries(lolmacrogame SDL2)
+install(TARGETS CMakeSFMLProject)
