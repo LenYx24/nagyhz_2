@@ -1,8 +1,9 @@
 libs
 bin
+_deps
+_deps/*
 .cache
 .idea
 .vs
 .vscode
 CMakeFiles
-_deps/*
