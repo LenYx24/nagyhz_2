@@ -6,7 +6,7 @@ One player controls all the champions of his team.
 # Running
 First install SFML.
 ## for ubuntu:
-`sudo apt update
+`sudo apt update &&
 sudo apt install \
     libxrandr-dev \
     libxcursor-dev \
