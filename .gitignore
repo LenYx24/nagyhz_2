@@ -1,9 +1,5 @@
 libs
-bin
-_deps
-_deps/*
-CPackConfig.cmake
-CPackSourceConfig.cmake
+build
 .cache
 .idea
 .vs

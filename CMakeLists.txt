@@ -10,7 +10,7 @@ FetchContent_Declare(SFML
     GIT_TAG 2.6.x)
 FetchContent_MakeAvailable(SFML)
 
-add_executable(lolmacrogame.exe src/main.cpp)
+add_executable(lolmacrogame src/main.cpp)
 target_link_libraries(lolmacrogame PRIVATE sfml-graphics)
 target_compile_features(lolmacrogame PRIVATE cxx_std_17)
 

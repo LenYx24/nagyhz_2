@@ -60,7 +60,7 @@ EQUALS = =
 CMAKE_SOURCE_DIR = /mnt/c/Users/LenY/dev/uni/sem_2/nagyhz_2
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /mnt/c/Users/LenY/dev/uni/sem_2/nagyhz_2
+CMAKE_BINARY_DIR = /mnt/c/Users/LenY/dev/uni/sem_2/nagyhz_2/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -78,7 +78,7 @@ package/fast: package
 # Special rule for the target package_source
 package_source:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Run CPack packaging tool for source..."
-	/usr/bin/cpack --config ./CPackSourceConfig.cmake /mnt/c/Users/LenY/dev/uni/sem_2/nagyhz_2/CPackSourceConfig.cmake
+	/usr/bin/cpack --config ./CPackSourceConfig.cmake /mnt/c/Users/LenY/dev/uni/sem_2/nagyhz_2/build/CPackSourceConfig.cmake
 .PHONY : package_source
 
 # Special rule for the target package_source
@@ -152,9 +152,9 @@ install/strip/fast: preinstall/fast
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/c/Users/LenY/dev/uni/sem_2/nagyhz_2/CMakeFiles /mnt/c/Users/LenY/dev/uni/sem_2/nagyhz_2//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/c/Users/LenY/dev/uni/sem_2/nagyhz_2/build/CMakeFiles /mnt/c/Users/LenY/dev/uni/sem_2/nagyhz_2/build//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/c/Users/LenY/dev/uni/sem_2/nagyhz_2/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/c/Users/LenY/dev/uni/sem_2/nagyhz_2/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target

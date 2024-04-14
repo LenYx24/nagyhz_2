@@ -60,7 +60,7 @@ EQUALS = =
 CMAKE_SOURCE_DIR = /mnt/c/Users/LenY/dev/uni/sem_2/nagyhz_2
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /mnt/c/Users/LenY/dev/uni/sem_2/nagyhz_2
+CMAKE_BINARY_DIR = /mnt/c/Users/LenY/dev/uni/sem_2/nagyhz_2/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -68,7 +68,7 @@ CMAKE_BINARY_DIR = /mnt/c/Users/LenY/dev/uni/sem_2/nagyhz_2
 # Special rule for the target package
 package: preinstall
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Run CPack packaging tool..."
-	/usr/bin/cpack --config ./CPackConfig.cmake
+	cd /mnt/c/Users/LenY/dev/uni/sem_2/nagyhz_2/build && /usr/bin/cpack --config ./CPackConfig.cmake
 .PHONY : package
 
 # Special rule for the target package
@@ -78,7 +78,7 @@ package/fast: package
 # Special rule for the target package_source
 package_source:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Run CPack packaging tool for source..."
-	/usr/bin/cpack --config ./CPackSourceConfig.cmake /mnt/c/Users/LenY/dev/uni/sem_2/nagyhz_2/CPackSourceConfig.cmake
+	cd /mnt/c/Users/LenY/dev/uni/sem_2/nagyhz_2/build && /usr/bin/cpack --config ./CPackSourceConfig.cmake /mnt/c/Users/LenY/dev/uni/sem_2/nagyhz_2/build/CPackSourceConfig.cmake
 .PHONY : package_source
 
 # Special rule for the target package_source
@@ -152,14 +152,14 @@ install/strip/fast: preinstall/fast
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/c/Users/LenY/dev/uni/sem_2/nagyhz_2/CMakeFiles /mnt/c/Users/LenY/dev/uni/sem_2/nagyhz_2//CMakeFiles/progress.marks
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/c/Users/LenY/dev/uni/sem_2/nagyhz_2/CMakeFiles 0
+	cd /mnt/c/Users/LenY/dev/uni/sem_2/nagyhz_2/build && $(CMAKE_COMMAND) -E cmake_progress_start /mnt/c/Users/LenY/dev/uni/sem_2/nagyhz_2/build/CMakeFiles /mnt/c/Users/LenY/dev/uni/sem_2/nagyhz_2/build/_deps/sfml-build/src/SFML//CMakeFiles/progress.marks
+	cd /mnt/c/Users/LenY/dev/uni/sem_2/nagyhz_2/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 _deps/sfml-build/src/SFML/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /mnt/c/Users/LenY/dev/uni/sem_2/nagyhz_2/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 clean
+	cd /mnt/c/Users/LenY/dev/uni/sem_2/nagyhz_2/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 _deps/sfml-build/src/SFML/clean
 .PHONY : clean
 
 # The main clean target
@@ -168,120 +168,18 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 preinstall
+	cd /mnt/c/Users/LenY/dev/uni/sem_2/nagyhz_2/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 _deps/sfml-build/src/SFML/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 preinstall
+	cd /mnt/c/Users/LenY/dev/uni/sem_2/nagyhz_2/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 _deps/sfml-build/src/SFML/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	$(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /mnt/c/Users/LenY/dev/uni/sem_2/nagyhz_2/build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
-
-#=============================================================================
-# Target rules for targets named lolmacrogame
-
-# Build rule for target.
-lolmacrogame: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 lolmacrogame
-.PHONY : lolmacrogame
-
-# fast build rule for target.
-lolmacrogame/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/lolmacrogame.dir/build.make CMakeFiles/lolmacrogame.dir/build
-.PHONY : lolmacrogame/fast
-
-#=============================================================================
-# Target rules for targets named sfml-system
-
-# Build rule for target.
-sfml-system: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 sfml-system
-.PHONY : sfml-system
-
-# fast build rule for target.
-sfml-system/fast:
-	$(MAKE) $(MAKESILENT) -f _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/build.make _deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/build
-.PHONY : sfml-system/fast
-
-#=============================================================================
-# Target rules for targets named sfml-window
-
-# Build rule for target.
-sfml-window: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 sfml-window
-.PHONY : sfml-window
-
-# fast build rule for target.
-sfml-window/fast:
-	$(MAKE) $(MAKESILENT) -f _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/build.make _deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/build
-.PHONY : sfml-window/fast
-
-#=============================================================================
-# Target rules for targets named sfml-network
-
-# Build rule for target.
-sfml-network: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 sfml-network
-.PHONY : sfml-network
-
-# fast build rule for target.
-sfml-network/fast:
-	$(MAKE) $(MAKESILENT) -f _deps/sfml-build/src/SFML/Network/CMakeFiles/sfml-network.dir/build.make _deps/sfml-build/src/SFML/Network/CMakeFiles/sfml-network.dir/build
-.PHONY : sfml-network/fast
-
-#=============================================================================
-# Target rules for targets named sfml-graphics
-
-# Build rule for target.
-sfml-graphics: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 sfml-graphics
-.PHONY : sfml-graphics
-
-# fast build rule for target.
-sfml-graphics/fast:
-	$(MAKE) $(MAKESILENT) -f _deps/sfml-build/src/SFML/Graphics/CMakeFiles/sfml-graphics.dir/build.make _deps/sfml-build/src/SFML/Graphics/CMakeFiles/sfml-graphics.dir/build
-.PHONY : sfml-graphics/fast
-
-#=============================================================================
-# Target rules for targets named sfml-audio
-
-# Build rule for target.
-sfml-audio: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 sfml-audio
-.PHONY : sfml-audio
-
-# fast build rule for target.
-sfml-audio/fast:
-	$(MAKE) $(MAKESILENT) -f _deps/sfml-build/src/SFML/Audio/CMakeFiles/sfml-audio.dir/build.make _deps/sfml-build/src/SFML/Audio/CMakeFiles/sfml-audio.dir/build
-.PHONY : sfml-audio/fast
-
-src/main.o: src/main.cpp.o
-.PHONY : src/main.o
-
-# target to build an object file
-src/main.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/lolmacrogame.dir/build.make CMakeFiles/lolmacrogame.dir/src/main.cpp.o
-.PHONY : src/main.cpp.o
-
-src/main.i: src/main.cpp.i
-.PHONY : src/main.i
-
-# target to preprocess a source file
-src/main.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/lolmacrogame.dir/build.make CMakeFiles/lolmacrogame.dir/src/main.cpp.i
-.PHONY : src/main.cpp.i
-
-src/main.s: src/main.cpp.s
-.PHONY : src/main.s
-
-# target to generate assembly for a file
-src/main.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/lolmacrogame.dir/build.make CMakeFiles/lolmacrogame.dir/src/main.cpp.s
-.PHONY : src/main.cpp.s
 
 # Help Target
 help:
@@ -297,15 +195,6 @@ help:
 	@echo "... package"
 	@echo "... package_source"
 	@echo "... rebuild_cache"
-	@echo "... lolmacrogame"
-	@echo "... sfml-audio"
-	@echo "... sfml-graphics"
-	@echo "... sfml-network"
-	@echo "... sfml-system"
-	@echo "... sfml-window"
-	@echo "... src/main.o"
-	@echo "... src/main.i"
-	@echo "... src/main.s"
 .PHONY : help
 
 
@@ -317,6 +206,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	$(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /mnt/c/Users/LenY/dev/uni/sem_2/nagyhz_2/build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 
