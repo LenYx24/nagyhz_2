@@ -1,5 +1,9 @@
 libs
-build
+build/
+build/*
+build/_deps/
+build/_deps/*
+_deps/*
 .cache
 .idea
 .vs
