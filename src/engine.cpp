@@ -1,6 +1,7 @@
 #include "../include/engine.hpp"
 
-Engine::Engine() : window(sf::RenderWindow({800, 600}, "lolmacrogame")) {
+Engine::Engine(sf::VideoMode winsize)
+    : window(sf::RenderWindow(winsize, "lolmacrogame")), size(winsize) {
   is_running = true;
 }
 
@@ -19,3 +20,7 @@ void Engine::PopState() {
 void Engine::Update() { states.back()->Update(*this); }
 void Engine::Draw() { states.back()->Draw(*this); }
 void Engine::HandleEvents() { states.back()->HandleEvents(*this); }
+void Engine::exit() {
+  window.close();
+  is_running = false;
+}

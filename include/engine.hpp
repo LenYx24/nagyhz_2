@@ -5,7 +5,7 @@
 class State;
 class Engine {
 public:
-  Engine();
+  Engine(sf::VideoMode winsize = {800, 600});
   virtual ~Engine() {}
 
   void ChangeState(State &state);
@@ -19,11 +19,13 @@ public:
   inline sf::RenderWindow &getWindow() { return window; }
 
   inline bool isRunning() const { return is_running; }
+  void exit();
 
 private:
   std::vector<State *> states;
   bool is_running;
   sf::RenderWindow window;
+  sf::VideoMode size;
 };
 class State {
 public:
