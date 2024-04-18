@@ -9,10 +9,19 @@ FetchContent_Declare(SFML
     GIT_REPOSITORY https://github.com/SFML/SFML.git
     GIT_TAG 2.6.x)
 FetchContent_MakeAvailable(SFML)
+add_executable(lolmacrogame)
+target_sources(lolmacrogame
+    PRIVATE
+    ./include/engine.hpp
+    ./src/engine.cpp
+    ./src/main.cpp 
+    ./src/menu.cpp
+    ./include/menu.hpp
 
-add_executable(lolmacrogame src/main.cpp)
+)
 target_link_libraries(lolmacrogame PRIVATE sfml-graphics)
 target_compile_features(lolmacrogame PRIVATE cxx_std_17)
+target_compile_options(lolmacrogame PRIVATE -Wall -Werror -Wextra -Wpedantic -Wconversion)
 
 if(WIN32)
     add_custom_command(

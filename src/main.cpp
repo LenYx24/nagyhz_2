@@ -2,23 +2,16 @@
 #include <SFML/Window/Keyboard.hpp>
 
 // my headers
+#include "../include/engine.hpp"
 #include "../include/menu.hpp"
 
 int main() {
-  auto window = sf::RenderWindow{{800, 600}, "lol macro game"};
-  window.setFramerateLimit(144);
-  Menu::Button b;
-
-  while (window.isOpen()) {
-    for (auto event = sf::Event{}; window.pollEvent(event);) {
-      if (event.type == sf::Event::Closed) {
-        window.close();
-      } else if (event.type == sf::Event::MouseLeft) {
-      }
-    }
-    window.clear();
-
-    window.draw(b.shape);
-    window.display();
+  Engine engine;
+  engine.PushState(*new Menu::MenuState);
+  while (engine.isRunning()) {
+    engine.HandleEvents();
+    engine.Update();
+    engine.Draw();
   }
+  return 0;
 }
