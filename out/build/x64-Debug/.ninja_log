@@ -1,0 +1,8 @@
+# ninja log v5
+19	133	7352398263196088	_deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/Clock.cpp.obj	d8bce3cbf0666031
+27	135	7352398263216093	_deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/Lock.cpp.obj	e1a68f04ec85b457
+35	135	7352398263246100	_deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/Sleep.cpp.obj	a6d769ec64e84448
+23	498	7352398266876110	_deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/Err.cpp.obj	1367729f6e126106
+44	595	7352398267856070	_deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/Thread.cpp.obj	c42615ece966483f
+31	599	7352398267886303	_deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/Mutex.cpp.obj	f8e86005ad81ac25
+39	674	7352398268626063	_deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/String.cpp.obj	399ec9b338a48c44

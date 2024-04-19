@@ -1,0 +1,21 @@
+# ninja log v5
+2	51	7352397990231639	sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-mkdir	66dd0e1cb4c72c40
+2	51	7352397990231639	C:/Users/LenY/dev/uni/sem_2/nagyhz_2/out/build/x64-Debug/_deps/sfml-subbuild/sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-mkdir	66dd0e1cb4c72c40
+51	10327	7352398092981878	sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-download	c3a6ad39d6e556a0
+51	10327	7352398092981878	C:/Users/LenY/dev/uni/sem_2/nagyhz_2/out/build/x64-Debug/_deps/sfml-subbuild/sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-download	c3a6ad39d6e556a0
+10327	11893	0	sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-update	41bb25beca9eccef
+10327	11893	0	C:/Users/LenY/dev/uni/sem_2/nagyhz_2/out/build/x64-Debug/_deps/sfml-subbuild/sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-update	41bb25beca9eccef
+11894	11940	7352398109114017	sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-patch	3bc4c9751c5f4b0f
+11894	11940	7352398109114017	C:/Users/LenY/dev/uni/sem_2/nagyhz_2/out/build/x64-Debug/_deps/sfml-subbuild/sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-patch	3bc4c9751c5f4b0f
+11940	11986	7352398109574012	sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-configure	1df19cfe890d48eb
+11940	11986	7352398109574012	C:/Users/LenY/dev/uni/sem_2/nagyhz_2/out/build/x64-Debug/_deps/sfml-subbuild/sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-configure	1df19cfe890d48eb
+11986	12033	7352398110044005	sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-build	77f96d1c6922eaec
+11986	12033	7352398110044005	C:/Users/LenY/dev/uni/sem_2/nagyhz_2/out/build/x64-Debug/_deps/sfml-subbuild/sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-build	77f96d1c6922eaec
+12033	12079	7352398110504009	sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-install	edab3cc8b81bcf37
+12033	12079	7352398110504009	C:/Users/LenY/dev/uni/sem_2/nagyhz_2/out/build/x64-Debug/_deps/sfml-subbuild/sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-install	edab3cc8b81bcf37
+12079	12130	7352398111014001	sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-test	66b6703489b3ebe0
+12079	12130	7352398111014001	C:/Users/LenY/dev/uni/sem_2/nagyhz_2/out/build/x64-Debug/_deps/sfml-subbuild/sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-test	66b6703489b3ebe0
+12130	12195	7352398111665101	CMakeFiles/sfml-populate-complete	33be7dbe934ce279
+12130	12195	7352398111665101	sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-done	33be7dbe934ce279
+12130	12195	7352398111665101	C:/Users/LenY/dev/uni/sem_2/nagyhz_2/out/build/x64-Debug/_deps/sfml-subbuild/CMakeFiles/sfml-populate-complete	33be7dbe934ce279
+12130	12195	7352398111665101	C:/Users/LenY/dev/uni/sem_2/nagyhz_2/out/build/x64-Debug/_deps/sfml-subbuild/sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-done	33be7dbe934ce279
