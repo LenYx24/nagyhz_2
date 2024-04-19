@@ -1,2 +1,2 @@
-cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
-cmake --build build
+cmake -S . -B ../linuxbuild -DCMAKE_BUILD_TYPE=Release
+cmake --build ../linuxbuild

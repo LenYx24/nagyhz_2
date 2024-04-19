@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
 project(lolmacrogame LANGUAGES CXX)
-
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
 
@@ -22,15 +21,11 @@ target_sources(lolmacrogame
     ./src/engine.cpp
     ./src/main.cpp 
     ./src/menu.cpp
-
-    # LIBS
-    ./libs/memtrace.h
-    ./libs/memtrace.cpp
-    ./libs/gtest_lite.h
 )
 target_link_libraries(lolmacrogame PRIVATE sfml-graphics)
 target_compile_features(lolmacrogame PRIVATE cxx_std_17)
-target_compile_options(lolmacrogame PRIVATE -Wall -Werror -Wextra -Wpedantic -DMEMTRACE) # -Wconversion ki kell szedni a memtrace miatt
+target_compile_options(lolmacrogame PRIVATE -Wall -Werror -Wextra -Wpedantic -Wconversion -fsanitize=address) 
+target_link_options(lolmacrogame PRIVATE -fsanitize=address)
 
 if(WIN32)
     add_custom_command(
