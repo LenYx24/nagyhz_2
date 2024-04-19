@@ -8,7 +8,8 @@
 int main() {
   try {
     Engine engine;
-    engine.PushState(*(new Menu::MenuState));
+    Menu::MenuState k{};
+    engine.PushState(k);
     while (engine.isRunning()) {
       engine.HandleEvents();
       engine.Update();
