@@ -11,10 +11,22 @@ DraftState::DraftState(const GameMode m) {
 //  adds it to the
 // dont ban -> sets current champ pointer to null, ads to the ban list, and moves phases
 // back button -> cleans up after himself (should be automatic) and pops the current state
-void HandleEvents(StateManager &s, Renderer &renderer) {
+void DraftState::HandleEvents(StateManager &s, Renderer &renderer) {
   // check if user clicked on an element, then do the task accordingly
+  for (sf::Event event{}; renderer.PollEvent(event);) {
+    if (event.type == sf::Event::Closed) {
+      s.exit();
+    } else if (event.type == sf::Event::MouseButtonPressed) {
+      std::cout << "[[INFO]] mouse clicked" << std::endl;
+      for (Button b : buttons) {
+        if (b.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y)) {
+          b.onclick(s);
+        }
+      }
+    }
+  }
 }
-void Update(StateManager &s, Renderer &r) {
+void DraftState::Update(StateManager &s, Renderer &r) {
   // show ui components
   // check if its ban phase currently, only draw the ban button then, or make the ban button not do anything while its not banphase
   // update time elapsed

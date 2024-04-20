@@ -1,11 +1,13 @@
 #ifndef DRAFT_HPP
 #define DRAFT_HPP
+#include "UIcomponents.hpp"
 #include "gameobjects.hpp"
 #include "statemanagement.hpp"
 #include <list>
 class DraftState : public State {
 public:
   DraftState(const GameMode mode);
+  ~DraftState() {}
   void HandleEvents(StateManager &s, Renderer &renderer);
   void Update(StateManager &s, Renderer &r);
 
@@ -16,10 +18,10 @@ protected:
   std::list<Champion *> player1champs;
   std::list<Champion *> player2champs;
   sf::Time elapsedtime;
+  Button buttons[3];
 };
 class DraftTurn {
   DraftTurn() {
-    //
     banround = 1;
   }
 

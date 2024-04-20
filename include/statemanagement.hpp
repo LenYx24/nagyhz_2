@@ -25,7 +25,7 @@ public:
   void exit();
 
 private:
-  std::vector<std::unique_ptr<State>> states;
+  std::vector<State *> states;
   bool has_states;
 };
 class State {

@@ -7,6 +7,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Window/Mouse.hpp>
 #include <iostream>
+#include <memory>
 
 namespace Menu {
 

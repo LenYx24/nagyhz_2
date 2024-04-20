@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Window/Keyboard.hpp>
 #include <iostream>
+#include <memory>
 
 // my headers
 #include "../include/menu.hpp"
@@ -20,6 +21,8 @@ int main() {
   } catch (const char *err) {
     std::cout << "Oops, there was an error: " << err << std::endl;
     exit(1);
+  } catch (...) {
+    std::cout << "error: unknown" << std::endl;
   }
 
   return 0;
