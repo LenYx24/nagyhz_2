@@ -13,7 +13,8 @@ public:
     void PushState(State *state);
     void PopState();
 
-    void Update(Renderer &r);
+    void HandleEvents(Renderer &renderer);
+    void Update(Renderer &renderer);
 
     inline bool hasState() const { return has_states; }
     void exit();
@@ -25,6 +26,7 @@ private:
 class State {
 public:
     virtual ~State() {}
+    virtual void HandleEvents(StateManager &s, Renderer &renderer) = 0;
     virtual void Update(StateManager &s, Renderer &r) = 0;
 
     virtual void ChangeState(StateManager &s) { s.ChangeState(this); }

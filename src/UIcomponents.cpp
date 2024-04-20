@@ -1,5 +1,6 @@
 #include "../include/UIcomponents.hpp"
-Button::Button(sf::String str, sf::Vector2f pos) {
+Button::Button(sf::String str, std::function<void(StateManager &s)> onclick_,
+               sf::Vector2f pos) {
     // default button settings
     text.setString(str);
     text.setFillColor({220, 225, 223});
@@ -11,6 +12,7 @@ Button::Button(sf::String str, sf::Vector2f pos) {
     text.setOrigin(
         {text.getLocalBounds().width / 2, text.getLocalBounds().height / 2});
     setpos(pos);
+    onclick = onclick_;
 }
 
 void Button::settext(sf::String str) { text.setString(str); }

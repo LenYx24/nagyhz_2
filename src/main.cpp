@@ -11,12 +11,11 @@ int main() {
     try {
         StateManager state_mngr;
         Renderer renderer{sf::VideoMode{800, 600}, "lolmacrogame"};
-        Menu::MenuState *m = new Menu::MenuState;
-        state_mngr.PushState(m);
+        state_mngr.PushState(new Menu::MainState);
         while (state_mngr.hasState()) {
+            state_mngr.HandleEvents(renderer);
             state_mngr.Update(renderer);
         }
-        delete m;
     } catch (const char *err) {
         std::cout << "Oops, there was an error: " << err << std::endl;
         exit(1);

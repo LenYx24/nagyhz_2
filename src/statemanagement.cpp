@@ -4,6 +4,7 @@ StateManager::StateManager() { has_states = false; }
 
 void StateManager::ChangeState(State *state) {
     if (!states.empty()) {
+        delete states.back();
         states.pop_back();
     }
     states.push_back(state);
@@ -13,12 +14,22 @@ void StateManager::PushState(State *state) {
     states.push_back(state);
 }
 void StateManager::PopState() {
-    if (!states.empty())
+    if (!states.empty()) {
+        delete states.back();
         states.pop_back();
+    }
+    if (states.empty()) {
+        exit();
+    }
 }
-void StateManager::Update(Renderer &r) {
+
+void StateManager::HandleEvents(Renderer &renderer) {
     if (!states.empty())
-        states.back()->Update(*this, r);
+        states.back()->HandleEvents(*this, renderer);
+}
+void StateManager::Update(Renderer &renderer) {
+    if (!states.empty())
+        states.back()->Update(*this, renderer);
 }
 
 void StateManager::exit() { has_states = false; }
