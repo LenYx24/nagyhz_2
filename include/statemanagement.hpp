@@ -3,33 +3,34 @@
 #include "renderer.hpp"
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include <memory>
 
 class State;
 class StateManager {
 public:
-    StateManager();
+  StateManager();
 
-    void ChangeState(State *state);
-    void PushState(State *state);
-    void PopState();
+  void ChangeState(State *state);
+  void PushState(State *state);
+  void PopState();
 
-    void HandleEvents(Renderer &renderer);
-    void Update(Renderer &renderer);
+  void HandleEvents(Renderer &renderer);
+  void Update(Renderer &renderer);
 
-    inline bool hasState() const { return has_states; }
-    void exit();
+  inline bool hasState() const {
+    return has_states;
+  }
+  void exit();
 
 private:
-    std::vector<State *> states;
-    bool has_states;
+  std::vector<std::unique_ptr<State>> states;
+  bool has_states;
 };
 class State {
 public:
-    virtual ~State() {}
-    virtual void HandleEvents(StateManager &s, Renderer &renderer) = 0;
-    virtual void Update(StateManager &s, Renderer &r) = 0;
-
-    virtual void ChangeState(StateManager &s) { s.ChangeState(this); }
+  virtual ~State() {}
+  virtual void HandleEvents(StateManager &s, Renderer &renderer) = 0;
+  virtual void Update(StateManager &s, Renderer &r) = 0;
 };
 
 #endif

@@ -1,3 +1,3 @@
 #include "../include/entities.hpp"
 
-Entity::Entity(std::string name = "") : name(name) {}
+Entity::Entity(std::string name) : name(name) {}
