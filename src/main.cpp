@@ -13,8 +13,7 @@ int main() {
   try {
     StateManager state_mngr;
     Renderer renderer{sf::VideoMode{800, 600}, "lolmacrogame"};
-    std::unique_ptr<Menu::MainState> state = std::make_unique<Menu::MainState>();
-    state_mngr.PushState(std::move(state));
+    state_mngr.PushState(std::make_unique<Menu::MainState>());
     while (state_mngr.hasState()) {
       state_mngr.HandleEvents(renderer);
       state_mngr.Update(renderer);

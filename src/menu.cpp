@@ -8,8 +8,7 @@ MenuButton::MenuButton(Resources::Holder &h, sf::String str, std::function<void(
 }
 
 void onclick_start(StateManager &s) {
-  std::unique_ptr<ModeSelectionState> state = std::make_unique<ModeSelectionState>();
-  s.PushState(std::move(state));
+  s.PushState(std::make_unique<ModeSelectionState>());
 }
 
 void onclick_back(StateManager &s) {
@@ -56,10 +55,13 @@ void MenuState::Update(StateManager &s, Renderer &renderer) {
   w.display();
 }
 
+void onclick_draft(StateManager &s) {
+  s.PushState(std::make_unique<DraftState>(GameMode::THEMSELVES));
+}
 ModeSelectionState::ModeSelectionState() {
   h.load(Resources::Type::FONT, "./fonts/Roboto.ttf");
-  buttons.push_back(MenuButton{h, "Player vs Player"});
-  buttons.push_back(MenuButton{h, "Player against yourself"});
+  buttons.push_back(MenuButton{h, "Player vs Player", onclick_draft});
+  buttons.push_back(MenuButton{h, "Player against yourself", onclick_draft});
   buttons.push_back(MenuButton{h, "back", onclick_back});
   // Todo: put this into its own grid class
   float marginy = 20 + buttons[0].getSize().y / 2.f;

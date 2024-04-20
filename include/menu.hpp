@@ -2,6 +2,7 @@
 #define MENU_HPP
 
 #include "UIcomponents.hpp"
+#include "draft.hpp"
 #include "resources.hpp"
 #include "statemanagement.hpp"
 #include <SFML/Graphics.hpp>
