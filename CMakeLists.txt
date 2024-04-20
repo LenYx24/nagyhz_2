@@ -14,6 +14,8 @@ add_executable(lolmacrogame)
 target_sources(lolmacrogame
     PRIVATE
     # INCLUDES
+    ./include/ioparser.hpp
+    ./include/entities.hpp
     ./include/resources.hpp
     ./include/renderer.hpp
     ./include/statemanagement.hpp
@@ -21,6 +23,8 @@ target_sources(lolmacrogame
     ./include/menu.hpp
 
     # SRC FILES
+    ./src/ioparser.cpp
+    ./src/entities.cpp
     ./src/resources.cpp
     ./src/renderer.cpp
     ./src/statemanagement.cpp
