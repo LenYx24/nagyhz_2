@@ -2,6 +2,7 @@ libs
 build_windows/*
 build_linux/*
 build/*
+out/*
 .cache
 .idea
 .vs
