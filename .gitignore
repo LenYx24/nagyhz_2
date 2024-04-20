@@ -1,6 +1,7 @@
 libs
 build_windows/*
 build_linux/*
+linuxbuild/*
 build/*
 out/*
 .cache
