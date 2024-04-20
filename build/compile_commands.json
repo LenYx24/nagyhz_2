@@ -1,19 +1,19 @@
 [
 {
   "directory": "C:/Users/LenY/dev/uni/sem_2/nagyhz_2/build",
-  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -DSFML_STATIC -IC:/Users/LenY/dev/uni/sem_2/nagyhz_2/build/_deps/sfml-src/include -g -Wall -Werror -Wextra -Wpedantic -Wconversion -fsanitize=address -o CMakeFiles\\lolmacrogame.dir\\src\\engine.cpp.obj -c C:\\Users\\LenY\\dev\\uni\\sem_2\\nagyhz_2\\src\\engine.cpp",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -DSFML_STATIC -IC:/Users/LenY/dev/uni/sem_2/nagyhz_2/build/_deps/sfml-src/include -g -Wall -g -O0 -o CMakeFiles\\lolmacrogame.dir\\src\\engine.cpp.obj -c C:\\Users\\LenY\\dev\\uni\\sem_2\\nagyhz_2\\src\\engine.cpp",
   "file": "C:\\Users\\LenY\\dev\\uni\\sem_2\\nagyhz_2\\src\\engine.cpp",
   "output": "CMakeFiles\\lolmacrogame.dir\\src\\engine.cpp.obj"
 },
 {
   "directory": "C:/Users/LenY/dev/uni/sem_2/nagyhz_2/build",
-  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -DSFML_STATIC -IC:/Users/LenY/dev/uni/sem_2/nagyhz_2/build/_deps/sfml-src/include -g -Wall -Werror -Wextra -Wpedantic -Wconversion -fsanitize=address -o CMakeFiles\\lolmacrogame.dir\\src\\main.cpp.obj -c C:\\Users\\LenY\\dev\\uni\\sem_2\\nagyhz_2\\src\\main.cpp",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -DSFML_STATIC -IC:/Users/LenY/dev/uni/sem_2/nagyhz_2/build/_deps/sfml-src/include -g -Wall -g -O0 -o CMakeFiles\\lolmacrogame.dir\\src\\main.cpp.obj -c C:\\Users\\LenY\\dev\\uni\\sem_2\\nagyhz_2\\src\\main.cpp",
   "file": "C:\\Users\\LenY\\dev\\uni\\sem_2\\nagyhz_2\\src\\main.cpp",
   "output": "CMakeFiles\\lolmacrogame.dir\\src\\main.cpp.obj"
 },
 {
   "directory": "C:/Users/LenY/dev/uni/sem_2/nagyhz_2/build",
-  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -DSFML_STATIC -IC:/Users/LenY/dev/uni/sem_2/nagyhz_2/build/_deps/sfml-src/include -g -Wall -Werror -Wextra -Wpedantic -Wconversion -fsanitize=address -o CMakeFiles\\lolmacrogame.dir\\src\\menu.cpp.obj -c C:\\Users\\LenY\\dev\\uni\\sem_2\\nagyhz_2\\src\\menu.cpp",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe -DSFML_STATIC -IC:/Users/LenY/dev/uni/sem_2/nagyhz_2/build/_deps/sfml-src/include -g -Wall -g -O0 -o CMakeFiles\\lolmacrogame.dir\\src\\menu.cpp.obj -c C:\\Users\\LenY\\dev\\uni\\sem_2\\nagyhz_2\\src\\menu.cpp",
   "file": "C:\\Users\\LenY\\dev\\uni\\sem_2\\nagyhz_2\\src\\menu.cpp",
   "output": "CMakeFiles\\lolmacrogame.dir\\src\\menu.cpp.obj"
 },

@@ -1,8 +1,8 @@
 # ninja log v6
-15586	16404	7352372104950203	_deps/sfml-build/src/SFML/Graphics/CMakeFiles/sfml-graphics.dir/View.cpp.obj	7244bf0a35f85913
+17	246	7352371949262835	_deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/Lock.cpp.obj	bef5131e6d78ffeb
 18863	22330	7352372137723284	_deps/sfml-build/src/SFML/Network/CMakeFiles/sfml-network.dir/SocketSelector.cpp.obj	39cdafe131850d22
 23925	25364	7352372188342925	_deps/sfml-build/src/SFML/Audio/CMakeFiles/sfml-audio.dir/SoundFileReaderFlac.cpp.obj	9a5145f229844d22
-17	246	7352371949262835	_deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/Lock.cpp.obj	bef5131e6d78ffeb
+15586	16404	7352372104950203	_deps/sfml-build/src/SFML/Graphics/CMakeFiles/sfml-graphics.dir/View.cpp.obj	7244bf0a35f85913
 3328	4829	7352371982378841	_deps/sfml-build/src/SFML/Window/CMakeFiles/sfml-window.dir/Mouse.cpp.obj	2d6152def4d1135
 44	412	7352371949532796	_deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/Time.cpp.obj	fb53191ea9428a97
 61	1680	7352371949712795	_deps/sfml-build/src/SFML/System/CMakeFiles/sfml-system.dir/FileInputStream.cpp.obj	ea919edfd015d397
@@ -112,3 +112,6 @@
 26290	26627	7352372212001149	_deps/sfml-build/lib/libsfml-graphics-s-d.a	77b88428237d991a
 24137	26781	7352372190474276	_deps/sfml-build/src/SFML/Audio/CMakeFiles/sfml-audio.dir/SoundFileReaderMp3.cpp.obj	9eab8e9eb401142
 26782	26989	7352372216913629	_deps/sfml-build/lib/libsfml-audio-s-d.a	afecc29ee41cd2e8
+32	1986	7353106264005933	CMakeFiles/lolmacrogame.dir/src/main.cpp.obj	34131832a74040c8
+27	2009	7353106263960991	CMakeFiles/lolmacrogame.dir/src/engine.cpp.obj	330f2a1aebe00dc5
+37	2139	7353106264055926	CMakeFiles/lolmacrogame.dir/src/menu.cpp.obj	1dd3d3e05274bffb

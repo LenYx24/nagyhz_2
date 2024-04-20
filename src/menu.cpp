@@ -3,39 +3,47 @@
 namespace Menu {
 
 MenuState::MenuState() {
-  buttons = new Button[3];
-  buttons[0].setpos(sf::Vector2f{0, 0});
-  buttons[1].setpos(sf::Vector2f{250, 100});
-  buttons[2].setpos(sf::Vector2f{800, 600});
-  buttons[0].settext("Start");
-  buttons[1].settext("Settings");
-  buttons[2].settext("Exit");
-}
-MenuState::~MenuState() { delete[] buttons; }
-
-void MenuState::HandleEvents(Engine &e) {
-  sf::RenderWindow &w = e.getWindow();
-  for (auto event = sf::Event{}; w.pollEvent(event);) {
-    if (event.type == sf::Event::Closed) {
-      e.exit();
-    } else if (event.type == sf::Event::MouseButtonPressed) {
-      std::cout << "[[INFO]] mouse clicked" << std::endl;
+    buttons.push_back(Button{"Start"});
+    buttons.push_back(Button{"Settings"});
+    buttons.push_back(Button{"Exit"});
+    // Todo: put this into its own grid class
+    float marginy = 20 + buttons[0].getSize().y / 2.f;
+    sf::Vector2f pos{800 / 2.f, marginy};
+    for (size_t i = 0; i < buttons.size(); i++) {
+        buttons[i].setPosition(pos);
+        pos.y += buttons[i].getSize().y / 2.f + marginy;
     }
-  }
 }
-void MenuState::Draw(Engine &e) {
-  sf::RenderWindow &w = e.getWindow();
-  sf::Color c = sf::Color(150, 124, 200, 100);
-  w.clear(c);
-  for (int i = 0; i < 3; i++) {
-    w.draw(buttons[i]);
-    w.draw(buttons[i].gettext());
-  }
-  w.display();
+Button::Button(sf::String str, sf::Vector2f pos) {
+
+    text.setString(str);
+    text.setFillColor({220, 225, 223});
+    text.setCharacterSize(20);
+    setOutlineThickness(1);
+    setOutlineColor({31, 36, 33});
+    setFillColor({33, 104, 105});
+    setSize({500, 120});
+    text.setOrigin(
+        {text.getLocalBounds().width / 2, text.getLocalBounds().height / 2});
+    setpos(pos);
 }
-void MenuState::Update(Engine &e) {
-  sf::RenderWindow &w = e.getWindow();
-  w.draw(sf::RectangleShape());
-  // update
+MenuState::~MenuState() {}
+void MenuState::Update(StateManager &s, Renderer &renderer) {
+    // update
+    for (sf::Event event = sf::Event{}; renderer.PollEvent(event);) {
+        if (event.type == sf::Event::Closed) {
+            s.exit();
+        } else if (event.type == sf::Event::MouseButtonPressed) {
+            std::cout << "[[INFO]] mouse clicked" << std::endl;
+        }
+    }
+    sf::RenderWindow &w = renderer.getWindow();
+    sf::Color background_color = sf::Color(220, 225, 222);
+    w.clear(background_color);
+    for (size_t i = 0; i < 3; i++) {
+        buttons[i].draw_to_window(w);
+    }
+
+    w.display();
 }
 } // namespace Menu

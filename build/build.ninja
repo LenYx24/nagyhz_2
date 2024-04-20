@@ -52,7 +52,7 @@ build cmake_object_order_depends_target_lolmacrogame: phony || cmake_object_orde
 build CMakeFiles/lolmacrogame.dir/src/engine.cpp.obj: CXX_COMPILER__lolmacrogame_unscanned_Debug C$:/Users/LenY/dev/uni/sem_2/nagyhz_2/src/engine.cpp || cmake_object_order_depends_target_lolmacrogame
   DEFINES = -DSFML_STATIC
   DEP_FILE = CMakeFiles\lolmacrogame.dir\src\engine.cpp.obj.d
-  FLAGS = -g -Wall -Werror -Wextra -Wpedantic -Wconversion -fsanitize=address
+  FLAGS = -g -Wall -g -O0
   INCLUDES = -IC:/Users/LenY/dev/uni/sem_2/nagyhz_2/build/_deps/sfml-src/include
   OBJECT_DIR = CMakeFiles\lolmacrogame.dir
   OBJECT_FILE_DIR = CMakeFiles\lolmacrogame.dir\src
@@ -60,7 +60,7 @@ build CMakeFiles/lolmacrogame.dir/src/engine.cpp.obj: CXX_COMPILER__lolmacrogame
 build CMakeFiles/lolmacrogame.dir/src/main.cpp.obj: CXX_COMPILER__lolmacrogame_unscanned_Debug C$:/Users/LenY/dev/uni/sem_2/nagyhz_2/src/main.cpp || cmake_object_order_depends_target_lolmacrogame
   DEFINES = -DSFML_STATIC
   DEP_FILE = CMakeFiles\lolmacrogame.dir\src\main.cpp.obj.d
-  FLAGS = -g -Wall -Werror -Wextra -Wpedantic -Wconversion -fsanitize=address
+  FLAGS = -g -Wall -g -O0
   INCLUDES = -IC:/Users/LenY/dev/uni/sem_2/nagyhz_2/build/_deps/sfml-src/include
   OBJECT_DIR = CMakeFiles\lolmacrogame.dir
   OBJECT_FILE_DIR = CMakeFiles\lolmacrogame.dir\src
@@ -68,7 +68,7 @@ build CMakeFiles/lolmacrogame.dir/src/main.cpp.obj: CXX_COMPILER__lolmacrogame_u
 build CMakeFiles/lolmacrogame.dir/src/menu.cpp.obj: CXX_COMPILER__lolmacrogame_unscanned_Debug C$:/Users/LenY/dev/uni/sem_2/nagyhz_2/src/menu.cpp || cmake_object_order_depends_target_lolmacrogame
   DEFINES = -DSFML_STATIC
   DEP_FILE = CMakeFiles\lolmacrogame.dir\src\menu.cpp.obj.d
-  FLAGS = -g -Wall -Werror -Wextra -Wpedantic -Wconversion -fsanitize=address
+  FLAGS = -g -Wall -g -O0
   INCLUDES = -IC:/Users/LenY/dev/uni/sem_2/nagyhz_2/build/_deps/sfml-src/include
   OBJECT_DIR = CMakeFiles\lolmacrogame.dir
   OBJECT_FILE_DIR = CMakeFiles\lolmacrogame.dir\src
@@ -83,7 +83,6 @@ build CMakeFiles/lolmacrogame.dir/src/menu.cpp.obj: CXX_COMPILER__lolmacrogame_u
 
 build bin/lolmacrogame.exe: CXX_EXECUTABLE_LINKER__lolmacrogame_Debug CMakeFiles/lolmacrogame.dir/src/engine.cpp.obj CMakeFiles/lolmacrogame.dir/src/main.cpp.obj CMakeFiles/lolmacrogame.dir/src/menu.cpp.obj | _deps/sfml-build/lib/libsfml-graphics-s-d.a _deps/sfml-build/lib/libsfml-window-s-d.a _deps/sfml-build/lib/libsfml-system-s-d.a _deps/sfml-src/extlibs/libs-mingw/x64/libfreetype.a || _deps/sfml-build/lib/libsfml-graphics-s-d.a _deps/sfml-build/lib/libsfml-system-s-d.a _deps/sfml-build/lib/libsfml-window-s-d.a
   FLAGS = -g
-  LINK_FLAGS = -fsanitize=address
   LINK_LIBRARIES = _deps/sfml-build/lib/libsfml-graphics-s-d.a  _deps/sfml-build/lib/libsfml-window-s-d.a  _deps/sfml-build/lib/libsfml-system-s-d.a  -lopengl32  -lwinmm  -lgdi32  _deps/sfml-src/extlibs/libs-mingw/x64/libfreetype.a  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\lolmacrogame.dir
   POST_BUILD = cd .

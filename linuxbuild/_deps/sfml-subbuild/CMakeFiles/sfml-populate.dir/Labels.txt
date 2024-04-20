@@ -1,0 +1,14 @@
+# Target labels
+ sfml-populate
+# Source files and their labels
+/mnt/c/Users/LenY/dev/uni/sem_2/nagyhz_2/linuxbuild/_deps/sfml-subbuild/CMakeFiles/sfml-populate
+/mnt/c/Users/LenY/dev/uni/sem_2/nagyhz_2/linuxbuild/_deps/sfml-subbuild/CMakeFiles/sfml-populate.rule
+/mnt/c/Users/LenY/dev/uni/sem_2/nagyhz_2/linuxbuild/_deps/sfml-subbuild/CMakeFiles/sfml-populate-complete.rule
+/mnt/c/Users/LenY/dev/uni/sem_2/nagyhz_2/linuxbuild/_deps/sfml-subbuild/sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-build.rule
+/mnt/c/Users/LenY/dev/uni/sem_2/nagyhz_2/linuxbuild/_deps/sfml-subbuild/sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-configure.rule
+/mnt/c/Users/LenY/dev/uni/sem_2/nagyhz_2/linuxbuild/_deps/sfml-subbuild/sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-download.rule
+/mnt/c/Users/LenY/dev/uni/sem_2/nagyhz_2/linuxbuild/_deps/sfml-subbuild/sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-install.rule
+/mnt/c/Users/LenY/dev/uni/sem_2/nagyhz_2/linuxbuild/_deps/sfml-subbuild/sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-mkdir.rule
+/mnt/c/Users/LenY/dev/uni/sem_2/nagyhz_2/linuxbuild/_deps/sfml-subbuild/sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-patch.rule
+/mnt/c/Users/LenY/dev/uni/sem_2/nagyhz_2/linuxbuild/_deps/sfml-subbuild/sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-test.rule
+/mnt/c/Users/LenY/dev/uni/sem_2/nagyhz_2/linuxbuild/_deps/sfml-subbuild/sfml-populate-prefix/src/sfml-populate-stamp/sfml-populate-update.rule
