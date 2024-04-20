@@ -14,6 +14,12 @@ add_executable(lolmacrogame)
 target_sources(lolmacrogame
     PRIVATE
     # INCLUDES
+    ./include/draft.hpp
+    ./include/game.hpp
+    ./include/gamemoves.hpp
+    ./include/gameobjects.hpp
+    ./include/map.hpp
+    ./include/settings.hpp
     ./include/ioparser.hpp
     ./include/gameobjects.hpp
     ./include/resources.hpp
@@ -23,6 +29,12 @@ target_sources(lolmacrogame
     ./include/menu.hpp
 
     # SRC FILES
+    ./src/draft.cpp
+    ./src/game.cpp
+    ./src/gamemoves.cpp
+    ./src/gameobjects.cpp
+    ./src/map.cpp
+    ./src/settings.cpp
     ./src/ioparser.cpp
     ./src/gameobjects.cpp
     ./src/resources.cpp
