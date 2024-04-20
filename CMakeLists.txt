@@ -14,11 +14,17 @@ add_executable(lolmacrogame)
 target_sources(lolmacrogame
     PRIVATE
     # INCLUDES
-    ./include/engine.hpp
+    ./include/resources.hpp
+    ./include/renderer.hpp
+    ./include/statemanagement.hpp
+    ./include/UIcomponents.hpp
     ./include/menu.hpp
 
     # SRC FILES
-    ./src/engine.cpp
+    ./src/resources.cpp
+    ./src/renderer.cpp
+    ./src/statemanagement.cpp
+    ./src/UIcomponents.cpp  
     ./src/main.cpp 
     ./src/menu.cpp
 )

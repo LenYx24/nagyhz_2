@@ -1,11 +1,16 @@
 #include "../include/menu.hpp"
 
 namespace Menu {
-
+MenuButton::MenuButton(Resources::Holder &h, sf::String str) : Button(str) {
+    // menu button specific override settings
+    text.setCharacterSize(15);
+    text.setFont(h.get(Resources::Type::FONT));
+}
 MenuState::MenuState() {
-    buttons.push_back(Button{"Start"});
-    buttons.push_back(Button{"Settings"});
-    buttons.push_back(Button{"Exit"});
+    h.load(Resources::Type::FONT, "./fonts/Roboto.ttf");
+    buttons.push_back(MenuButton{h, "Start"});
+    buttons.push_back(MenuButton{h, "Settings"});
+    buttons.push_back(MenuButton{h, "Exit"});
     // Todo: put this into its own grid class
     float marginy = 20 + buttons[0].getSize().y / 2.f;
     sf::Vector2f pos{800 / 2.f, marginy};
@@ -14,20 +19,7 @@ MenuState::MenuState() {
         pos.y += buttons[i].getSize().y / 2.f + marginy;
     }
 }
-Button::Button(sf::String str, sf::Vector2f pos) {
 
-    text.setString(str);
-    text.setFillColor({220, 225, 223});
-    text.setCharacterSize(20);
-    setOutlineThickness(1);
-    setOutlineColor({31, 36, 33});
-    setFillColor({33, 104, 105});
-    setSize({500, 120});
-    text.setOrigin(
-        {text.getLocalBounds().width / 2, text.getLocalBounds().height / 2});
-    setpos(pos);
-}
-MenuState::~MenuState() {}
 void MenuState::Update(StateManager &s, Renderer &renderer) {
     // update
     for (sf::Event event = sf::Event{}; renderer.PollEvent(event);) {
