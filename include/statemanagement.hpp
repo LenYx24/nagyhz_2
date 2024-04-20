@@ -12,8 +12,8 @@ class StateManager {
 public:
   StateManager();
 
-  void ChangeState(State *state);
-  void PushState(State *state);
+  void ChangeState(std::unique_ptr<State> state);
+  void PushState(std::unique_ptr<State> state);
   void PopState();
 
   void HandleEvents(Renderer &renderer);
@@ -25,7 +25,7 @@ public:
   void exit();
 
 private:
-  std::vector<State *> states;
+  std::vector<std::unique_ptr<State>> states;
   bool has_states;
 };
 class State {

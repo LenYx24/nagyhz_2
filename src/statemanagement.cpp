@@ -4,15 +4,18 @@ StateManager::StateManager() {
   has_states = false;
 }
 
-void StateManager::ChangeState(State *state) {
+void StateManager::ChangeState(std::unique_ptr<State> state) {
   if (!states.empty()) {
     states.pop_back();
   }
-  states.push_back(state);
+  states.push_back(std::move(state));
 }
-void StateManager::PushState(State *state) {
+void StateManager::PushState(std::unique_ptr<State> state) {
   has_states = true;
-  states.push_back(state);
+  states.push_back(std::move(state));
+  if (states[0]) {
+    std::cout << "nincs out of scope" << std::endl;
+  }
 }
 void StateManager::PopState() {
   if (!states.empty()) {

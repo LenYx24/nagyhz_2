@@ -8,7 +8,8 @@ MenuButton::MenuButton(Resources::Holder &h, sf::String str, std::function<void(
 }
 
 void onclick_start(StateManager &s) {
-  s.PushState(new ModeSelectionState);
+  std::unique_ptr<ModeSelectionState> state = std::make_unique<ModeSelectionState>();
+  s.PushState(std::move(state));
 }
 
 void onclick_back(StateManager &s) {
