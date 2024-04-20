@@ -12,7 +12,7 @@ void StateManager::ChangeState(State *state) {
 }
 void StateManager::PushState(State *state) {
   has_states = true;
-  states.push_back(std::unique_ptr<State>(state));
+  states.push_back(std::unique_ptr<State>());
 }
 void StateManager::PopState() {
   if (!states.empty()) {
@@ -32,6 +32,7 @@ void StateManager::Update(Renderer &renderer) {
     states.back()->Update(*this, renderer);
 }
 
+// Todo: Don't forget to save to a file, before doing this
 void StateManager::exit() {
   has_states = false;
 }

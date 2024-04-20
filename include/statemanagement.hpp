@@ -1,10 +1,12 @@
 #ifndef ENGINE_HPP
 #define ENGINE_HPP
 #include "renderer.hpp"
+#include "resources.hpp"
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <memory>
 
+enum class GameMode { THEMSELVES, TWOPLAYER };
 class State;
 class StateManager {
 public:
@@ -31,6 +33,9 @@ public:
   virtual ~State() {}
   virtual void HandleEvents(StateManager &s, Renderer &renderer) = 0;
   virtual void Update(StateManager &s, Renderer &r) = 0;
+
+protected:
+  Resources::Holder h;
 };
 
 #endif
