@@ -6,6 +6,7 @@
 #include "resources.hpp"
 #include "statemanagement.hpp"
 #include <cstdlib>
+#include <list>
 #include <vector>
 
 class Turn {
@@ -27,8 +28,13 @@ private:
 // responsible for doing one round
 class Round {
 public:
+  // sets the variables necessary to start a round
+  Round(std::vector<Player> players);
   // when the round ends the simulation substate starts
   void roundend();
+
+private:
+  Turn turns[2];
 };
 class GameState : public State {
   GameState(Champion *allchamps[10], GameMode mode);
@@ -41,10 +47,10 @@ class GameState : public State {
 
 protected:
   Resources::Holder h;
-  Item *allitems;
-  Player players[2];
+  std::list<Item> allitems;
+  std::vector<Player> players;
   Map *map;
-  GameMove *gamemoves;
+  std::vector<GameMove> gamemoves;
   GameMove *selectedmove;
   std::vector<Round> rounds;
   std::vector<Button> buttons;

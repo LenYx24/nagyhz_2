@@ -1,7 +1,7 @@
 #include "../include/game.hpp"
 
 GameState::GameState(Champion *allchamps[10], GameMode mode) {
-  // load items from the file and save them to the variable
+  // load items from the file and save them to the allitems variable
   // load font
   // create the UI components:
   // create selected champ panel, with stats and items
@@ -11,11 +11,14 @@ GameState::GameState(Champion *allchamps[10], GameMode mode) {
   // create a map, with create_map method, with the basic entities on it
   // create the items panel, and list all the items
 
-  // starts a round
+  // start a round
+  // seed the random generator
 }
 // onclicks:
 void onclick_endround() {
-  // ends round for one of the players
+  // ends round and starts the simulation player
+  // a simulation substate needs the map, and the entities on the map
+  // it also needs to know, who's able to see the moves
 }
 void onclick_gamemove() {
   // checks if a champion is selected
