@@ -3,6 +3,7 @@
 #include "statemanagement.hpp"
 #include <SFML/Graphics.hpp>
 #include <functional>
+#include <vector>
 // Todo: add UI namespace
 class Button : public sf::RectangleShape {
 public:
@@ -22,6 +23,11 @@ protected:
 // Todo: create grid
 // a grid holds UI components, and has different methods, to change their locations, depending on what's needed
 // add functionality to the grid, so it can be scrollable
+class Grid {
+public:
+protected:
+  std::vector<sf::RectangleShape *> elements;
+};
 // Todo: text component? it could be needed for compatibility with the grid class, so it can store texts with heterogen collection
 // Todo: create textbox component
 // Todo: create namedtextbox component, which is basically a textbox which has a text component that is (by default) directly on top of textbox

@@ -1,8 +1,6 @@
 #include "../include/statemanagement.hpp"
 
-StateManager::StateManager() {
-  has_states = false;
-}
+StateManager::StateManager() {}
 
 void StateManager::ChangeState(std::unique_ptr<State> state) {
   if (!states.empty()) {
@@ -11,7 +9,6 @@ void StateManager::ChangeState(std::unique_ptr<State> state) {
   states.push_back(std::move(state));
 }
 void StateManager::PushState(std::unique_ptr<State> state) {
-  has_states = true;
   states.push_back(std::move(state));
   if (states[0]) {
     std::cout << "nincs out of scope" << std::endl;
@@ -37,6 +34,4 @@ void StateManager::Update(Renderer &renderer) {
 }
 
 // Todo: Don't forget to save to a file, before doing this
-void StateManager::exit() {
-  has_states = false;
-}
+void StateManager::exit() {}

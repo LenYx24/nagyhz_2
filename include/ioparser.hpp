@@ -1,9 +1,19 @@
 #ifndef IOPARSER_HPP
 #define IOPARSER_HPP
+#include <fstream>
 #include <iostream>
 
-class Iifile {
+class Ireadstring {
 public:
-    void readfromfile(const std::string &filepath, const char delimiter = ';');
+  virtual void readfromstring(std::string &line, const char delimiter = ';') = 0;
+};
+class iofile {
+public:
+  iofile(std::string path);
+  ~iofile();
+  void readfromfile(Ireadstring *readto, const char delimiter = ';');
+
+private:
+  std::ifstream file;
 };
 #endif

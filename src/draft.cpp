@@ -2,7 +2,9 @@
 
 DraftState::DraftState(const GameMode m) {
   // load champions from file, check if its valid, if not then close the game
-  //
+  std::list<Champion> champs;
+  iofile inp("example/champs.txt");
+
   // create the UI components
 }
 // onclicks:
@@ -30,4 +32,5 @@ void DraftState::Update(StateManager &s, Renderer &r) {
   // show ui components
   // check if its ban phase currently, only draw the ban button then, or make the ban button not do anything while its not banphase
   // update time elapsed
+  // if elapsed time reaches a certain point, then act accordingly, either go back to menu, or ban nothing
 }

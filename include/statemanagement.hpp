@@ -20,13 +20,12 @@ public:
   void Update(Renderer &renderer);
 
   inline bool hasState() const {
-    return has_states;
+    return !states.empty();
   }
   void exit();
 
 private:
   std::vector<std::unique_ptr<State>> states;
-  bool has_states;
 };
 class State {
 public:

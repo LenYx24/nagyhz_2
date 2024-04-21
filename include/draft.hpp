@@ -2,18 +2,15 @@
 #define DRAFT_HPP
 #include "UIcomponents.hpp"
 #include "gameobjects.hpp"
+#include "ioparser.hpp"
 #include "statemanagement.hpp"
 #include <list>
+#include <vector>
 class DraftTurn {
 public:
-  DraftTurn() {
-    banround = 1;
-  }
+  DraftTurn() {}
 
 private:
-  int banround;         // goes from 1 to 6
-  int banroundcount[2]; // , cuz there are 3 ban rounds
-  bool banroundsdone;   // set to true, when ban phase is over
   Player *currentplayer;
 };
 class DraftState : public State {
@@ -24,14 +21,14 @@ public:
   void Update(StateManager &s, Renderer &r);
 
 protected:
-  std::list<Champion> allchamps;
-  std::list<Champion *> selectedchamp;
-  std::list<Champion *> bannedchamps;
-  std::list<Champion *> player1champs;
-  std::list<Champion *> player2champs;
+  std::vector<Champion> allchamps;
+  std::vector<Champion *> selectedchamp;
+  std::vector<Champion *> bannedchamps;
+  std::vector<Champion *> player1champs;
+  std::vector<Champion *> player2champs;
   sf::Time elapsedtime;
   Button buttons[3];
-  DraftTurn turn;
+  std::vector<DraftTurn> turns;
 };
 
 #endif

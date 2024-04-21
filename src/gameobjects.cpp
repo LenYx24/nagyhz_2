@@ -8,3 +8,8 @@ void Champion::spawn() {
 void Champion::die() {
   // champions dies
 }
+
+void Champion::updatevision() {}
+void Champion::readfromstring(std::string &line, const char delimiter) {
+  name = line.substr(0, line.find(delimiter));
+}
