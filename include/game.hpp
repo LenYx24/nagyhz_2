@@ -16,8 +16,6 @@ public:
   void start_turn(Player *p);
   // when the turn ends the object calls the currently pointed player to do its selected moves
   void end_turn();
-  // calls a sub state, that runs the simulation of the moves
-  void simulate_game();
 
 private:
   int points;

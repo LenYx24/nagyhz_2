@@ -15,15 +15,15 @@ GameState::GameState(Champion *allchamps[10], GameMode mode) {
   // seed the random generator
 }
 // onclicks:
-void onclick_endround() {
-  // ends round and starts the simulation player
+void onclick_endturn() {
+  // ends the turn and starts the other players turn, or does the simulation
   // a simulation substate needs the map, and the entities on the map
   // it also needs to know, who's able to see the moves
 }
 void onclick_gamemove() {
   // checks if a champion is selected
   // gets the current cell, where the champion is right now
-  // asks the gamemove, to validate the move
+  // asks the gamemove, to make certain cells clickable, which are valid
 }
 void onclick_cell() {
   // checks if there's a selected move right now
@@ -37,7 +37,7 @@ void onclick_champ() {
 }
 void onclick_item() {
   // check if there's currently a selected champion
-  // tries to add the item to the champion
+  // tries to add the item to the champion (the checks are made by the champion class)
 }
 void GameState::HandleEvents(StateManager &s, Renderer &renderer) {
   // check if user clicked on an element, then do the task accordingly
