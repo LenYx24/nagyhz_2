@@ -15,7 +15,7 @@ private:
 };
 class DraftState : public State {
 public:
-  DraftState(const GameMode mode);
+  DraftState(const Settings s);
   ~DraftState() {}
   void HandleEvents(StateManager &s, Renderer &renderer);
   void Update(StateManager &s, Renderer &r);
@@ -27,7 +27,7 @@ protected:
   std::vector<Champion *> player1champs;
   std::vector<Champion *> player2champs;
   sf::Time elapsedtime;
-  Button buttons[3];
+  std::vector<Button> buttons;
   std::vector<DraftTurn> turns;
 };
 

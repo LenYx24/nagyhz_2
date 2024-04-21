@@ -46,6 +46,6 @@ protected:
   GameMove *gamemoves;
   GameMove *selectedmove;
   std::vector<Round> rounds;
-  Button *buttons;
+  std::vector<Button> buttons;
 };
 #endif

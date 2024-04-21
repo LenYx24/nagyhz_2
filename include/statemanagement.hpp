@@ -7,6 +7,12 @@
 #include <memory>
 
 enum class GameMode { THEMSELVES, TWOPLAYER };
+class Settings {
+public:
+  std::string champs_filepath;
+  std::string items_filepath;
+  GameMode m;
+};
 class State;
 class StateManager {
 public:

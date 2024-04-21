@@ -23,7 +23,7 @@ public:
     return respawn_timer == 0;
   }
   // checks
-  virtual void updatevision() = 0;
+  virtual void update_vision() = 0;
 
 protected:
   std::string name;
@@ -52,25 +52,26 @@ protected:
   // callback fnc, that does something to its champion, or on the map
 };
 class Champion : public Entity, public Ireadstring {
+public:
   // spawns the champion with full health on the side he's on
   void spawn();
   void die();
   bool fight(Champion &other); // simulates a fight, by calculating each ones dmg
-  double gettotaldmg();        // returns the total dmg that could be dealt by the champion with all the buffs and items
-  void dogamemoves();          // iterates through the gamemoves vector, does every move, then empties the vector
+  double get_total_dmg();      // returns the total dmg that could be dealt by the champion with all the buffs and items
+  void do_game_moves();        // iterates through the gamemoves vector, does every move, then empties the vector
   // tries to add an item to the champion, returns true if its successful
   // and check if the champions position is in its own base cell
   // if thats true, then check if the champion has enough gold to buy the item
   // checks if the champions inventory is not full
-  bool additem(Item *item);
-  void updatevision();
+  bool add_item(Item *item);
+  void update_vision();
 
-  virtual void readfromstring(std::string &line, const char delimiter);
+  void readfromstring(std::string &line, const char delimiter = ';');
 
 protected:
-  bool enoughgold(int gold); // returns true, if the champion has more or the same gold given in the arguments
-  bool isinventoryfull();    // checks if the champions inventory is full
-  bool inbase();             // checks if the current cell is the base cell for this champion
+  bool enough_gold(int gold); // returns true, if the champion has more or the same gold given in the arguments
+  bool isinventory_full();    // checks if the champions inventory is full
+  bool in_base();             // checks if the current cell is the base cell for this champion
   int cs;
   int gold;
   int hp_per_level;  // the amount of hp given per level up

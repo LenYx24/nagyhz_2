@@ -56,7 +56,9 @@ void MenuState::Update(StateManager &s, Renderer &renderer) {
 }
 
 void onclick_draft(StateManager &s) {
-  s.PushState(std::make_unique<DraftState>(GameMode::THEMSELVES));
+  Settings settings;
+  settings.m = GameMode::TWOPLAYER;
+  s.PushState(std::make_unique<DraftState>(settings));
 }
 ModeSelectionState::ModeSelectionState() {
   h.load(Resources::Type::FONT, "./fonts/Roboto.ttf");

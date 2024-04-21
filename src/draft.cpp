@@ -1,10 +1,17 @@
 #include "../include/draft.hpp"
 
-DraftState::DraftState(const GameMode m) {
+DraftState::DraftState(const Settings s) {
   // load champions from file, check if its valid, if not then close the game
   std::list<Champion> champs;
   iofile inp("example/champs.txt");
-
+  for (std::string line; std::getline(inp.getfile(), line);) {
+    Champion c;
+    c.readfromstring(line);
+    champs.push_back(c);
+  }
+  if (champs.size() < 10) {
+    throw "Not enough champions listed in the file, you need at least 10 champions to play!";
+  }
   // create the UI components
 }
 // onclicks:

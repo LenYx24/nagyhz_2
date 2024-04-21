@@ -11,7 +11,9 @@ class iofile {
 public:
   iofile(std::string path);
   ~iofile();
-  void readfromfile(Ireadstring *readto, const char delimiter = ';');
+  std::ifstream &getfile() {
+    return file;
+  }
 
 private:
   std::ifstream file;
