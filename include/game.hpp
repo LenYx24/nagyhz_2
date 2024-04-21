@@ -5,6 +5,7 @@
 #include "map.hpp"
 #include "resources.hpp"
 #include "statemanagement.hpp"
+#include <cstdlib>
 #include <vector>
 
 class Turn {
@@ -20,8 +21,8 @@ public:
 private:
   int points;
   const Player *player;
-  sf::Time elapsed_time; // starts from zero when the turn starts
-  sf::Time turn_time;
+  sf::Time elapsed_time; // starts from 0
+  sf::Time turn_time;    // something like 1 minute to do the moves
 };
 // responsible for doing one round
 class Round {

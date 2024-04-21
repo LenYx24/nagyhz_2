@@ -3,6 +3,7 @@
 #include "statemanagement.hpp"
 #include <SFML/Graphics.hpp>
 #include <functional>
+#include <iostream>
 #include <vector>
 // Todo: add UI namespace
 class Button : public sf::RectangleShape {
@@ -25,11 +26,26 @@ protected:
 // add functionality to the grid, so it can be scrollable
 class Grid {
 public:
+  virtual void drawgrid() = 0;
+
 protected:
-  std::vector<sf::RectangleShape *> elements;
+  std::vector<sf::Drawable *> elements;
+  sf::Vector2f length; // defines how many elements should be in a row / column
 };
-// Todo: text component? it could be needed for compatibility with the grid class, so it can store texts with heterogen collection
 // Todo: create textbox component
+class TextBox {
+private:
+  sf::Text textbox;
+  bool isSelected;
+  int width;
+  int height;
+  int limit;
+};
 // Todo: create namedtextbox component, which is basically a textbox which has a text component that is (by default) directly on top of textbox
-// Todo: implement map cell button
+class NamedTextBox {
+private:
+  TextBox tb;
+  sf::Text label;
+};
+
 #endif
