@@ -8,13 +8,33 @@
 #include <vector>
 class DraftTurn {
 public:
-  DraftTurn(std::vector<Champion *> &champs) : champs(champs) {}
+  DraftTurn(std::list<Champion *> &champs) : champs(champs) {}
   void doturn(Champion *c);
 
 private:
-  std::vector<Champion *> &champs;
+  std::list<Champion *> &champs;
 };
 
+class DraftNamedBox : public NamedBox {
+public:
+  DraftNamedBox() {
+    _frame.setSize({50, 50});
+    _frame.setFillColor(sf::Color::Red);
+    _label.setString("Test");
+  }
+};
+class TeamCol {
+public:
+  TeamCol(sf::Vector2f startpos, int margin = 10);
+  void setpos();
+  std::list<Champion *> champs;
+  void draw_to_window(sf::RenderWindow &w);
+
+protected:
+  std::vector<DraftNamedBox> elements;
+  sf::Vector2f startpos;
+  int margin;
+};
 class DraftButton : public Button {
 public:
   DraftButton(
@@ -29,14 +49,12 @@ public:
 
 protected:
   std::vector<Champion> allchamps;
-  std::vector<Champion *> selectedchamp;
-  std::vector<Champion *> p1banchamps;
-  std::vector<Champion *> p2banchamps;
-  std::vector<Champion *> p1champs;
-  std::vector<Champion *> p2champs;
-  sf::Time elapsedtime;
+  Champion *selectedchamp;
+  std::vector<TeamCol> columns;
+  sf::Clock elapsedtime;
   std::vector<DraftButton> buttons;
   std::vector<DraftTurn> turns;
+  size_t turn_counter;
 };
 
 #endif

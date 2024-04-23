@@ -1,0 +1,8 @@
+<map id="Ground" name="Ground">
+<area shape="rect" id="node1" title=" " alt="" coords="202,80,271,107"/>
+<area shape="rect" id="node3" href="$classBlueSpawnArea.html" title=" " alt="" coords="5,155,129,181"/>
+<area shape="rect" id="node4" href="$classBush.html" title=" " alt="" coords="153,155,208,181"/>
+<area shape="rect" id="node5" href="$classRedSpawnArea.html" title=" " alt="" coords="233,155,353,181"/>
+<area shape="rect" id="node6" href="$classRiver.html" title=" " alt="" coords="377,155,433,181"/>
+<area shape="rect" id="node2" href="$classCell.html" title=" " alt="" coords="213,5,260,32"/>
+</map>

@@ -24,16 +24,15 @@ protected:
 // Todo: create grid
 // a grid holds UI components, and has different methods, to change their locations, depending on what's needed
 // add functionality to the grid, so it can be scrollable
-class Grid {
-public:
-  virtual void drawgrid() = 0;
 
-protected:
-  std::vector<sf::Drawable *> elements;
-  sf::Vector2f length; // defines how many elements should be in a row / column
-};
 // Todo: create textbox component
-class TextBox {
+class GridElements {
+public:
+  virtual void draw(sf::RenderWindow &w) = 0;
+};
+class TextBox : public GridElements {
+  virtual void draw(sf::RenderWindow &w);
+
 private:
   sf::Text textbox;
   bool isSelected;
@@ -42,10 +41,28 @@ private:
   int limit;
 };
 // Todo: create namedtextbox component, which is basically a textbox which has a text component that is (by default) directly on top of textbox
-class NamedTextBox {
+class NamedTextBox : public GridElements {
+public:
+  virtual void draw(sf::RenderWindow &w);
+
 private:
   TextBox tb;
   sf::Text label;
+};
+class NamedBox : public GridElements {
+public:
+  NamedBox();
+  NamedBox(sf::RectangleShape);
+  NamedBox(std::string label, sf::RectangleShape frame);
+  void setlabel(std::string l);
+  void setframe(sf::RectangleShape);
+  void setposition(sf::Vector2f pos);
+  sf::Vector2f getsize();
+  void draw(sf::RenderWindow &w);
+
+protected:
+  sf::RectangleShape _frame;
+  sf::Text _label;
 };
 
 #endif

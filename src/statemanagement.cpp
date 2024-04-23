@@ -34,4 +34,6 @@ void StateManager::Update(Renderer &renderer) {
 }
 
 // Todo: Don't forget to save to a file, before doing this
-void StateManager::exit() {}
+void StateManager::exit() {
+  states.clear();
+}

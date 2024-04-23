@@ -1,0 +1,5 @@
+<map id="Effect" name="Effect">
+<area shape="rect" id="node1" title=" " alt="" coords="37,5,96,32"/>
+<area shape="rect" id="node2" href="$classBuff.html" title=" " alt="" coords="5,80,53,107"/>
+<area shape="rect" id="node3" href="$classItem.html" title=" " alt="" coords="78,80,130,107"/>
+</map>

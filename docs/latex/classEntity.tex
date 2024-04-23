@@ -1,0 +1,70 @@
+\hypertarget{classEntity}{}\doxysection{Entity Class Reference}
+\label{classEntity}\index{Entity@{Entity}}
+
+
+Inheritance diagram for Entity\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=280pt]{classEntity__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for Entity\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=129pt]{classEntity__coll__graph}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classEntity_aef46b1aea52385237628d0a0fa155396}\label{classEntity_aef46b1aea52385237628d0a0fa155396}} 
+{\bfseries Entity} (std\+::string name=\char`\"{}\char`\"{})
+\item 
+\mbox{\Hypertarget{classEntity_a5e85877be74486b5e0a4be90a812bf27}\label{classEntity_a5e85877be74486b5e0a4be90a812bf27}} 
+virtual void {\bfseries spawn} ()=0
+\item 
+\mbox{\Hypertarget{classEntity_a2a3cf13d22d4f8a6ac5b6ffaff41205e}\label{classEntity_a2a3cf13d22d4f8a6ac5b6ffaff41205e}} 
+virtual void {\bfseries die} ()=0
+\item 
+\mbox{\Hypertarget{classEntity_abadcf5fb781cafa3a9779091e210b96f}\label{classEntity_abadcf5fb781cafa3a9779091e210b96f}} 
+bool {\bfseries is\+Alive} () const
+\item 
+\mbox{\Hypertarget{classEntity_aae2e18665abb13a34f5dde31e8f4f36a}\label{classEntity_aae2e18665abb13a34f5dde31e8f4f36a}} 
+virtual void {\bfseries update\+\_\+vision} ()=0
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classEntity_a931b21fbdebb1a5963b4bcab5df128f5}\label{classEntity_a931b21fbdebb1a5963b4bcab5df128f5}} 
+std\+::string {\bfseries name}
+\item 
+\mbox{\Hypertarget{classEntity_a25ce21307fbf97ce6a2bef19ec34a6a9}\label{classEntity_a25ce21307fbf97ce6a2bef19ec34a6a9}} 
+double {\bfseries maxhp}
+\item 
+\mbox{\Hypertarget{classEntity_a5d74d5a5e290b7e76ae38d1ed1cc736e}\label{classEntity_a5d74d5a5e290b7e76ae38d1ed1cc736e}} 
+double {\bfseries hp}
+\item 
+\mbox{\Hypertarget{classEntity_abfccb682686c9fd4898df228edc56b5a}\label{classEntity_abfccb682686c9fd4898df228edc56b5a}} 
+double {\bfseries damage}
+\item 
+\mbox{\Hypertarget{classEntity_a2f5ac9847403104b43fe439b0a246520}\label{classEntity_a2f5ac9847403104b43fe439b0a246520}} 
+int {\bfseries respawn\+\_\+timer}
+\item 
+\mbox{\Hypertarget{classEntity_a768ef7d963fa6b290f8368a34f9eaff6}\label{classEntity_a768ef7d963fa6b290f8368a34f9eaff6}} 
+\mbox{\hyperlink{classCell}{Cell}} $\ast$ {\bfseries cells}
+\item 
+\mbox{\Hypertarget{classEntity_af03d71c31725c3cf6d3af161d69ec3eb}\label{classEntity_af03d71c31725c3cf6d3af161d69ec3eb}} 
+sf\+::\+Color {\bfseries color}
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+include/gameobjects.\+hpp\item 
+src/gameobjects.\+cpp\end{DoxyCompactItemize}

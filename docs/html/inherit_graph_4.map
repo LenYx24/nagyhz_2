@@ -1,0 +1,9 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" href="$classEntity.html" title=" " alt="" coords="21,56,81,83"/>
+<area shape="rect" id="node2" href="$classChampion.html" title=" " alt="" coords="145,5,233,32"/>
+<area shape="rect" id="node3" href="$classMonster.html" title=" " alt="" coords="152,56,227,83"/>
+<area shape="rect" id="node6" href="$classWard.html" title=" " alt="" coords="162,107,217,133"/>
+<area shape="rect" id="node4" href="$classCamp.html" title=" " alt="" coords="285,31,345,57"/>
+<area shape="rect" id="node5" href="$classMinion.html" title=" " alt="" coords="281,81,348,108"/>
+<area shape="rect" id="node7" href="$classIreadstring.html" title=" " alt="" coords="5,5,97,32"/>
+</map>

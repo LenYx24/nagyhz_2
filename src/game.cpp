@@ -63,5 +63,4 @@ void GameState::Update(StateManager &s, Renderer &r) {
   //
   // update time elapsed
   // if elapsed time reaches a certain point, then act accordingly => end turn
-  // update the vision on a cell, by calling every entity, and call update vision on it
 }

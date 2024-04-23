@@ -7,6 +7,7 @@ void onclick_lockin(StateManager &s) {
 }
 DraftButton::DraftButton(Resources::Holder &h, sf::String str, std::function<void(StateManager &s)> onclick_) : Button(str, onclick_) {
   // menu button specific override settings
+  this->setSize({200, 100});
   text.setCharacterSize(15);
   text.setFont(h.get(Resources::Type::FONT));
 }
@@ -23,25 +24,35 @@ DraftState::DraftState(const Settings s) {
     throw "Not enough champions listed in the file, you need at least 10 champions to play!";
   }
   // create the UI components
+
   h.load(Resources::Type::FONT, "./fonts/Roboto.ttf");
   buttons.push_back(DraftButton{h, "Lock in", onclick_lockin});
   buttons.push_back(DraftButton{h, "Not banning"});
   buttons.push_back(DraftButton{h, "back", onclick_back});
-  // Todo: put this into its own grid class
-  float marginy = 20 + buttons[0].getSize().y / 2.f;
-  sf::Vector2f pos{800 / 2.f, marginy};
+
+  float marginx = 30;
+  std::cout << "marginx: " << marginx << std::endl;
+  sf::Vector2f pos{buttons[0].getSize().x + marginx, 400};
   for (size_t i = 0; i < buttons.size(); i++) {
     buttons[i].setPosition(pos);
-    pos.y += buttons[i].getSize().y / 2.f + marginy;
+    pos.x += buttons[i].getSize().x + marginx;
   }
-  // draft phase turns
-  DraftTurn p1ban{p1banchamps};
-  DraftTurn p2ban{p1banchamps};
-  DraftTurn p1{p1banchamps};
-  DraftTurn p2{p1banchamps};
+  // creating the namedboxes
+  std::vector<sf::Vector2f> startposes = {{20, 20}, {700, 20}, {20, 300}, {700, 300}};
+  for (size_t i = 0; i < 4; i++) {
+    TeamCol c{startposes[i]};
+    columns.push_back(c);
+    columns[i].setpos();
+  }
+  DraftTurn p1{columns[0].champs};
+  DraftTurn p2{columns[1].champs};
+  DraftTurn p1ban{columns[2].champs};
+  DraftTurn p2ban{columns[3].champs};
   // Todo: clean this up (but the advantage of giving it like this, is it's easy to change)
   std::vector<DraftTurn> turns = {p1ban, p2ban, p1ban, p2ban, p1ban, p2ban, p1, p2, p2, p1, p1, p2, p1ban, p2ban, p1ban, p2ban, p2, p1, p1, p2};
-  elapsedtime = sf::Time{sf::seconds(30.f)};
+  turn_counter = 0;
+  elapsedtime.restart();
+  selectedchamp = nullptr;
 }
 // onclicks:
 // select champ -> shows the champ details on the small grid
@@ -64,6 +75,12 @@ void DraftState::HandleEvents(StateManager &s, Renderer &renderer) {
     }
   }
 }
+void DraftTurn::doturn(Champion *c) {
+  if (c == nullptr) {
+    throw "nullptr";
+  }
+  champs.push_back(c);
+}
 void DraftState::Update(StateManager &s, Renderer &r) {
   // show ui components
   // check if its ban phase currently, only draw the ban button then, or make the ban button not do anything while its not banphase
@@ -75,12 +92,40 @@ void DraftState::Update(StateManager &s, Renderer &r) {
   for (size_t i = 0; i < buttons.size(); i++) {
     buttons[i].draw_to_window(w);
   }
-  elapsedtime -= sf::Time{sf::seconds(1)};
-  if (elapsedtime == sf::Time::Zero) {
+  for (size_t i = 0; i < columns.size(); i++) {
+    columns[i].draw_to_window(w);
+  }
+  std::cout << "time: " << elapsedtime.getElapsedTime().asSeconds() << std::endl;
+  if (elapsedtime.getElapsedTime().asSeconds() == 30) {
     // do turn move
+    // turns[turn_counter++].doturn(selectedchamp);
+    elapsedtime.restart();
   }
   w.display();
 }
-void DraftTurn::doturn(Champion *c) {
-  champs.push_back(c);
+
+void TeamCol::setpos() {
+  sf::Vector2f pos = startpos;
+  if (!elements.empty()) {
+    elements[0].setposition(pos);
+    pos.y += elements[0].getsize().y + margin;
+  }
+  for (size_t i = 0; i < elements.size(); i++) {
+    elements[i].setposition(pos);
+    pos.y += elements[i].getsize().y + margin;
+  }
+}
+
+TeamCol::TeamCol(sf::Vector2f startpos, int margin) {
+  this->startpos = startpos;
+  this->margin = margin;
+  for (size_t i = 0; i < 5; i++) {
+    elements.push_back(DraftNamedBox{});
+  }
+}
+
+void TeamCol::draw_to_window(sf::RenderWindow &w) {
+  for (size_t i = 0; i < elements.size(); i++) {
+    elements[i].draw(w);
+  }
 }
