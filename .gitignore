@@ -3,6 +3,7 @@ build_windows/*
 build_linux/*
 linuxbuild/*
 build/*
+docs/*
 out/*
 .cache
 .idea
