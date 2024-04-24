@@ -35,16 +35,18 @@ void Button::draw_to_window(sf::RenderWindow &w) {
   updatetextpos();
   w.draw(text);
 }
-NamedBox::NamedBox() {}
-NamedBox::NamedBox(std::string label, sf::RectangleShape frame) {
+NamedBox::NamedBox(std::string label, sf::RectangleShape frame, Resources::Holder &h) {
   _label.setString(label);
   _frame = frame;
+  _label.setFont(h.get(Resources::Type::FONT));
 }
 
-NamedBox::NamedBox(sf::RectangleShape frame) {
-  _frame = frame;
+void NamedBox::setcharsize(int size) {
+  _label.setCharacterSize(size);
 }
-
+void NamedBox::setlabelcolor(const sf::Color &c) {
+  _label.setFillColor(c);
+}
 void NamedBox::setposition(sf::Vector2f pos) {
   _frame.setPosition(pos);
 }
@@ -63,7 +65,8 @@ void Grid::setelementspos() {
   sf::Vector2f pos = _startpos;
   for (size_t i = 0; i < _elements.size(); i++) {
     _elements[i]->setposition(pos);
-    pos.x += _elements[i]->getsize().x + _margin.x;
+    pos.x += (_elements[i]->getsize().x + _margin.x) * _direction.x;
+    pos.y += (_elements[i]->getsize().y + _margin.y) * _direction.y;
   }
 }
 

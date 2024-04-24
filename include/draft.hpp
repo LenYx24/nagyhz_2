@@ -17,7 +17,7 @@ private:
 
 class DraftNamedBox : public UI::NamedBox {
 public:
-  DraftNamedBox() {
+  DraftNamedBox(std::string) {
     _frame.setSize({100, 30});
     _frame.setFillColor(sf::Color::Red);
     _label.setString("Test");
@@ -40,10 +40,16 @@ public:
   DraftButton(
       Resources::Holder &h, sf::String str, std::function<void(StateManager &s)> onclick = [](StateManager &s) { std::cout << "not impl" << std::endl; });
 };
+
+class ChampBox : public UI::NamedBox {
+public:
+  ChampBox(std::string label, sf::RectangleShape frame, Resources::Holder &h, Champion *c) : NamedBox(label, frame, h), champ(c) {}
+  Champion *champ;
+};
 class DraftState : public State {
 public:
   DraftState(StateManager &state_manager, const Settings s);
-  ~DraftState() {}
+  ~DraftState();
   void HandleEvents(sf::Event &e);
   void Update();
   void Draw(sf::RenderWindow &window);
@@ -55,6 +61,7 @@ protected:
   std::vector<TeamCol> columns;
   sf::Clock elapsedtime;
   std::vector<DraftButton *> buttons;
+  std::vector<ChampBox *> champlist;
   std::vector<DraftTurn> turns;
   size_t turn_counter;
   sf::Text timer;

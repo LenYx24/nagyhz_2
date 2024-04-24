@@ -3,7 +3,7 @@ void onclick_back(StateManager &s) {
   s.PopState();
 }
 void onclick_lockin(StateManager &s) {
-  s.PopState();
+  // lockin
 }
 DraftButton::DraftButton(Resources::Holder &h, sf::String str, std::function<void(StateManager &s)> onclick_) : Button(str, onclick_) {
   // menu button specific override settings
@@ -13,7 +13,7 @@ DraftButton::DraftButton(Resources::Holder &h, sf::String str, std::function<voi
 }
 DraftState::DraftState(StateManager &state_manager, const Settings s) : State(state_manager) {
   // load champions from file, check if its valid, if not then close the game
-  std::list<Champion> champs;
+  std::vector<Champion> champs;
   iofile inp("examples/champions.txt");
   for (std::string line; std::getline(inp.getfile(), line);) {
     Champion c;
@@ -26,24 +26,28 @@ DraftState::DraftState(StateManager &state_manager, const Settings s) : State(st
   // create the UI components
 
   h.load(Resources::Type::FONT, "./fonts/Roboto.ttf");
-  buttons.push_back(new DraftButton{h, "Lock in", onclick_lockin});
-  buttons.push_back(new DraftButton{h, "Don't ban", onclick_lockin});
-  buttons.push_back(new DraftButton{h, "back", onclick_lockin});
+  buttons.push_back(new DraftButton(h, "Lock in", onclick_lockin));
+  buttons.push_back(new DraftButton(h, "Don't ban", onclick_lockin));
+  buttons.push_back(new DraftButton(h, "back", onclick_back));
 
-  UI::Grid grid{{250, 275}, {5, 5}};
+  UI::Grid grid{{250, 500}, {5, 5}};
   std::vector<UI::GridElement *> els(buttons.begin(), buttons.end());
   grid.setelements(els);
   grid.setelementspos();
-  std::cout << "asd " << std::endl;
-  // float marginx = 30;
-  // std::cout << "marginx: " << marginx << std::endl;
-  // sf::Vector2f pos{buttons[0]->getsize().x / 2.f + 50, 400};
-  // for (size_t i = 0; i < buttons.size(); i++) {
-  //   buttons[i]->setposition(pos);
-  //   pos.x += buttons[i]->getsize().x + marginx;
-  // }
-  // creating the namedboxes
-  std::vector<sf::Vector2f> startposes = {{20, 5}, {700, 5}, {20, 300}, {700, 300}};
+  // creating named boxes
+  sf::RectangleShape baseshape{{150, 30}};
+  baseshape.setOutlineColor({33, 35, 45});
+  for (size_t i = 0; i < champs.size(); i++) {
+    champlist.push_back(new ChampBox{champs[i].getname(), baseshape, h, &champs[i]});
+    champlist[i]->setcharsize(11);
+    champlist[i]->setlabelcolor(sf::Color::Black);
+  }
+  UI::Grid champgrid{{300, 10}, {5, 5}, {0, 1}};
+  std::vector<UI::GridElement *> champels(champlist.begin(), champlist.end());
+  champgrid.setelements(champels);
+  champgrid.setelementspos();
+
+  std::vector<sf::Vector2f> startposes = {{20, 5}, {650, 5}, {20, 300}, {650, 300}};
   for (size_t i = 0; i < 4; i++) {
     TeamCol c{startposes[i]};
     columns.push_back(c);
@@ -74,6 +78,11 @@ void DraftTurn::doturn(Champion *c) {
   }
   champs.push_back(c);
 }
+DraftState::~DraftState() {
+  for (size_t i = 0; i < champlist.size(); i++) {
+    delete champlist[i];
+  }
+}
 void DraftState::HandleEvents(sf::Event &e) {
   if (e.type == sf::Event::Closed) {
     _state_manager.exit();
@@ -82,6 +91,11 @@ void DraftState::HandleEvents(sf::Event &e) {
     for (UI::Button *b : buttons) {
       if (b->getglobalbounds().contains(e.mouseButton.x, e.mouseButton.y)) {
         b->onclick(_state_manager);
+      }
+    }
+    for (ChampBox *b : champlist) {
+      if (b->getglobalbounds().contains(e.mouseButton.x, e.mouseButton.y)) {
+        selectedchamp = b->champ;
       }
     }
   }
@@ -110,6 +124,9 @@ void DraftState::Draw(sf::RenderWindow &window) {
   for (size_t i = 0; i < columns.size(); i++) {
     columns[i].draw_to_window(window);
   }
+  for (size_t i = 0; i < champlist.size(); i++) {
+    champlist[i]->draw(window);
+  }
   window.draw(timer);
 }
 
@@ -129,7 +146,7 @@ TeamCol::TeamCol(sf::Vector2f startpos, int margin) {
   this->startpos = startpos;
   this->margin = margin;
   for (size_t i = 0; i < 5; i++) {
-    elements.push_back(DraftNamedBox{});
+    elements.push_back(DraftNamedBox{""});
   }
 }
 

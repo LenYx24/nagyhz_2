@@ -65,6 +65,9 @@ public:
   // checks if the champions inventory is not full
   bool add_item(Item *item);
   void update_vision();
+  std::string getname() const {
+    return name;
+  }
 
   void readfromstring(std::string &line, const char delimiter = ';');
 

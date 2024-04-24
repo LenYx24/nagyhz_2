@@ -1,5 +1,6 @@
 #ifndef UICOMPONENTS_HPP
 #define UICOMPONENTS_HPP
+#include "resources.hpp"
 #include "statemanagement.hpp"
 #include <SFML/Graphics.hpp>
 #include <functional>
@@ -10,6 +11,7 @@ namespace UI {
 
 class GridElement {
 public:
+  virtual ~GridElement() {}
   virtual void draw(sf::RenderWindow &w) = 0;
   virtual sf::Vector2f getsize() = 0;
   virtual void setposition(sf::Vector2f pos) = 0;
@@ -73,12 +75,19 @@ private:
 };
 class NamedBox : public GridElement {
 public:
-  NamedBox();
-  NamedBox(sf::RectangleShape);
-  NamedBox(std::string label, sf::RectangleShape frame);
+  NamedBox() {}
+  NamedBox(std::string label, sf::RectangleShape frame, Resources::Holder &h);
   void setlabel(std::string l);
   void setframe(sf::RectangleShape);
   void setposition(sf::Vector2f pos);
+  void setcharsize(int size);
+  void setlabelcolor(const sf::Color &c);
+  inline sf::FloatRect getglobalbounds() const {
+    return _frame.getGlobalBounds();
+  }
+  std::string getlabel() const {
+    return _label.getString();
+  }
 
   sf::Vector2f getsize();
   void draw(sf::RenderWindow &w);
