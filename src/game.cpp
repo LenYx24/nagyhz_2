@@ -1,6 +1,6 @@
 #include "../include/game.hpp"
 
-GameState::GameState(Champion *allchamps[10], GameMode mode) {
+GameState::GameState(StateManager &state_manager, Champion *allchamps[10], GameMode mode) : State(state_manager) {
   // load items from the file and save them to the allitems variable
   // load font
   // create the UI components:
@@ -39,22 +39,19 @@ void onclick_item() {
   // check if there's currently a selected champion
   // tries to add the item to the champion (the checks are made by the champion class)
 }
-void GameState::HandleEvents(StateManager &s, Renderer &renderer) {
+void GameState::HandleEvents(sf::Event &e) {
   // check if user clicked on an element, then do the task accordingly
-  for (sf::Event event{}; renderer.PollEvent(event);) {
-    if (event.type == sf::Event::Closed) {
-      s.exit();
-    } else if (event.type == sf::Event::MouseButtonPressed) {
-      std::cout << "[[INFO]] mouse clicked" << std::endl;
-      for (Button b : buttons) {
-        if (b.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y)) {
-          b.onclick(s);
-        }
+  if (e.type == sf::Event::Closed) {
+    _state_manager.exit();
+  } else if (e.type == sf::Event::MouseButtonPressed) {
+    for (UI::Button b : buttons) {
+      if (b.getglobalbounds().contains(e.mouseButton.x, e.mouseButton.y)) {
+        b.onclick(_state_manager);
       }
     }
   }
 }
-void GameState::Update(StateManager &s, Renderer &r) {
+void GameState::Update() {
   // if a champion is not selected, then dont show move buttons, and items, and selected info
   // if a champ is selected, show moves, and stats
   // if a champ is selected and is on its base cell, then show items
@@ -63,4 +60,7 @@ void GameState::Update(StateManager &s, Renderer &r) {
   //
   // update time elapsed
   // if elapsed time reaches a certain point, then act accordingly => end turn
+}
+void GameState::Draw(sf::RenderWindow &window) {
+  // draw
 }

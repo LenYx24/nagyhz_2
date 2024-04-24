@@ -35,10 +35,11 @@ private:
   Turn turns[2];
 };
 class GameState : public State {
-  GameState(Champion *allchamps[10], GameMode mode);
+  GameState(StateManager &state_manager, Champion *allchamps[10], GameMode mode);
   ~GameState() {}
-  void HandleEvents(StateManager &s, Renderer &renderer);
-  void Update(StateManager &s, Renderer &r);
+  void HandleEvents(sf::Event &e);
+  void Update();
+  void Draw(sf::RenderWindow &window);
 
   void nextplayer();
   Player *getcurrentplayer();
@@ -51,6 +52,6 @@ protected:
   std::vector<GameMove> gamemoves;
   GameMove *selectedmove;
   std::vector<Round> rounds;
-  std::vector<Button> buttons;
+  std::vector<UI::Button> buttons;
 };
 #endif

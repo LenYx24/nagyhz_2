@@ -3,13 +3,15 @@
 #include "UIcomponents.hpp"
 #include "gameobjects.hpp"
 #include "map.hpp"
+#include "resources.hpp"
 #include "statemanagement.hpp"
 #include <vector>
 class SimulationState : public State {
   SimulationState(Champion *allchamps[10], GameMode mode);
   ~SimulationState() {}
-  void HandleEvents(StateManager &s, Renderer &renderer);
-  void Update(StateManager &s, Renderer &r);
+  virtual void HandleEvents(sf::Event &e);
+  virtual void Update();
+  virtual void Draw(sf::RenderWindow &window);
 
   void doOneMove();
 

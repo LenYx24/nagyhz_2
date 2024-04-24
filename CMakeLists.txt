@@ -24,7 +24,6 @@ target_sources(lolmacrogame
     ./include/ioparser.hpp
     ./include/gameobjects.hpp
     ./include/resources.hpp
-    ./include/renderer.hpp
     ./include/statemanagement.hpp
     ./include/UIcomponents.hpp
     ./include/menu.hpp
@@ -40,7 +39,6 @@ target_sources(lolmacrogame
     ./src/ioparser.cpp
     ./src/gameobjects.cpp
     ./src/resources.cpp
-    ./src/renderer.cpp
     ./src/statemanagement.cpp
     ./src/UIcomponents.cpp  
     ./src/main.cpp 

@@ -1,13 +1,15 @@
 #include "../include/UIcomponents.hpp"
+using namespace UI;
+
 Button::Button(sf::String str, std::function<void(StateManager &s)> onclick_, sf::Vector2f pos) {
   // default button settings
   text.setString(str);
   text.setFillColor({220, 225, 223});
   text.setCharacterSize(20);
-  setOutlineThickness(1);
-  setOutlineColor({31, 36, 33});
-  setFillColor({33, 104, 105});
-  setSize({500, 120});
+  shape.setOutlineThickness(1);
+  shape.setOutlineColor({31, 36, 33});
+  shape.setFillColor({33, 104, 105});
+  shape.setSize({500, 120});
   text.setOrigin({text.getLocalBounds().width / 2, text.getLocalBounds().height / 2});
   setpos(pos);
   onclick = onclick_;
@@ -17,15 +19,15 @@ void Button::settext(sf::String str) {
   text.setString(str);
 }
 void Button::setpos(sf::Vector2f pos) {
-  setOrigin(getLocalBounds().width / 2.f, getLocalBounds().height / 2.f);
-  this->setPosition(pos);
+  shape.setOrigin(shape.getLocalBounds().width / 2.f, shape.getLocalBounds().height / 2.f);
+  shape.setPosition(pos);
   updatetextpos();
 }
 void Button::updatetextpos() {
-  text.setPosition(getPosition().x - text.getLocalBounds().width / 2.f, getPosition().y - text.getLocalBounds().height / 1.5f);
+  text.setPosition(shape.getPosition().x - text.getLocalBounds().width / 2.f, shape.getPosition().y - text.getLocalBounds().height / 1.5f);
 }
 void Button::draw_to_window(sf::RenderWindow &w) {
-  w.draw(*this);
+  w.draw(shape);
   updatetextpos();
   w.draw(text);
 }

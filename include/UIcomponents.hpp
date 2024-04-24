@@ -6,7 +6,8 @@
 #include <iostream>
 #include <vector>
 // Todo: add UI namespace
-class Button : public sf::RectangleShape {
+namespace UI {
+class Button {
 public:
   Button() {}
   Button(
@@ -16,16 +17,19 @@ public:
   void setpos(sf::Vector2f pos);
   void updatetextpos();
   void draw_to_window(sf::RenderWindow &w);
+  inline sf::Vector2f getsize() const {
+    return shape.getSize();
+  }
+  inline sf::FloatRect getglobalbounds() const {
+    return shape.getGlobalBounds();
+  }
   std::function<void(StateManager &s)> onclick;
 
 protected:
+  sf::RectangleShape shape;
   sf::Text text;
 };
-// Todo: create grid
-// a grid holds UI components, and has different methods, to change their locations, depending on what's needed
-// add functionality to the grid, so it can be scrollable
 
-// Todo: create textbox component
 class GridElements {
 public:
   virtual void draw(sf::RenderWindow &w) = 0;
@@ -64,5 +68,7 @@ protected:
   sf::RectangleShape _frame;
   sf::Text _label;
 };
+
+} // namespace UI
 
 #endif

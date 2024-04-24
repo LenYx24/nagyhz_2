@@ -37,7 +37,7 @@ protected:
   sf::Color color;
 };
 class Effect {
-protected:
+private:
   double bonusdmg;
   double bonushp;
 };
@@ -45,7 +45,7 @@ class Buff : public Effect {
   // a buff is a kind of effect given by slaying a monster, which could have a timer on it, that shows how long its active
 };
 class Item : public Effect {
-protected:
+private:
   int gold_value;
   // extra props:
   // is it a percentage bonus, or direct value
@@ -68,7 +68,7 @@ public:
 
   void readfromstring(std::string &line, const char delimiter = ';');
 
-protected:
+private:
   bool enough_gold(int gold); // returns true, if the champion has more or the same gold given in the arguments
   bool isinventory_full();    // checks if the champions inventory is full
   bool in_base();             // checks if the current cell is the base cell for this champion

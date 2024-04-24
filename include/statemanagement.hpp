@@ -1,10 +1,9 @@
 #ifndef ENGINE_HPP
 #define ENGINE_HPP
-#include "renderer.hpp"
-#include "resources.hpp"
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <memory>
+#include <stack>
 
 enum class GameMode { THEMSELVES, TWOPLAYER };
 class Settings {
@@ -22,8 +21,9 @@ public:
   void PushState(std::unique_ptr<State> state);
   void PopState();
 
-  void HandleEvents(Renderer &renderer);
-  void Update(Renderer &renderer);
+  void HandleEvents(sf::RenderWindow &window);
+  void Update();
+  void Draw(sf::RenderWindow &window);
 
   inline bool hasState() const {
     return !states.empty();
@@ -31,16 +31,18 @@ public:
   void exit();
 
 private:
-  std::vector<std::unique_ptr<State>> states;
+  std::stack<std::unique_ptr<State>> states;
 };
 class State {
 public:
   virtual ~State() {}
-  virtual void HandleEvents(StateManager &s, Renderer &renderer) = 0;
-  virtual void Update(StateManager &s, Renderer &r) = 0;
+  virtual void HandleEvents(sf::Event &e) = 0;
+  virtual void Update() = 0;
+  virtual void Draw(sf::RenderWindow &window) = 0;
 
 protected:
-  Resources::Holder h;
+  State(StateManager &s) : _state_manager(s) {}
+  StateManager &_state_manager;
 };
 
 #endif

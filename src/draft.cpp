@@ -7,11 +7,11 @@ void onclick_lockin(StateManager &s) {
 }
 DraftButton::DraftButton(Resources::Holder &h, sf::String str, std::function<void(StateManager &s)> onclick_) : Button(str, onclick_) {
   // menu button specific override settings
-  this->setSize({200, 100});
+  shape.setSize({200, 100});
   text.setCharacterSize(15);
   text.setFont(h.get(Resources::Type::FONT));
 }
-DraftState::DraftState(const Settings s) {
+DraftState::DraftState(StateManager &state_manager, const Settings s) : State(state_manager) {
   // load champions from file, check if its valid, if not then close the game
   std::list<Champion> champs;
   iofile inp("examples/champions.txt");
@@ -32,10 +32,10 @@ DraftState::DraftState(const Settings s) {
 
   float marginx = 30;
   std::cout << "marginx: " << marginx << std::endl;
-  sf::Vector2f pos{buttons[0].getSize().x + marginx, 400};
+  sf::Vector2f pos{buttons[0].getsize().x + marginx, 400};
   for (size_t i = 0; i < buttons.size(); i++) {
-    buttons[i].setPosition(pos);
-    pos.x += buttons[i].getSize().x + marginx;
+    buttons[i].setpos(pos);
+    pos.x += buttons[i].getsize().x + marginx;
   }
   // creating the namedboxes
   std::vector<sf::Vector2f> startposes = {{20, 20}, {700, 20}, {20, 300}, {700, 300}};
@@ -60,48 +60,47 @@ DraftState::DraftState(const Settings s) {
 //  adds it to the
 // dont ban -> sets current champ pointer to null, ads to the ban list, and moves phases
 // back button -> cleans up after himself (should be automatic) and pops the current state
-void DraftState::HandleEvents(StateManager &s, Renderer &renderer) {
-  // check if user clicked on an element, then do the task accordingly
-  for (sf::Event event{}; renderer.PollEvent(event);) {
-    if (event.type == sf::Event::Closed) {
-      s.exit();
-    } else if (event.type == sf::Event::MouseButtonPressed) {
-      std::cout << "[[INFO]] mouse clicked" << std::endl;
-      for (Button b : buttons) {
-        if (b.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y)) {
-          b.onclick(s);
-        }
-      }
-    }
-  }
-}
+
 void DraftTurn::doturn(Champion *c) {
   if (c == nullptr) {
     throw "nullptr";
   }
   champs.push_back(c);
 }
-void DraftState::Update(StateManager &s, Renderer &r) {
+void DraftState::HandleEvents(sf::Event &e) {
+  if (e.type == sf::Event::Closed) {
+    _state_manager.exit();
+  } else if (e.type == sf::Event::MouseButtonPressed) {
+    std::cout << "[[INFO]] mouse clicked" << std::endl;
+    for (UI::Button b : buttons) {
+      if (b.getglobalbounds().contains(e.mouseButton.x, e.mouseButton.y)) {
+        b.onclick(_state_manager);
+      }
+    }
+  }
+}
+void DraftState::Update() {
   // show ui components
   // check if its ban phase currently, only draw the ban button then, or make the ban button not do anything while its not banphase
   // update time elapsed
   // if elapsed time reaches a certain point, then act accordingly, either go back to menu, or ban nothing
-  sf::RenderWindow &w = r.getWindow();
-  sf::Color background_color = sf::Color(220, 225, 222);
-  w.clear(background_color);
-  for (size_t i = 0; i < buttons.size(); i++) {
-    buttons[i].draw_to_window(w);
-  }
-  for (size_t i = 0; i < columns.size(); i++) {
-    columns[i].draw_to_window(w);
-  }
+
   std::cout << "time: " << elapsedtime.getElapsedTime().asSeconds() << std::endl;
   if (elapsedtime.getElapsedTime().asSeconds() == 30) {
     // do turn move
     // turns[turn_counter++].doturn(selectedchamp);
     elapsedtime.restart();
   }
-  w.display();
+}
+void DraftState::Draw(sf::RenderWindow &window) {
+  sf::Color background_color = sf::Color(220, 225, 222);
+  window.clear(background_color);
+  for (size_t i = 0; i < buttons.size(); i++) {
+    buttons[i].draw_to_window(window);
+  }
+  for (size_t i = 0; i < columns.size(); i++) {
+    columns[i].draw_to_window(window);
+  }
 }
 
 void TeamCol::setpos() {
