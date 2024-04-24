@@ -11,17 +11,21 @@ Button::Button(sf::String str, std::function<void(StateManager &s)> onclick_, sf
   shape.setFillColor({33, 104, 105});
   shape.setSize({500, 120});
   text.setOrigin({text.getLocalBounds().width / 2, text.getLocalBounds().height / 2});
-  setpos(pos);
+  setposition(pos);
   onclick = onclick_;
 }
 
 void Button::settext(sf::String str) {
   text.setString(str);
 }
-void Button::setpos(sf::Vector2f pos) {
+void Button::setposition(sf::Vector2f pos) {
   shape.setOrigin(shape.getLocalBounds().width / 2.f, shape.getLocalBounds().height / 2.f);
   shape.setPosition(pos);
   updatetextpos();
+}
+void Button::draw(sf::RenderWindow &window) {
+  window.draw(shape);
+  window.draw(text);
 }
 void Button::updatetextpos() {
   text.setPosition(shape.getPosition().x - text.getLocalBounds().width / 2.f, shape.getPosition().y - text.getLocalBounds().height / 1.5f);
@@ -51,5 +55,19 @@ sf::Vector2f NamedBox::getsize() {
 
 void NamedBox::draw(sf::RenderWindow &w) {
   w.draw(_frame);
+  _label.setPosition(_frame.getPosition() + sf::Vector2f{5, 5});
   w.draw(_label);
 }
+
+void Grid::setelementspos() {
+  sf::Vector2f pos = _startpos;
+  for (size_t i = 0; i < _elements.size(); i++) {
+    _elements[i]->setposition(pos);
+    pos.x += _elements[i]->getsize().x + _margin.x;
+  }
+}
+
+void Grid::setelements(std::vector<GridElement *> elements) {
+  _elements = elements;
+}
+Grid::Grid(sf::Vector2f startpos, sf::Vector2f margin, sf::Vector2f direction) : _startpos(startpos), _margin(margin), _direction(direction) {}

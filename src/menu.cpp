@@ -23,7 +23,7 @@ MainState::MainState(StateManager &s) : MenuState(s) {
   float marginy = 20 + buttons[0].getsize().y / 2.f;
   sf::Vector2f pos{800 / 2.f, marginy};
   for (size_t i = 0; i < buttons.size(); i++) {
-    buttons[i].setpos(pos);
+    buttons[i].setposition(pos);
     pos.y += buttons[i].getsize().y / 2.f + marginy;
   }
 }
@@ -64,7 +64,7 @@ ModeSelectionState::ModeSelectionState(StateManager &s) : MenuState(s) {
   float marginy = 20 + buttons[0].getsize().y / 2.f;
   sf::Vector2f pos{800 / 2.f, marginy};
   for (size_t i = 0; i < buttons.size(); i++) {
-    buttons[i].setpos(pos);
+    buttons[i].setposition(pos);
     pos.y += buttons[i].getsize().y / 2.f + marginy;
   }
 }

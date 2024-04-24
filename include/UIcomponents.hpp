@@ -7,17 +7,26 @@
 #include <vector>
 // Todo: add UI namespace
 namespace UI {
-class Button {
+
+class GridElement {
+public:
+  virtual void draw(sf::RenderWindow &w) = 0;
+  virtual sf::Vector2f getsize() = 0;
+  virtual void setposition(sf::Vector2f pos) = 0;
+};
+class Button : public GridElement {
 public:
   Button() {}
   Button(
       sf::String str, std::function<void(StateManager &s)> onclick_ = [](StateManager &s) { std::cout << "onclick not implemented yet" << std::endl; },
       sf::Vector2f pos = {0, 0});
   void settext(sf::String str);
-  void setpos(sf::Vector2f pos);
+  void setposition(sf::Vector2f pos);
   void updatetextpos();
   void draw_to_window(sf::RenderWindow &w);
-  inline sf::Vector2f getsize() const {
+
+  virtual void draw(sf::RenderWindow &w);
+  inline sf::Vector2f getsize() {
     return shape.getSize();
   }
   inline sf::FloatRect getglobalbounds() const {
@@ -29,13 +38,10 @@ protected:
   sf::RectangleShape shape;
   sf::Text text;
 };
-
-class GridElements {
-public:
-  virtual void draw(sf::RenderWindow &w) = 0;
-};
-class TextBox : public GridElements {
+class TextBox : public GridElement {
   virtual void draw(sf::RenderWindow &w);
+  virtual void setposition(sf::Vector2f pos);
+  virtual sf::Vector2f getsize();
 
 private:
   sf::Text textbox;
@@ -44,8 +50,20 @@ private:
   int height;
   int limit;
 };
-// Todo: create namedtextbox component, which is basically a textbox which has a text component that is (by default) directly on top of textbox
-class NamedTextBox : public GridElements {
+class Grid {
+public:
+  Grid(sf::Vector2f startpos, sf::Vector2f margin, sf::Vector2f direction = {1, 0});
+  void setelements(std::vector<GridElement *> elements);
+  void setelementspos();
+  void draw(sf::RenderWindow &window);
+
+private:
+  std::vector<GridElement *> _elements;
+  sf::Vector2f _startpos;
+  sf::Vector2f _margin;
+  sf::Vector2f _direction;
+};
+class NamedTextBox : public GridElement {
 public:
   virtual void draw(sf::RenderWindow &w);
 
@@ -53,7 +71,7 @@ private:
   TextBox tb;
   sf::Text label;
 };
-class NamedBox : public GridElements {
+class NamedBox : public GridElement {
 public:
   NamedBox();
   NamedBox(sf::RectangleShape);
@@ -61,6 +79,7 @@ public:
   void setlabel(std::string l);
   void setframe(sf::RectangleShape);
   void setposition(sf::Vector2f pos);
+
   sf::Vector2f getsize();
   void draw(sf::RenderWindow &w);
 

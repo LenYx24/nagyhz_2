@@ -18,7 +18,7 @@ private:
 class DraftNamedBox : public UI::NamedBox {
 public:
   DraftNamedBox() {
-    _frame.setSize({50, 50});
+    _frame.setSize({100, 30});
     _frame.setFillColor(sf::Color::Red);
     _label.setString("Test");
   }
@@ -54,9 +54,10 @@ protected:
   Champion *selectedchamp;
   std::vector<TeamCol> columns;
   sf::Clock elapsedtime;
-  std::vector<DraftButton> buttons;
+  std::vector<DraftButton *> buttons;
   std::vector<DraftTurn> turns;
   size_t turn_counter;
+  sf::Text timer;
 };
 
 #endif

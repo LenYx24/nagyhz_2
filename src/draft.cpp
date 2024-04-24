@@ -7,7 +7,7 @@ void onclick_lockin(StateManager &s) {
 }
 DraftButton::DraftButton(Resources::Holder &h, sf::String str, std::function<void(StateManager &s)> onclick_) : Button(str, onclick_) {
   // menu button specific override settings
-  shape.setSize({200, 100});
+  shape.setSize({150, 70});
   text.setCharacterSize(15);
   text.setFont(h.get(Resources::Type::FONT));
 }
@@ -26,19 +26,24 @@ DraftState::DraftState(StateManager &state_manager, const Settings s) : State(st
   // create the UI components
 
   h.load(Resources::Type::FONT, "./fonts/Roboto.ttf");
-  buttons.push_back(DraftButton{h, "Lock in", onclick_lockin});
-  buttons.push_back(DraftButton{h, "Not banning"});
-  buttons.push_back(DraftButton{h, "back", onclick_back});
+  buttons.push_back(new DraftButton{h, "Lock in", onclick_lockin});
+  buttons.push_back(new DraftButton{h, "Don't ban", onclick_lockin});
+  buttons.push_back(new DraftButton{h, "back", onclick_lockin});
 
-  float marginx = 30;
-  std::cout << "marginx: " << marginx << std::endl;
-  sf::Vector2f pos{buttons[0].getsize().x + marginx, 400};
-  for (size_t i = 0; i < buttons.size(); i++) {
-    buttons[i].setpos(pos);
-    pos.x += buttons[i].getsize().x + marginx;
-  }
+  UI::Grid grid{{250, 275}, {5, 5}};
+  std::vector<UI::GridElement *> els(buttons.begin(), buttons.end());
+  grid.setelements(els);
+  grid.setelementspos();
+  std::cout << "asd " << std::endl;
+  // float marginx = 30;
+  // std::cout << "marginx: " << marginx << std::endl;
+  // sf::Vector2f pos{buttons[0]->getsize().x / 2.f + 50, 400};
+  // for (size_t i = 0; i < buttons.size(); i++) {
+  //   buttons[i]->setposition(pos);
+  //   pos.x += buttons[i]->getsize().x + marginx;
+  // }
   // creating the namedboxes
-  std::vector<sf::Vector2f> startposes = {{20, 20}, {700, 20}, {20, 300}, {700, 300}};
+  std::vector<sf::Vector2f> startposes = {{20, 5}, {700, 5}, {20, 300}, {700, 300}};
   for (size_t i = 0; i < 4; i++) {
     TeamCol c{startposes[i]};
     columns.push_back(c);
@@ -53,6 +58,8 @@ DraftState::DraftState(StateManager &state_manager, const Settings s) : State(st
   turn_counter = 0;
   elapsedtime.restart();
   selectedchamp = nullptr;
+  timer.setPosition({150, 150});
+  timer.setFont(h.get(Resources::Type::FONT));
 }
 // onclicks:
 // select champ -> shows the champ details on the small grid
@@ -72,9 +79,9 @@ void DraftState::HandleEvents(sf::Event &e) {
     _state_manager.exit();
   } else if (e.type == sf::Event::MouseButtonPressed) {
     std::cout << "[[INFO]] mouse clicked" << std::endl;
-    for (UI::Button b : buttons) {
-      if (b.getglobalbounds().contains(e.mouseButton.x, e.mouseButton.y)) {
-        b.onclick(_state_manager);
+    for (UI::Button *b : buttons) {
+      if (b->getglobalbounds().contains(e.mouseButton.x, e.mouseButton.y)) {
+        b->onclick(_state_manager);
       }
     }
   }
@@ -85,7 +92,9 @@ void DraftState::Update() {
   // update time elapsed
   // if elapsed time reaches a certain point, then act accordingly, either go back to menu, or ban nothing
 
-  std::cout << "time: " << elapsedtime.getElapsedTime().asSeconds() << std::endl;
+  std::string s = "Ido: ";
+  s += std::to_string(30 - (int)elapsedtime.getElapsedTime().asSeconds());
+  timer.setString(s);
   if (elapsedtime.getElapsedTime().asSeconds() == 30) {
     // do turn move
     // turns[turn_counter++].doturn(selectedchamp);
@@ -96,11 +105,12 @@ void DraftState::Draw(sf::RenderWindow &window) {
   sf::Color background_color = sf::Color(220, 225, 222);
   window.clear(background_color);
   for (size_t i = 0; i < buttons.size(); i++) {
-    buttons[i].draw_to_window(window);
+    buttons[i]->draw_to_window(window);
   }
   for (size_t i = 0; i < columns.size(); i++) {
     columns[i].draw_to_window(window);
   }
+  window.draw(timer);
 }
 
 void TeamCol::setpos() {
