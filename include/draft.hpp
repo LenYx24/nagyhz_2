@@ -64,7 +64,7 @@ protected:
   std::vector<TeamCol> columns;
   sf::Clock elapsedtime;
   std::vector<DraftButton *> buttons;
-  std::vector<ChampBox *> champlist;
+  std::vector<ChampBox*> champlist;
   std::vector<DraftTurn> turns;
   size_t turn_counter;
   sf::Text timer;

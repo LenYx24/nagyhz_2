@@ -3,8 +3,8 @@ void onclick_back(StateManager &s) {
   s.PopState();
 }
 
-void DraftState::lockin(StateManager& s){
-  if(selectedchamp != nullptr){
+void DraftState::lockin(StateManager &s) {
+  if (selectedchamp != nullptr) {
     turns[turn_counter++].doturn(selectedchamp);
   }
 }
@@ -28,9 +28,7 @@ DraftState::DraftState(StateManager &state_manager, const Settings s) : State(st
   // create the UI components
 
   h.load(Resources::Type::FONT, "./fonts/Roboto.ttf");
-  buttons.push_back(new DraftButton(h, "Lock in", [state=this](StateManager& s){
-    state->lockin(s);
-  }));
+  buttons.push_back(new DraftButton(h, "Lock in", [state = this](StateManager &s) { state->lockin(s); }));
   buttons.push_back(new DraftButton(h, "Don't ban", onclick_back));
   buttons.push_back(new DraftButton(h, "back", onclick_back));
 
@@ -62,8 +60,8 @@ DraftState::DraftState(StateManager &state_manager, const Settings s) : State(st
   DraftTurn p2{columns[1].champs};
   DraftTurn p1ban{columns[2].champs};
   DraftTurn p2ban{columns[3].champs};
-  //this->turns = std::vector<DraftTurn>{p1ban, p2ban, p1ban, p2ban, p1ban, p2ban, p1, p2, p2, p1, p1, p2, p1ban, p2ban, p1ban, p2ban, p2, p1, p1, p2};
-  
+  this->turns = std::vector<DraftTurn>{p1ban, p2ban, p1ban, p2ban, p1ban, p2ban, p1, p2, p2, p1, p1, p2, p1ban, p2ban, p1ban, p2ban, p2, p1, p1, p2};
+
   turn_counter = 0;
   elapsedtime.restart();
   selectedchamp = nullptr;
@@ -84,9 +82,7 @@ void DraftTurn::doturn(Champion *c) {
   champs.push_back(c);
 }
 DraftState::~DraftState() {
-  for (size_t i = 0; i < champlist.size(); i++) {
-    delete champlist[i];
-  }
+  champlist.clear();
 }
 void DraftState::HandleEvents(sf::Event &e) {
   if (e.type == sf::Event::Closed) {
@@ -98,10 +94,10 @@ void DraftState::HandleEvents(sf::Event &e) {
         b->onclick(_state_manager);
       }
     }
-    for (ChampBox *b : champlist) {
-      if (b->getglobalbounds().contains(e.mouseButton.x, e.mouseButton.y)) {
-        selectedchamp = b->champ;
-      }
+    for (size_t i = 0; i < champlist.size(); i++) {
+        if (champlist[i]->getglobalbounds().contains(e.mouseButton.x, e.mouseButton.y)) {
+          selectedchamp = champlist[i]->champ;
+        }
     }
   }
 }
@@ -120,8 +116,8 @@ void DraftState::Update() {
     elapsedtime.restart();
   }
   for (size_t i = 0; i < champlist.size(); i++) {
-      champlist[i]->setlabelcolor(sf::Color::Black);
-    }
+    champlist[i]->setlabelcolor(sf::Color::Black);
+  }
 }
 void DraftState::Draw(sf::RenderWindow &window) {
   sf::Color background_color = sf::Color(220, 225, 222);
@@ -133,8 +129,8 @@ void DraftState::Draw(sf::RenderWindow &window) {
     columns[i].draw_to_window(window);
   }
   for (size_t i = 0; i < champlist.size(); i++) {
-    if(selectedchamp == champlist[i]->champ){
-      champlist[i]->setlabelcolor({100,100,100});
+    if (selectedchamp == champlist[i]->champ) {
+      champlist[i]->setlabelcolor({100, 100, 100});
     }
     champlist[i]->draw(window);
   }
@@ -153,18 +149,18 @@ void TeamCol::setpos() {
   }
 }
 
-TeamCol::TeamCol(Resources::Holder &h,sf::Vector2f startpos,int margin) {
+TeamCol::TeamCol(Resources::Holder &h, sf::Vector2f startpos, int margin) {
   this->startpos = startpos;
   this->margin = margin;
   for (size_t i = 0; i < 5; i++) {
-    elements.push_back(DraftNamedBox{h,""});
+    elements.push_back(DraftNamedBox{h, ""});
     elements[i].setcharsize(12);
   }
 }
 
 void TeamCol::draw_to_window(sf::RenderWindow &w) {
   for (size_t i = 0; i < elements.size(); i++) {
-    if(i < champs.size()){
+    if (i < champs.size()) {
       elements[i].setlabel(champs[i]->getname());
     }
     elements[i].draw(w);
