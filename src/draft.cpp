@@ -1,8 +1,6 @@
 #include "../include/draft.hpp"
 void onclick_back(StateManager &s) {
-  std::cout << "hello" << std::endl;
   s.PopState();
-  std::cout << "hello" << std::endl;
 }
 
 void DraftState::lockin(StateManager& s){
@@ -64,7 +62,7 @@ DraftState::DraftState(StateManager &state_manager, const Settings s) : State(st
   DraftTurn p2{columns[1].champs};
   DraftTurn p1ban{columns[2].champs};
   DraftTurn p2ban{columns[3].champs};
-  this->turns = std::vector<DraftTurn>{p1ban, p2ban, p1ban, p2ban, p1ban, p2ban, p1, p2, p2, p1, p1, p2, p1ban, p2ban, p1ban, p2ban, p2, p1, p1, p2};
+  //this->turns = std::vector<DraftTurn>{p1ban, p2ban, p1ban, p2ban, p1ban, p2ban, p1, p2, p2, p1, p1, p2, p1ban, p2ban, p1ban, p2ban, p2, p1, p1, p2};
   
   turn_counter = 0;
   elapsedtime.restart();
