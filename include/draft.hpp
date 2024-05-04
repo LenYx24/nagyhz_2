@@ -8,26 +8,27 @@
 #include <vector>
 class DraftTurn {
 public:
-  DraftTurn(std::list<Champion *> &champs) : champs(champs) {}
+  DraftTurn(std::vector<Champion *> &champs) : champs(champs) {}
   void doturn(Champion *c);
 
 private:
-  std::list<Champion *> &champs;
+  std::vector<Champion *> &champs;
 };
 
 class DraftNamedBox : public UI::NamedBox {
 public:
-  DraftNamedBox(std::string) {
+  DraftNamedBox(Resources::Holder &h, std::string):NamedBox(h) {
     _frame.setSize({100, 30});
     _frame.setFillColor(sf::Color::Red);
     _label.setString("Test");
+// doesnt show its text
   }
 };
 class TeamCol {
 public:
-  TeamCol(sf::Vector2f startpos, int margin = 10);
+  TeamCol(Resources::Holder &h,sf::Vector2f startpos,int margin = 10);
   void setpos();
-  std::list<Champion *> champs;
+  std::vector<Champion *> champs;
   void draw_to_window(sf::RenderWindow &w);
 
 protected:
@@ -37,6 +38,7 @@ protected:
 };
 class DraftButton : public UI::Button {
 public:
+// Todo: static fgv, ami visszaad egy draftbutton stílusú gombot
   DraftButton(
       Resources::Holder &h, sf::String str, std::function<void(StateManager &s)> onclick = [](StateManager &s) { std::cout << "not impl" << std::endl; });
 };
@@ -53,6 +55,7 @@ public:
   void HandleEvents(sf::Event &e);
   void Update();
   void Draw(sf::RenderWindow &window);
+  void lockin(StateManager& s);
 
 protected:
   Resources::Holder h;

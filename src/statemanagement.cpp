@@ -26,9 +26,11 @@ void StateManager::HandleEvents(sf::RenderWindow &w) {
     states.top()->HandleEvents(e);
 }
 void StateManager::Update() {
-  states.top()->Update();
+  if(!states.empty()) // need to check this, because I didn't implemented the feature, that only changes state at the end of the main loop
+    states.top()->Update();
 }
 void StateManager::Draw(sf::RenderWindow &window) {
+  if(!states.empty())
   states.top()->Draw(window);
   window.display();
 }

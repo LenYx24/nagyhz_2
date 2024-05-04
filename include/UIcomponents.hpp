@@ -75,7 +75,9 @@ private:
 };
 class NamedBox : public GridElement {
 public:
-  NamedBox() {}
+  NamedBox(Resources::Holder &h) {
+    _label.setFont(h.get(Resources::Type::FONT));
+  }
   NamedBox(std::string label, sf::RectangleShape frame, Resources::Holder &h);
   void setlabel(std::string l);
   void setframe(sf::RectangleShape);

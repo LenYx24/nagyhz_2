@@ -47,6 +47,10 @@ void NamedBox::setcharsize(int size) {
 void NamedBox::setlabelcolor(const sf::Color &c) {
   _label.setFillColor(c);
 }
+  void NamedBox::setlabel(std::string l){
+    _label.setString(l);
+  }
+
 void NamedBox::setposition(sf::Vector2f pos) {
   _frame.setPosition(pos);
 }
