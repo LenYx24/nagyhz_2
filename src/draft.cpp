@@ -1,6 +1,8 @@
 #include "../include/draft.hpp"
 void onclick_back(StateManager &s) {
+  std::cout << "hello" << std::endl;
   s.PopState();
+  std::cout << "hello" << std::endl;
 }
 
 void DraftState::lockin(StateManager& s){

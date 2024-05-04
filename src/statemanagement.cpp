@@ -31,7 +31,7 @@ void StateManager::Update() {
 }
 void StateManager::Draw(sf::RenderWindow &window) {
   if(!states.empty())
-  states.top()->Draw(window);
+    states.top()->Draw(window);
   window.display();
 }
 
