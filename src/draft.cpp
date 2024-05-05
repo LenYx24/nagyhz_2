@@ -6,6 +6,12 @@ void onclick_back(StateManager &s) {
 void DraftState::lockin(StateManager &s) {
   if (selectedchamp != nullptr) {
     turns[turn_counter++].doturn(selectedchamp);
+    std::vector<ChampBox*>::iterator it = champlist.begin();
+    for(;it != champlist.end();it++){
+      if((*it)->champ->getname() == selectedchamp->getname()){
+        champlist.erase(it);
+      }
+    }
   }
 }
 DraftButton::DraftButton(Resources::Holder &h, sf::String str, std::function<void(StateManager &s)> onclick_) : Button(str, onclick_) {

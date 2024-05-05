@@ -5,6 +5,7 @@ linuxbuild/*
 build/*
 docs/*
 out/*
+test/_deps/*
 .cache
 .idea
 .vs
