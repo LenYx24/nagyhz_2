@@ -1,6 +1,11 @@
 #include "../include/game.hpp"
-
-GameState::GameState(StateManager &state_manager, std::vector<Champion*> p1champs,std::vector<Champion*> p2champs, GameMode mode) : State(state_manager),map(std::make_unique<Map>()) {
+GameButton::GameButton(Resources::Holder &h, sf::String str, std::function<void(StateManager &s)> onclick_) : Button(str, onclick_) {
+  // menu button specific override settings
+  shape.setSize({150, 70});
+  text.setCharacterSize(15);
+  text.setFont(h.get(Resources::Type::FONT));
+}
+GameState::GameState(StateManager &state_manager, std::vector<Champion*> p1champs,std::vector<Champion*> p2champs, GameMode mode) : State(state_manager),map(std::make_unique<Map>(sf::Vector2f{150,10})) {
   // load items from the file and save them to the allitems variable
   std::cout << "hello"<<std::endl;
   iofile inp("examples/items.txt");
@@ -18,6 +23,8 @@ GameState::GameState(StateManager &state_manager, std::vector<Champion*> p1champ
   players.push_back(new Player{p2champs});
   std::cout << "init done" << std::endl;
   // create the UI components:
+  buttons.push_back(new GameButton(h, "Lock in", [state = this](StateManager &s) { state->rounds[0].roundend(); }));
+  buttons.push_back(new GameButton(h, "back", [](StateManager &s) { s.PopState(); }));
   // create selected champ panel, with stats and items
   // list the moves as buttons, and the end round button
   // show a label, that shows the current points for the player
@@ -27,8 +34,9 @@ GameState::GameState(StateManager &state_manager, std::vector<Champion*> p1champ
 
   // set timer
   elapsedtime.restart();
-  timer.setPosition({150, 40});
+  timer.setPosition({40, 40});
   timer.setFont(h.get(Resources::Type::FONT));
+  timer.setCharacterSize(10);
   // start a round
   // seed the random generator
 }
@@ -57,33 +65,36 @@ void onclick_item() {
   // check if there's currently a selected champion
   // tries to add the item to the champion (the checks are made by the champion class)
 }
+void Round::roundend(){}
 void GameState::HandleEvents(sf::Event &e) {
   // check if user clicked on an element, then do the task accordingly
   if (e.type == sf::Event::Closed) {
     _state_manager.exit();
   } else if (e.type == sf::Event::MouseButtonPressed) {
-    for (UI::Button b : buttons) {
-      if (b.getglobalbounds().contains(e.mouseButton.x, e.mouseButton.y)) {
-        b.onclick(_state_manager);
+    for (GameButton *b : buttons) {
+      if (b->getglobalbounds().contains(e.mouseButton.x, e.mouseButton.y)) {
+        b->onclick(_state_manager);
       }
     }
   }
 }
 void GameState::Update() {
-  // if a champion is not selected, then dont show move buttons, and items, and selected info
-  // if a champ is selected, show moves, and stats
-  // if a champ is selected and is on its base cell, then show items
-
   // update time elapsed
-  // if elapsed time reaches a certain point, then act accordingly => end turn
+  std::string s = "Ido: ";
+  s += std::to_string(30 - (int)elapsedtime.getElapsedTime().asSeconds());
+  timer.setString(s);
+  if ((int)elapsedtime.getElapsedTime().asSeconds() == 30) {
+    elapsedtime.restart();
+    // end turn
+  }
 }
 void GameState::Draw(sf::RenderWindow &window) {
   sf::Color background_color = sf::Color(220, 225, 222);
   window.clear(background_color);
   for (size_t i = 0; i < buttons.size(); i++) {
-    buttons[i].draw_to_window(window);
+    buttons[i]->draw_to_window(window);
   }
-  
+  this->map->draw(window);
   window.draw(timer);
 }
 GameState::~GameState(){

@@ -4,9 +4,7 @@ void onclick_back(StateManager &s) {
 }
 
 void DraftState::lockin(StateManager &s) {
-  if(champlist.size() == 0){
-    s.PopState();
-  }
+  elapsedtime.restart();
   if (selectedchamp != nullptr) {
     turns[turn_counter++].doturn(selectedchamp);
     std::vector<ChampBox*>::iterator it = champlist.begin();
@@ -25,6 +23,7 @@ void DraftState::lockin(StateManager &s) {
   }
 }
 void DraftState::dontban(StateManager &s) {
+  elapsedtime.restart();
   // todo: check if its banphase or not, and only do that
   if(turns[turn_counter].isbanphase())
     turns[turn_counter++].doturn(emptychamp);
@@ -110,15 +109,15 @@ void DraftState::HandleEvents(sf::Event &e) {
     _state_manager.exit();
   } else if (e.type == sf::Event::MouseButtonPressed) {
     std::cout << "[[INFO]] mouse clicked" << std::endl;
-    for (UI::Button *b : buttons) {
-      if (b->getglobalbounds().contains(e.mouseButton.x, e.mouseButton.y)) {
-        b->onclick(_state_manager);
-      }
-    }
     for (size_t i = 0; i < champlist.size(); i++) {
         if (champlist[i]->getglobalbounds().contains(e.mouseButton.x, e.mouseButton.y)) {
           selectedchamp = champlist[i]->champ;
         }
+    }
+    for (UI::Button *b : buttons) {
+      if (b->getglobalbounds().contains(e.mouseButton.x, e.mouseButton.y)) {
+        b->onclick(_state_manager);
+      }
     }
   }
 }
@@ -134,6 +133,9 @@ void DraftState::Update() {
     //std::cout << "err1" << std::endl;
     champlist[i]->setlabelcolor(sf::Color::Black);
     //std::cout << "err1" << std::endl;
+  }
+  if(champlist.size() == 0){
+    _state_manager.PopState();
   }
 }
 void DraftState::Draw(sf::RenderWindow &window) {

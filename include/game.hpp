@@ -34,6 +34,12 @@ public:
 private:
   Turn turns[2];
 };
+class GameButton : public UI::Button {
+public:
+// Todo: static fgv, ami visszaad egy draftbutton stílusú gombot
+  GameButton(
+      Resources::Holder &h, sf::String str, std::function<void(StateManager &s)> onclick = [](StateManager &s) { std::cout << "not impl" << std::endl; });
+};
 class GameState : public State {
 public:
   GameState(StateManager &state_manager, std::vector<Champion *> p1champs,std::vector<Champion *> p2champs, GameMode mode);
@@ -54,7 +60,7 @@ protected:
   GameMove *selectedmove;
   std::vector<Round> rounds;
   // UI
-  std::vector<UI::Button> buttons;
+  std::vector<GameButton*> buttons;
   std::unique_ptr<Map> map;
   // timer
   sf::Text timer;
