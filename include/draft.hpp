@@ -4,15 +4,17 @@
 #include "gameobjects.hpp"
 #include "resources.hpp"
 #include "statemanagement.hpp"
+#include "game.hpp"
 #include <list>
 #include <vector>
 class DraftTurn {
 public:
-  DraftTurn(std::vector<Champion *> &champs) : champs(champs) {}
+  DraftTurn(std::vector<Champion *> &champs,bool banphase = false) : champs(champs),banphase(banphase) {}
   void doturn(Champion *c);
-
+  bool isbanphase()const{return banphase;}
 private:
   std::vector<Champion *> &champs;
+  bool banphase;
 };
 
 class DraftNamedBox : public UI::NamedBox {
@@ -20,8 +22,7 @@ public:
   DraftNamedBox(Resources::Holder &h, std::string):NamedBox(h) {
     _frame.setSize({100, 30});
     _frame.setFillColor(sf::Color::Red);
-    _label.setString("Test");
-// doesnt show its text
+    _label.setString("");
   }
 };
 class TeamCol {
@@ -56,6 +57,7 @@ public:
   void Update();
   void Draw(sf::RenderWindow &window);
   void lockin(StateManager& s);
+  void dontban(StateManager& s);
 
 protected:
   Resources::Holder h;
@@ -65,6 +67,7 @@ protected:
   sf::Clock elapsedtime;
   std::vector<DraftButton *> buttons;
   std::vector<ChampBox*> champlist;
+  Champion *emptychamp;
   std::vector<DraftTurn> turns;
   size_t turn_counter;
   sf::Text timer;

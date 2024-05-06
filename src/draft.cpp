@@ -4,15 +4,30 @@ void onclick_back(StateManager &s) {
 }
 
 void DraftState::lockin(StateManager &s) {
+  if(champlist.size() == 0){
+    s.PopState();
+  }
   if (selectedchamp != nullptr) {
     turns[turn_counter++].doturn(selectedchamp);
     std::vector<ChampBox*>::iterator it = champlist.begin();
     for(;it != champlist.end();it++){
       if((*it)->champ->getname() == selectedchamp->getname()){
         champlist.erase(it);
+        break;
       }
     }
+    selectedchamp = nullptr;
   }
+  //std::cout << "turn counter: " << turn_counter << std::endl;
+  if(turn_counter == 20){
+    GameMode m = GameMode::THEMSELVES;
+    _state_manager.PushState(std::make_unique<GameState>(s,columns[0].champs,columns[1].champs,m));
+  }
+}
+void DraftState::dontban(StateManager &s) {
+  // todo: check if its banphase or not, and only do that
+  if(turns[turn_counter].isbanphase())
+    turns[turn_counter++].doturn(emptychamp);
 }
 DraftButton::DraftButton(Resources::Holder &h, sf::String str, std::function<void(StateManager &s)> onclick_) : Button(str, onclick_) {
   // menu button specific override settings
@@ -31,11 +46,14 @@ DraftState::DraftState(StateManager &state_manager, const Settings s) : State(st
   if (allchamps.size() < 10) {
     throw "Not enough champions listed in the file, you need at least 10 champions to play!";
   }
+  // create the placeholder empty champ
+  emptychamp = new Champion;
+  emptychamp->setname("empty");
   // create the UI components
 
   h.load(Resources::Type::FONT, "./fonts/Roboto.ttf");
   buttons.push_back(new DraftButton(h, "Lock in", [state = this](StateManager &s) { state->lockin(s); }));
-  buttons.push_back(new DraftButton(h, "Don't ban", onclick_back));
+  buttons.push_back(new DraftButton(h, "Don't ban", [state = this](StateManager &s) { state->dontban(s); }));
   buttons.push_back(new DraftButton(h, "back", onclick_back));
 
   UI::Grid grid{{250, 500}, {5, 5}};
@@ -64,14 +82,14 @@ DraftState::DraftState(StateManager &state_manager, const Settings s) : State(st
   }
   DraftTurn p1{columns[0].champs};
   DraftTurn p2{columns[1].champs};
-  DraftTurn p1ban{columns[2].champs};
-  DraftTurn p2ban{columns[3].champs};
+  DraftTurn p1ban{columns[2].champs,true};
+  DraftTurn p2ban{columns[3].champs,true};
   this->turns = std::vector<DraftTurn>{p1ban, p2ban, p1ban, p2ban, p1ban, p2ban, p1, p2, p2, p1, p1, p2, p1ban, p2ban, p1ban, p2ban, p2, p1, p1, p2};
 
   turn_counter = 0;
   elapsedtime.restart();
   selectedchamp = nullptr;
-  timer.setPosition({150, 150});
+  timer.setPosition({150, 40});
   timer.setFont(h.get(Resources::Type::FONT));
 }
 // onclicks:
@@ -82,9 +100,6 @@ DraftState::DraftState(StateManager &state_manager, const Settings s) : State(st
 // back button -> cleans up after himself (should be automatic) and pops the current state
 
 void DraftTurn::doturn(Champion *c) {
-  if (c == nullptr) {
-    throw "nullptr";
-  }
   champs.push_back(c);
 }
 DraftState::~DraftState() {
@@ -108,21 +123,17 @@ void DraftState::HandleEvents(sf::Event &e) {
   }
 }
 void DraftState::Update() {
-  // show ui components
-  // check if its ban phase currently, only draw the ban button then, or make the ban button not do anything while its not banphase
-  // update time elapsed
-  // if elapsed time reaches a certain point, then act accordingly, either go back to menu, or ban nothing
-
   std::string s = "Ido: ";
   s += std::to_string(30 - (int)elapsedtime.getElapsedTime().asSeconds());
   timer.setString(s);
   if ((int)elapsedtime.getElapsedTime().asSeconds() == 30) {
-    // do turn move
-    // turns[turn_counter++].doturn(selectedchamp);
+    turns[turn_counter++].doturn(selectedchamp);
     elapsedtime.restart();
   }
   for (size_t i = 0; i < champlist.size(); i++) {
+    //std::cout << "err1" << std::endl;
     champlist[i]->setlabelcolor(sf::Color::Black);
+    //std::cout << "err1" << std::endl;
   }
 }
 void DraftState::Draw(sf::RenderWindow &window) {
@@ -135,10 +146,12 @@ void DraftState::Draw(sf::RenderWindow &window) {
     columns[i].draw_to_window(window);
   }
   for (size_t i = 0; i < champlist.size(); i++) {
+    //std::cout << "err2" << std::endl;
     if (selectedchamp == champlist[i]->champ) {
       champlist[i]->setlabelcolor({100, 100, 100});
     }
     champlist[i]->draw(window);
+    //std::cout << "err2" << std::endl;
   }
   window.draw(timer);
 }

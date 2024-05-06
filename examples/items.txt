@@ -1,0 +1,2 @@
+liandry;20;20
+berserker;30;10

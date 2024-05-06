@@ -5,6 +5,7 @@
 
 class Ireadstring {
 public:
+  virtual ~Ireadstring();
   virtual void readfromstring(std::string &line, const char delimiter = ';') = 0;
 };
 // this interface should be inherited by classes that need to put out their data/results

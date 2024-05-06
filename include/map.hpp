@@ -10,17 +10,25 @@ public:
   bool updateVision();
   // returns true, if the 
   virtual void canbuyitems() = 0;
-  virtual bool canmovehere() = 0;
+  virtual bool canmovehere(){return canmove;}
   // sets the current cell to a highlighted color, to indicate it's clickable
-  virtual void sethighlighted() =0;
+  virtual void sethighlighted() = 0;
+  void setpos(sf::Vector2f pos);
 
 protected:
   std::vector<Entity> entities;
+  bool canmove;
   sf::Color color;
   sf::Vector2f position; // basically the index + 1 coordinates of the cell, it's useful if we want to calculate things
 };
 // the basic cell type, that can be moved on by the player
-class Ground : public Cell {};
+class Ground : public Cell {
+public:
+  Ground();
+  bool updateVision();
+  virtual void canbuyitems();
+  virtual void sethighlighted();
+};
 // the only difference is that it has another color, but in the future there could be more unique things to it
 class River : public Ground {};
 // can't be moved on to by the player
@@ -32,9 +40,10 @@ class BlueSpawnArea : public Ground {};
 class RedSpawnArea : public Ground {};
 // Todo: make map zoomable
 class Map {
-  void createmap();
+public:
+  Map();
   // frees every cell on the map
-  void destroymap();
+  ~Map();
   // tells every cell to draw its contents to the screen
   void draw();
   // checks on every cell, if there are certain entities that can interact
@@ -44,7 +53,8 @@ class Map {
   Cell *getnearbycells(sf::Vector2f pos, int distance = 1);
 
 protected:
-  Cell *cells[32][32];
+sf::Vector2f size = {20,20};
+  Cell ***cells;
 };
 
 #endif

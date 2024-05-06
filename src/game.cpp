@@ -1,8 +1,22 @@
 #include "../include/game.hpp"
 
-GameState::GameState(StateManager &state_manager, Champion *allchamps[10], GameMode mode) : State(state_manager) {
+GameState::GameState(StateManager &state_manager, std::vector<Champion*> p1champs,std::vector<Champion*> p2champs, GameMode mode) : State(state_manager),map(std::make_unique<Map>()) {
   // load items from the file and save them to the allitems variable
+  std::cout << "hello"<<std::endl;
+  iofile inp("examples/items.txt");
+  for (std::string line; std::getline(inp.getfile(), line);) {
+    Item item;
+    item.readfromstring(line);
+    allitems.push_back(item);
+  }
+  // set gamemode
+  _mode = mode;
   // load font
+  h.load(Resources::Type::FONT, "./fonts/Roboto.ttf");
+  // create players
+  players.push_back(new Player{p1champs});
+  players.push_back(new Player{p2champs});
+  std::cout << "init done" << std::endl;
   // create the UI components:
   // create selected champ panel, with stats and items
   // list the moves as buttons, and the end round button
@@ -11,6 +25,10 @@ GameState::GameState(StateManager &state_manager, Champion *allchamps[10], GameM
   // create a map, with create_map method, with the basic entities on it
   // create the items panel, and list all the items
 
+  // set timer
+  elapsedtime.restart();
+  timer.setPosition({150, 40});
+  timer.setFont(h.get(Resources::Type::FONT));
   // start a round
   // seed the random generator
 }
@@ -55,12 +73,21 @@ void GameState::Update() {
   // if a champion is not selected, then dont show move buttons, and items, and selected info
   // if a champ is selected, show moves, and stats
   // if a champ is selected and is on its base cell, then show items
-  // show ui components
 
-  //
   // update time elapsed
   // if elapsed time reaches a certain point, then act accordingly => end turn
 }
 void GameState::Draw(sf::RenderWindow &window) {
-  // draw
+  sf::Color background_color = sf::Color(220, 225, 222);
+  window.clear(background_color);
+  for (size_t i = 0; i < buttons.size(); i++) {
+    buttons[i].draw_to_window(window);
+  }
+  
+  window.draw(timer);
+}
+GameState::~GameState(){
+  for(size_t i = 0; i < players.size(); i++){
+    delete players[i];
+  }
 }

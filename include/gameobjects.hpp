@@ -15,6 +15,7 @@ struct Stat {
 };
 class Entity {
 public:
+  virtual ~Entity(){}
   Entity(std::string name = "");
   // resets its hp to full
   virtual void spawn() = 0;
@@ -37,6 +38,8 @@ protected:
   sf::Color color;
 };
 class Effect {
+  double getbonusdmg()const{return bonusdmg;}
+  double getbonushp()const{return bonushp;}
 private:
   double bonusdmg;
   double bonushp;
@@ -45,8 +48,12 @@ class Buff : public Effect {
   // a buff is a kind of effect given by slaying a monster, which could have a timer on it, that shows how long its active
 };
 class Item : public Effect {
+public:
+  void readfromstring(std::string &line, const char delimiter=';');
+  int get_gold_value()const{return gold_value;}
 private:
   int gold_value;
+  std::string name;
   // extra props:
   // is it a percentage bonus, or direct value
   // callback fnc, that does something to its champion, or on the map
@@ -64,10 +71,12 @@ public:
   // if thats true, then check if the champion has enough gold to buy the item
   // checks if the champions inventory is not full
   bool add_item(Item *item);
+  void setname(std::string name);
   void update_vision();
   std::string getname() const {
     return name;
   }
+  ~Champion(){}
 
   void readfromstring(std::string &line, const char delimiter = ';');
 
@@ -133,11 +142,12 @@ protected:
 };
 class Player {
 public:
+  Player(std::vector<Champion*> champs);
   // loops through its champions and instructs them to do the moves
   void domoves();
 
 private:
-  Champion champs[5];
+  std::vector<Champion*> champs;
   Side side;
 };
 #endif
