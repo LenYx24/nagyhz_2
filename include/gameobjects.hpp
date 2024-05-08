@@ -87,18 +87,19 @@ public:
   bool add_item(Item *item);
   void setname(std::string name);
   void update_vision();
-  inline void seticon(char c){
-    icon.setString(c); 
-  //TODO: setfont
-  }
-  std::string getname() const {
-    return name;
-  }
+  inline void seticon(char c){icon.setString(c);}
+  std::string getname() const {return name;}
   virtual bool clicked(const int, const int);
   ~Champion(){}
   void setfont(Resources::Holder &h);
   void readfromstring(std::string &line, const char delimiter = ';');
   virtual void draw(sf::RenderWindow &w, sf::Vector2f pos);
+  int getmovepoints()const{return movepoints;}
+  bool canmove(int p){
+    bool b = movepoints-p>=0;
+    if(b)movepoints-=p; 
+    return b;
+  }
 
 private:
   inline bool enough_gold(int gold){return this->gold >= gold;} // returns true, if the champion has more or the same gold given in the arguments
@@ -118,6 +119,8 @@ private:
   int wards;          // starts from 0, goes to the max value of 2
   int wards_max;      // default is 2
   int wards_cooldown; // default should be 4 rounds
+
+  int movepoints;
   sf::Text icon;
   // exra props:
   // role (enum)
@@ -176,6 +179,8 @@ public:
   void setspawnpoint(sf::Vector2f point){spawnpoint = point;}
   void setchampicons(const std::string &icons);
   void setfont(Resources::Holder& h);
+  bool isgamemoveactive();
+  void setgamemoveactive(bool b);
   // loops through its champions and instructs them to do the moves
   void domoves();
   bool ishischamp(Champion *c);
@@ -185,6 +190,7 @@ public:
 private:
   std::vector<Champion*> champs;
   Side side;
+  bool gamemoveactive;
   sf::Vector2f spawnpoint;
 };
 #endif

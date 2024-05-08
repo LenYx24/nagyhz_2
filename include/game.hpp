@@ -55,6 +55,10 @@ public:
   void Draw();
 
   void onclick_gamemove();
+  void onclick_attack();
+  void onclick_base();
+  void onclick_ward();
+  void onclick_item();
   // void nextplayer();
   // Player *getcurrentplayer();
 

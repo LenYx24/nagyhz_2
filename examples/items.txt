@@ -1,2 +1,4 @@
 liandry;400;20;20
 berserker;500;30;10
+ninja tabis;200;30;0
+doran's ring;100;20;5

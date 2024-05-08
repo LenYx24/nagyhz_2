@@ -50,6 +50,7 @@ void Item::readfromstring(std::string &line, const char delimiter) {
 }
 Player::Player(std::vector<Champion*> champs){
   this->champs = champs;
+  gamemoveactive = false;
 }
 
 void Entity::draw(sf::RenderWindow &w, sf::Vector2f pos){
@@ -126,6 +127,7 @@ Nexus::Nexus(){
   shape.setFillColor(sf::Color{100,50,88});
 }
 bool Player::ishischamp(Champion *c){
+  if(c == nullptr)return false;
   for(size_t i = 0; i < champs.size(); i++){
     if(champs[i]->getname() == c->getname())return true;
   }
@@ -135,5 +137,12 @@ Champion *Player::getselectedchamp(sf::Vector2f index){
   for(size_t i = 0; i < champs.size(); i++){
     if(champs[i]->getcell()->getindex() == index)return champs[i];
   }
+  std::cout << "returned nullptr as selected champ" << std::endl;
   return nullptr;
+}
+bool Player::isgamemoveactive(){
+  return gamemoveactive;
+}
+void Player::setgamemoveactive(bool b){
+  gamemoveactive = b;
 }

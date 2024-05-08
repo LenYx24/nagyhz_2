@@ -16,8 +16,15 @@ void Cell::updateVision() {
 bool Cell::canbuyitems() {
   return true;
 }
+void Cell::resetcolor(){
+  sf::Color c = shape.getFillColor();
+  c.a = 255;
+  shape.setFillColor(c);
+}
 void Cell::sethighlighted() {
-  this->color.a = 100;
+  sf::Color c = shape.getFillColor();
+  c.a = 100;
+  shape.setFillColor(c);
 }
 void Cell::draw(sf::RenderWindow &w) {
   w.draw(shape);
@@ -183,6 +190,41 @@ Entity* Cell::getentitiyclicked(const int x, const int y){
   }
   return nullptr;
 }
+std::vector<Cell*> Map::getnearbycells(sf::Vector2f pos, int distance){
+  std::vector<Cell *> around;
+  std::cout << "searching for nearby cells" << std::endl;
+  std::cout << "pos: " << pos.x << ":" << pos.y << std::endl;
+  for(int i = pos.x-distance; i <= pos.x+distance; i++){
+    std::cout << "i: " << i << std::endl;
+    if(inboundsrow(i)){
+      for(int j = pos.y-distance; j <= pos.y+distance; j++){
+        std::cout << "j: " << j << std::endl;
+        if(inboundscol(j) && cells[i][j] != nullptr){
+          std::cout << "cell added at: i: " << i << " j: " << j << std::endl;
+          around.push_back(cells[i][j]);
+        }
+      }
+    }
+    
+  }
+  return around;
+}
 void Map::setselectednearbycells(Champion *c){
   sf::Vector2f index = c->getcell()->getindex();
+  std::vector<Cell *> nearbycells = getnearbycells(index);
+  for(size_t i = 0; i < nearbycells.size(); i++){
+    nearbycells[i]->setselected();
+  }
+}
+void Cell::setselected(){
+  sethighlighted();
+  selected = true;
+}
+
+void Map::resetcolors(){
+  for(size_t i = 0; i < size.x; i++){
+    for(size_t j = 0; j < size.y; j++){
+      cells[i][j]->resetcolor();
+    }
+  }
 }
