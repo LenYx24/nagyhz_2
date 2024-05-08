@@ -8,3 +8,7 @@ yasuo;18;5;30;5
 yone;32;4;24;3
 zoe;28;3;15;4
 hwei;19;5;22;5
+ezreal;20;4;30;2
+irelia;19;5;23;4
+skarner;20;4;22;2
+miss fortune;15;5;15;5

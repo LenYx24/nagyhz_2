@@ -11,7 +11,7 @@ class SimulationState : public State {
   ~SimulationState() {}
   virtual void HandleEvents(sf::Event &e);
   virtual void Update();
-  virtual void Draw(sf::RenderWindow &window);
+  virtual void Draw();
 
   void doOneMove();
 
@@ -19,7 +19,7 @@ protected:
   Resources::Holder h;
   std::vector<Player> players;
   Map *map;
-  std::vector<Button> buttons;
+  std::vector<UI::Button> buttons;
   sf::Time elapsed_time;
   sf::Time oneturn_time; // the amount of time the current turn that was done is shown
 };

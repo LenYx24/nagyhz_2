@@ -17,7 +17,7 @@ public:
 
   virtual void HandleEvents(sf::Event &e);
   virtual void Update();
-  virtual void Draw(sf::RenderWindow &window);
+  virtual void Draw();
 
 protected:
   std::vector<UI::Button> buttons;

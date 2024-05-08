@@ -10,13 +10,13 @@
 int main() {
   // Todo: remove try catch block, and only put it where its needed
   try {
-    StateManager state_manager;
-    sf::RenderWindow window = sf::RenderWindow{sf::VideoMode{800, 600}, "lolmacrogame"};
+    sf::RenderWindow window = sf::RenderWindow{sf::VideoMode{1280,800}, "lolmacrogame"};
+    StateManager state_manager{window};
     state_manager.PushState(std::make_unique<Menu::MainState>(state_manager));
     while (state_manager.hasState()) {
-      state_manager.HandleEvents(window);
+      state_manager.HandleEvents();
       state_manager.Update();
-      state_manager.Draw(window);
+      state_manager.Draw();
     }
     window.close();
   } catch (const char *err) {

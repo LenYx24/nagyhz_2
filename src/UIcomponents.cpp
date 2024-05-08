@@ -23,7 +23,7 @@ void Button::setposition(sf::Vector2f pos) {
   shape.setPosition(pos);
   updatetextpos();
 }
-void Button::draw(sf::RenderWindow &window) {
+void Button::draw(sf::RenderWindow& window) {
   window.draw(shape);
   window.draw(text);
 }
@@ -59,7 +59,7 @@ sf::Vector2f NamedBox::getsize() {
   return _frame.getSize();
 }
 
-void NamedBox::draw(sf::RenderWindow &w) {
+void NamedBox::draw(sf::RenderWindow& w) {
   w.draw(_frame);
   _label.setPosition(_frame.getPosition() + sf::Vector2f{5, 5});
   w.draw(_label);

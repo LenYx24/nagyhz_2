@@ -19,15 +19,15 @@ private:
 
 class DraftNamedBox : public UI::NamedBox {
 public:
-  DraftNamedBox(Resources::Holder &h, std::string):NamedBox(h) {
-    _frame.setSize({100, 30});
+  DraftNamedBox(Resources::Holder &h, std::string, sf::Vector2f size = {100,30}):NamedBox(h) {
+    _frame.setSize(size);
     _frame.setFillColor(sf::Color::Red);
     _label.setString("");
   }
 };
 class TeamCol {
 public:
-  TeamCol(Resources::Holder &h,sf::Vector2f startpos,int margin = 10);
+  TeamCol(Resources::Holder &h,sf::Vector2f startpos,sf::Vector2f size = {100,30}, int margin = 10);
   void setpos();
   std::vector<Champion *> champs;
   void draw_to_window(sf::RenderWindow &w);
@@ -55,13 +55,13 @@ public:
   ~DraftState();
   void HandleEvents(sf::Event &e);
   void Update();
-  void Draw(sf::RenderWindow &window);
+  void Draw();
   void lockin(StateManager& s);
   void dontban(StateManager& s);
 
 protected:
   Resources::Holder h;
-  std::vector<Champion> allchamps;
+  std::vector<Champion *> allchamps;
   Champion *selectedchamp;
   std::vector<TeamCol> columns;
   sf::Clock elapsedtime;

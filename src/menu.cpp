@@ -21,7 +21,8 @@ MainState::MainState(StateManager &s) : MenuState(s) {
   buttons.push_back(MenuButton{h, "Exit", onclick_back});
   // Todo: put this into its own grid class
   float marginy = 20 + buttons[0].getsize().y / 2.f;
-  sf::Vector2f pos{800 / 2.f, marginy};
+  sf::Vector2f windowsize = _state_manager.getSize();
+  sf::Vector2f pos{windowsize.x / 2.f, marginy};
   for (size_t i = 0; i < buttons.size(); i++) {
     buttons[i].setposition(pos);
     pos.y += buttons[i].getsize().y / 2.f + marginy;
@@ -42,11 +43,12 @@ void MenuState::HandleEvents(sf::Event &e) {
 void MenuState::Update() {
   // do update
 }
-void MenuState::Draw(sf::RenderWindow &w) {
+void MenuState::Draw() {
   sf::Color background_color = sf::Color(220, 225, 222);
-  w.clear(background_color);
+  sf::RenderWindow& window = _state_manager.getwindow();
+  window.clear(background_color);
   for (size_t i = 0; i < buttons.size(); i++) {
-    buttons[i].draw_to_window(w);
+    buttons[i].draw_to_window(window);
   }
 }
 
@@ -62,7 +64,8 @@ ModeSelectionState::ModeSelectionState(StateManager &s) : MenuState(s) {
   buttons.push_back(MenuButton{h, "back", onclick_back});
   // Todo: put this into its own grid class
   float marginy = 20 + buttons[0].getsize().y / 2.f;
-  sf::Vector2f pos{800 / 2.f, marginy};
+  sf::Vector2f windowsize = _state_manager.getSize();
+  sf::Vector2f pos{windowsize.x / 2.f, marginy};
   for (size_t i = 0; i < buttons.size(); i++) {
     buttons[i].setposition(pos);
     pos.y += buttons[i].getsize().y / 2.f + marginy;

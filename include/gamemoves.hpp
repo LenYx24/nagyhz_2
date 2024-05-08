@@ -12,17 +12,14 @@ protected:
   int points; // the amount of points needed to do the move
 };
 
-class MoveCells : public GameMove {
+class MoveCell : public GameMove {
 public:
   // the amount of cells, and the ones chosen to move
-  MoveCells(int amount, std::vector<Cell *> cells);
-  // does one move, removes the first elemnent of cells, and checks if there's a fight
-  void moveone(Cell *from, Cell *destination);
+  MoveCell(Cell *cell);
   void update_is_legal();
 
-protected:
-  std::vector<Cell *> cells; // the cells in order which the
-  bool is_legal;
+private:
+  Cell *cell; // the cell to move to
 };
 // this one could be a template class, or heterogen collection
 class AttackMove : public GameMove {

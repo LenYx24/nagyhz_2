@@ -2,10 +2,14 @@
 #define GAMEOBJECTS_HPP
 #include "gamemoves.hpp"
 #include "ioparser.hpp"
+#include "map.hpp"
+#include "resources.hpp"
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include <sstream>
+#include <memory>
 class Cell;
-
+class Map;
 enum class Side { BLUE, RED };
 // Todo: move this file into seperate smaller files later
 struct Stat {
@@ -17,14 +21,19 @@ class Entity {
 public:
   virtual ~Entity(){}
   Entity(std::string name = "");
+  virtual void draw(sf::RenderWindow &w, sf::Vector2f pos);
   // resets its hp to full
-  virtual void spawn() = 0;
-  virtual void die() = 0;
+  //virtual void spawn() = 0;
+  //virtual void die() = 0;
+  std::vector<std::string> getstats();
   inline bool isAlive() const {
     return respawn_timer == 0;
   }
+  virtual bool clicked(const int, const int);
+  inline Cell *getcell(){return cell;}
+  inline void setcell(Cell *c){cell=c;}
   // checks
-  virtual void update_vision() = 0;
+  // virtual void update_vision() = 0;
 
 protected:
   std::string name;
@@ -32,14 +41,18 @@ protected:
   double hp;
   double damage;
   int respawn_timer; // the amount of seconds needed to respawn
-  Cell *cells;       // pointer to the cell this entity occupies
+  Cell *cell;       // pointer to the cell this entity occupies
   // Todo: implement the correct sequence in which entities get drawn to the map, by utilizing the z-index
   // Todo: use sprite with/instead of color coding entities
   sf::Color color;
+  sf::RectangleShape shape;
 };
 class Effect {
+public:
   double getbonusdmg()const{return bonusdmg;}
   double getbonushp()const{return bonushp;}
+  void setbonusdmg(double bonusdmg){this->bonusdmg = bonusdmg;}
+  void setbonushp(double bonushp){this->bonushp = bonushp;}
 private:
   double bonusdmg;
   double bonushp;
@@ -51,6 +64,7 @@ class Item : public Effect {
 public:
   void readfromstring(std::string &line, const char delimiter=';');
   int get_gold_value()const{return gold_value;}
+  inline std::string getname()const{return name;}
 private:
   int gold_value;
   std::string name;
@@ -73,22 +87,28 @@ public:
   bool add_item(Item *item);
   void setname(std::string name);
   void update_vision();
+  inline void seticon(char c){
+    icon.setString(c); 
+  //TODO: setfont
+  }
   std::string getname() const {
     return name;
   }
+  virtual bool clicked(const int, const int);
   ~Champion(){}
-
+  void setfont(Resources::Holder &h);
   void readfromstring(std::string &line, const char delimiter = ';');
+  virtual void draw(sf::RenderWindow &w, sf::Vector2f pos);
 
 private:
-  bool enough_gold(int gold); // returns true, if the champion has more or the same gold given in the arguments
-  bool isinventory_full();    // checks if the champions inventory is full
-  bool in_base();             // checks if the current cell is the base cell for this champion
+  inline bool enough_gold(int gold){return this->gold >= gold;} // returns true, if the champion has more or the same gold given in the arguments
+  inline bool isinventory_full(){return items.size() == 6;}    // checks if the champions inventory is full
+  inline bool in_base(){return true;}             // checks if the current cell is the base cell for this champion
   int cs;
   int gold;
   int hp_per_level;  // the amount of hp given per level up
   int dmg_per_level; // the amount of dmg given per level up
-  Item items[6];
+  std::vector<Item *> items;
   int level; // by leveling up the basic attributes of a champion get multiplied by level_multiplier
   double level_multiplier;
   int xp;        // the current amount of xp
@@ -98,14 +118,17 @@ private:
   int wards;          // starts from 0, goes to the max value of 2
   int wards_max;      // default is 2
   int wards_cooldown; // default should be 4 rounds
+  sf::Text icon;
   // exra props:
   // role (enum)
   std::vector<GameMove> gamemoves; // stores the added gamemoves in a turn
 };
-class Structure {
+class Structure : public Entity {
   // common parent class for entities, it shouldn't have a move functions, it's position doesn't change
 };
 class Tower : public Structure {
+public:
+  Tower();
   // selects its target, from targetable classes, these are champions, and minions (monsters cannot reach)
   // prioritizes minions in its range, and attacks them, instead of champions
   void selection();
@@ -114,6 +137,8 @@ protected:
   int range; // the amount of cells it can damage to in an area
 };
 class Nexus : public Structure {
+  public:
+  Nexus();
   // doesn't do damage, it's only stationary
   // when it dies, the game ends, so it pops the current game state, and it saves the game
 };
@@ -122,16 +147,20 @@ class Monster : public Entity {
 protected:
   int xp_given; // the amount of xp given to the champion by slaying them
 };
-class Camp : Monster {
+class Camp : public Monster {
+public:
+  Camp();
   // a common class for monsters, which are not able to move (baron nashor, drakes and jungle camps)
   // because of how the game works, every camp can give an effect to the champion(s) that slain it
-protected:
+public:
+  inline void setEffect(Effect e){effect = e;}
+private:
   Effect effect;
 };
 // minions can have effects too (currently one, but it could increase in the future), this is the baron buff, which gives flat buffs
-class Minion : Monster {
+class Minion : public Monster {
 
-protected:
+private:
   Side side; // on which side the minion is on
   // Todo: add game moves for minions
 };
@@ -143,11 +172,19 @@ protected:
 class Player {
 public:
   Player(std::vector<Champion*> champs);
+  void spawnchamps(const std::shared_ptr<Map> map);
+  void setspawnpoint(sf::Vector2f point){spawnpoint = point;}
+  void setchampicons(const std::string &icons);
+  void setfont(Resources::Holder& h);
   // loops through its champions and instructs them to do the moves
   void domoves();
+  bool ishischamp(Champion *c);
+  void showmoveoptions(const std::shared_ptr<Map>, Champion *c);
+  Champion *getselectedchamp(sf::Vector2f index);
 
 private:
   std::vector<Champion*> champs;
   Side side;
+  sf::Vector2f spawnpoint;
 };
 #endif

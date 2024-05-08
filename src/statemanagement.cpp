@@ -1,6 +1,6 @@
 #include "../include/statemanagement.hpp"
 
-StateManager::StateManager() {}
+StateManager::StateManager(sf::RenderWindow& window):window(window) {}
 
 void StateManager::ChangeState(std::unique_ptr<State> state) {
   if (!states.empty()) {
@@ -20,18 +20,18 @@ void StateManager::PopState() {
   }
 }
 
-void StateManager::HandleEvents(sf::RenderWindow &w) {
+void StateManager::HandleEvents() {
   sf::Event e;
-  while (w.pollEvent(e))
+  while (window.pollEvent(e))
     states.top()->HandleEvents(e);
 }
 void StateManager::Update() {
   if(!states.empty()) // need to check this, because I didn't implemented the feature, that only changes state at the end of the main loop
     states.top()->Update();
 }
-void StateManager::Draw(sf::RenderWindow &window) {
+void StateManager::Draw() {
   if(!states.empty())
-    states.top()->Draw(window);
+    states.top()->Draw();
   window.display();
 }
 
@@ -39,4 +39,8 @@ void StateManager::Draw(sf::RenderWindow &window) {
 void StateManager::exit() {
   while (!states.empty())
     states.pop();
+}
+sf::Vector2f StateManager::getSize()const{
+  sf::Vector2u wsizeu = window.getSize();
+  return sf::Vector2f{static_cast<float>(wsizeu.x),static_cast<float>(wsizeu.y)};
 }

@@ -6,7 +6,7 @@
 #include "resources.hpp"
 #include "statemanagement.hpp"
 #include <cstdlib>
-#include <list>
+#include <ctime>
 #include <vector>
 
 class Turn {
@@ -27,18 +27,24 @@ private:
 class Round {
 public:
   // sets the variables necessary to start a round
-  Round(std::vector<Player> players);
+  Round();
   // when the round ends the simulation substate starts
   void roundend();
 
 private:
-  Turn turns[2];
+  std::array<Turn, 2> turns;
+  int currentturn;
+};
+class ItemBox : public UI::NamedBox {
+public:
+  ItemBox(std::string label, sf::RectangleShape frame, Resources::Holder &h, Item *i) : NamedBox(label, frame, h), item(i) {}
+  Item *item;
 };
 class GameButton : public UI::Button {
 public:
 // Todo: static fgv, ami visszaad egy draftbutton stílusú gombot
   GameButton(
-      Resources::Holder &h, sf::String str, std::function<void(StateManager &s)> onclick = [](StateManager &s) { std::cout << "not impl" << std::endl; });
+      Resources::Holder &h, sf::String str, std::function<void(StateManager &s)> onclick = [](StateManager &s) { std::cout << "not impl" << std::endl; }, sf::Vector2f pos = {0,0});
 };
 class GameState : public State {
 public:
@@ -46,22 +52,31 @@ public:
   ~GameState();
   void HandleEvents(sf::Event &e);
   void Update();
-  void Draw(sf::RenderWindow &window);
+  void Draw();
 
+  void onclick_gamemove();
   // void nextplayer();
   // Player *getcurrentplayer();
 
 protected:
   GameMode _mode;
   Resources::Holder h;
-  std::list<Item> allitems;
+  // game elements
+  std::vector<Item> allitems;
   std::vector<Player*> players;
+  Player *currentplayer;
   std::vector<GameMove> gamemoves;
   GameMove *selectedmove;
-  std::vector<Round> rounds;
+  std::vector<Round *> rounds;
+  // selection
+  Champion *selectedchamp;
   // UI
+  std::vector<ItemBox *> itemslist;
   std::vector<GameButton*> buttons;
-  std::unique_ptr<Map> map;
+  std::vector<GameButton*> gamemovebuttons;
+  std::vector<UI::NamedBox*> labels;
+  std::vector<UI::NamedBox*> statlabels;
+  std::shared_ptr<Map> map;
   // timer
   sf::Text timer;
   sf::Clock elapsedtime;

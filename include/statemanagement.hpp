@@ -15,15 +15,18 @@ public:
 class State;
 class StateManager {
 public:
-  StateManager();
+  StateManager(sf::RenderWindow& window);
 
   void ChangeState(std::unique_ptr<State> state);
   void PushState(std::unique_ptr<State> state);
   void PopState();
 
-  void HandleEvents(sf::RenderWindow &window);
+  void HandleEvents();
   void Update();
-  void Draw(sf::RenderWindow &window);
+  void Draw();
+
+  inline sf::RenderWindow& getwindow()const { return window;}
+  sf::Vector2f getSize()const;
 
   inline bool hasState() const {
     return !states.empty();
@@ -32,13 +35,14 @@ public:
 
 private:
   std::stack<std::unique_ptr<State>> states;
+  sf::RenderWindow &window;
 };
 class State {
 public:
   virtual ~State() {}
   virtual void HandleEvents(sf::Event &e) = 0;
   virtual void Update() = 0;
-  virtual void Draw(sf::RenderWindow &window) = 0;
+  virtual void Draw() = 0;
 
 protected:
   State(StateManager &s) : _state_manager(s) {}

@@ -12,7 +12,7 @@ namespace UI {
 class GridElement {
 public:
   virtual ~GridElement() {}
-  virtual void draw(sf::RenderWindow &w) = 0;
+  virtual void draw(sf::RenderWindow& window) = 0;
   virtual sf::Vector2f getsize() = 0;
   virtual void setposition(sf::Vector2f pos) = 0;
 };
@@ -27,7 +27,7 @@ public:
   void updatetextpos();
   void draw_to_window(sf::RenderWindow &w);
 
-  virtual void draw(sf::RenderWindow &w);
+  virtual void draw(sf::RenderWindow& window);
   inline sf::Vector2f getsize() {
     return shape.getSize();
   }
@@ -41,7 +41,7 @@ protected:
   sf::Text text;
 };
 class TextBox : public GridElement {
-  virtual void draw(sf::RenderWindow &w);
+  virtual void draw(sf::RenderWindow& window);
   virtual void setposition(sf::Vector2f pos);
   virtual sf::Vector2f getsize();
 
@@ -57,7 +57,7 @@ public:
   Grid(sf::Vector2f startpos, sf::Vector2f margin, sf::Vector2f direction = {1, 0});
   void setelements(std::vector<GridElement *> elements);
   void setelementspos();
-  void draw(sf::RenderWindow &window);
+  void draw();
 
 private:
   std::vector<GridElement *> _elements;
@@ -67,7 +67,7 @@ private:
 };
 class NamedTextBox : public GridElement {
 public:
-  virtual void draw(sf::RenderWindow &w);
+  virtual void draw(sf::RenderWindow& window);
 
 private:
   TextBox tb;
@@ -92,7 +92,7 @@ public:
   }
 
   sf::Vector2f getsize();
-  void draw(sf::RenderWindow &w);
+  void draw(sf::RenderWindow& window);
 
 protected:
   sf::RectangleShape _frame;

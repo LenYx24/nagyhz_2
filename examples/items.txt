@@ -1,2 +1,2 @@
-liandry;20;20
-berserker;30;10
+liandry;400;20;20
+berserker;500;30;10

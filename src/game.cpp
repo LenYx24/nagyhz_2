@@ -1,13 +1,13 @@
 #include "../include/game.hpp"
-GameButton::GameButton(Resources::Holder &h, sf::String str, std::function<void(StateManager &s)> onclick_) : Button(str, onclick_) {
+GameButton::GameButton(Resources::Holder &h, sf::String str, std::function<void(StateManager &s)> onclick_, sf::Vector2f pos) : Button(str, onclick_) {
   // menu button specific override settings
   shape.setSize({150, 70});
-  text.setCharacterSize(15);
+  text.setCharacterSize(14);
   text.setFont(h.get(Resources::Type::FONT));
+  this->setposition(pos);
 }
-GameState::GameState(StateManager &state_manager, std::vector<Champion*> p1champs,std::vector<Champion*> p2champs, GameMode mode) : State(state_manager),map(std::make_unique<Map>(sf::Vector2f{150,10})) {
+GameState::GameState(StateManager &state_manager, std::vector<Champion*> p1champs,std::vector<Champion*> p2champs, GameMode mode) : State(state_manager),map(std::make_unique<Map>(sf::Vector2f{500,20})) {
   // load items from the file and save them to the allitems variable
-  std::cout << "hello"<<std::endl;
   iofile inp("examples/items.txt");
   for (std::string line; std::getline(inp.getfile(), line);) {
     Item item;
@@ -21,24 +21,61 @@ GameState::GameState(StateManager &state_manager, std::vector<Champion*> p1champ
   // create players
   players.push_back(new Player{p1champs});
   players.push_back(new Player{p2champs});
-  std::cout << "init done" << std::endl;
   // create the UI components:
-  buttons.push_back(new GameButton(h, "Lock in", [state = this](StateManager &s) { state->rounds[0].roundend(); }));
-  buttons.push_back(new GameButton(h, "back", [](StateManager &s) { s.PopState(); }));
-  // create selected champ panel, with stats and items
-  // list the moves as buttons, and the end round button
-  // show a label, that shows the current points for the player
-  // show a textbox, where the player can give his input
-  // create a map, with create_map method, with the basic entities on it
+  sf::Vector2f windowsize = _state_manager.getSize();
+  // todo: get the gamebuttons sizes, and position it accordingly
+  buttons.push_back(new GameButton(h, "End round", [state = this](StateManager &s) { state->onclick_gamemove(); },{80,40}));
+  buttons.push_back(new GameButton(h, "back", [](StateManager &s) { s.PopState(); },{80,windowsize.y-50}));
+
+  gamemovebuttons.push_back(new GameButton(h, "move", [state = this](StateManager &s) { state->onclick_gamemove(); }));
+  gamemovebuttons.push_back(new GameButton(h, "base", [state = this](StateManager &s) { state->onclick_gamemove(); }));
+  gamemovebuttons.push_back(new GameButton(h, "ward", [state = this](StateManager &s) { state->onclick_gamemove(); }));
+  UI::Grid grid{{windowsize.x/4, 100}, {5, 5},{0,1}};
+  std::vector<UI::GridElement *> els(gamemovebuttons.begin(), gamemovebuttons.end());
+  grid.setelements(els);
+  grid.setelementspos();
+
   // create the items panel, and list all the items
+  sf::RectangleShape itemshape{{100,40}};
+  itemshape.setFillColor(sf::Color::Black);
+  UI::NamedBox *itemslabel = new UI::NamedBox{"Items:",itemshape,h};
+  itemslabel->setposition({windowsize.x - itemslabel->getglobalbounds().width,20});
+  itemslabel->setcharsize(12);
+  labels.push_back(itemslabel);
+
+  sf::RectangleShape baseshape{{150, 30}};
+  baseshape.setOutlineColor({200, 15, 45});
+  for (size_t i = 0; i < allitems.size(); i++) {
+    itemslist.push_back(new ItemBox{allitems[i].getname(), baseshape, h, &allitems[i]});
+    itemslist[i]->setcharsize(11);
+    itemslist[i]->setlabelcolor(sf::Color::Black);
+  }
+  UI::Grid itemsgrid{{windowsize.x - baseshape.getSize().x, 60}, {5, 5}, {0, 1}};
+  std::vector<UI::GridElement *> itemels(itemslist.begin(), itemslist.end());
+  itemsgrid.setelements(itemels);
+  itemsgrid.setelementspos();
 
   // set timer
   elapsedtime.restart();
-  timer.setPosition({40, 40});
+  timer.setPosition({200, 10});
   timer.setFont(h.get(Resources::Type::FONT));
-  timer.setCharacterSize(10);
-  // start a round
+  timer.setCharacterSize(13);
+  // spawn champs
+  players[0]->setchampicons("ABCDE");
+  players[1]->setchampicons("FGHIJ");
+  players[0]->setfont(h);
+  players[1]->setfont(h);
+  players[0]->setspawnpoint({0,map->getcellgridsize().y-1});
+  players[1]->setspawnpoint({map->getcellgridsize().x-1,0});
+  players[0]->spawnchamps(map);
+  players[1]->spawnchamps(map);
+  // spawn minions
+  
   // seed the random generator
+  // init round
+  srand(static_cast<unsigned>(time(0)));
+  // Todo: randomly select starter champ
+  currentplayer = players[0];
 }
 // onclicks:
 void onclick_endturn() {
@@ -46,7 +83,10 @@ void onclick_endturn() {
   // a simulation substate needs the map, and the entities on the map
   // it also needs to know, who's able to see the moves
 }
-void onclick_gamemove() {
+void GameState::onclick_gamemove() {
+  if(currentplayer->ishischamp(selectedchamp)){
+    map->setselectednearbycells(selectedchamp);
+  }
   // checks if a champion is selected
   // gets the current cell, where the champion is right now
   // asks the gamemove, to make certain cells clickable, which are valid
@@ -67,7 +107,6 @@ void onclick_item() {
 }
 void Round::roundend(){}
 void GameState::HandleEvents(sf::Event &e) {
-  // check if user clicked on an element, then do the task accordingly
   if (e.type == sf::Event::Closed) {
     _state_manager.exit();
   } else if (e.type == sf::Event::MouseButtonPressed) {
@@ -76,11 +115,43 @@ void GameState::HandleEvents(sf::Event &e) {
         b->onclick(_state_manager);
       }
     }
+    Cell *clickedcell = map->getclickedcell(e.mouseButton.x,e.mouseButton.y);
+    if(clickedcell != nullptr){
+      std::cout << "clicked on cell" << std::endl;
+      clickedcell->sethighlighted();
+      sf::Vector2f index = clickedcell->getindex();
+      sf::RectangleShape shape{{100,60}};
+      shape.setFillColor(sf::Color::Black);
+      statlabels.clear();
+      UI::NamedBox *statlabel = new UI::NamedBox{"Cell:\nx: "+std::to_string((int)index.x+1) + "\ny: "+std::to_string((int)index.y+1),shape,h};
+      statlabel->setcharsize(12);
+      statlabel->setposition({70,200});
+      statlabels.push_back(statlabel);
+      Entity *clickedentity = clickedcell->getentitiyclicked(e.mouseButton.x, e.mouseButton.y);
+      if(clickedentity != nullptr){
+        std::cout << "here" << std::endl;
+        sf::Vector2f index = clickedcell->getindex();
+        std::cout << "here1" << std::endl;
+        selectedchamp = currentplayer->getselectedchamp(index);
+        std::cout << "here2" << std::endl;
+        std::vector<std::string> statsentity = clickedentity->getstats();
+        sf::Vector2f startpos{70,300};
+        for(size_t i = 0; i < statsentity.size(); i++){
+          UI::NamedBox *statlabel = new UI::NamedBox{statsentity[i],shape,h};
+          statlabel->setposition(startpos);
+          int marginy = 20;
+          startpos.y += shape.getSize().y + marginy;
+          statlabel->setcharsize(12);
+          statlabels.push_back(statlabel);
+        }
+      }
+      std::cout << "x: " << index.x << "y: " << index.y << std::endl; 
+    }
   }
 }
 void GameState::Update() {
   // update time elapsed
-  std::string s = "Ido: ";
+  std::string s = "Time left: ";
   s += std::to_string(30 - (int)elapsedtime.getElapsedTime().asSeconds());
   timer.setString(s);
   if ((int)elapsedtime.getElapsedTime().asSeconds() == 30) {
@@ -88,17 +159,40 @@ void GameState::Update() {
     // end turn
   }
 }
-void GameState::Draw(sf::RenderWindow &window) {
+void GameState::Draw() {
   sf::Color background_color = sf::Color(220, 225, 222);
+  sf::RenderWindow &window = _state_manager.getwindow();
   window.clear(background_color);
   for (size_t i = 0; i < buttons.size(); i++) {
     buttons[i]->draw_to_window(window);
   }
-  this->map->draw(window);
+  for (size_t i = 0; i < gamemovebuttons.size(); i++) {
+    gamemovebuttons[i]->draw_to_window(window);
+  }
+  for(size_t i = 0; i < labels.size(); i++){
+    labels[i]->draw(window);
+  }
+  for(size_t i = 0; i < statlabels.size(); i++){
+    statlabels[i]->draw(window);
+  }
+  for(size_t i = 0; i < itemslist.size(); i++){
+    itemslist[i]->draw(window);
+  }
+  map->draw(window);
   window.draw(timer);
 }
 GameState::~GameState(){
   for(size_t i = 0; i < players.size(); i++){
     delete players[i];
+  }
+  // this is buggy yet
+  // for(size_t i = 0; i < labels.size(); i++){
+  //   delete labels[i];
+  // }
+  for(size_t i = 0; i < buttons.size(); i++){
+    delete buttons[i];
+  }
+  for(size_t i = 0; i < gamemovebuttons.size(); i++){
+    delete gamemovebuttons[i];
   }
 }
