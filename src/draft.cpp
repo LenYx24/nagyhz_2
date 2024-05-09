@@ -1,6 +1,6 @@
 #include "../include/draft.hpp"
 void onclick_back(StateManager &s) {
-  s.PopState();
+  s.pop_state();
 }
 
 void DraftState::lockin(StateManager &s) {
@@ -20,7 +20,7 @@ void DraftState::lockin(StateManager &s) {
   if(turn_counter == 20){
     GameMode m = GameMode::THEMSELVES;
     // this should be change state, but then the champions should be moved
-    _state_manager.PushState(std::make_unique<GameState>(s,columns[0].champs,columns[1].champs,m));
+    state_manager.push_state(std::make_unique<GameState>(s,columns[0].champs,columns[1].champs,m));
   }
 }
 void DraftState::dontban(StateManager &s) {
@@ -139,7 +139,7 @@ void DraftState::Update() {
     champlist[i]->setlabelcolor(sf::Color::Black);
   }
   if(champlist.size() == 0){
-    _state_manager.PopState();
+    _state_manager.pop_state();
   }
 }
 void DraftState::Draw() {

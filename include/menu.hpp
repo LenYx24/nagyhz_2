@@ -1,13 +1,15 @@
 #ifndef MENU_HPP
 #define MENU_HPP
 
+#include <SFML/Graphics.hpp>
+#include <SFML/Window/Mouse.hpp>
+#include <iostream>
+
 #include "UIcomponents.hpp"
 #include "draft.hpp"
 #include "resources.hpp"
 #include "statemanagement.hpp"
-#include <SFML/Graphics.hpp>
-#include <SFML/Window/Mouse.hpp>
-#include <iostream>
+
 
 namespace Menu {
 
@@ -25,7 +27,7 @@ protected:
 };
 class MainState : public MenuState {
 public:
-  MainState(StateManager &s);
+  MainState(StateManager &s, sf::RenderWindow& window);
 };
 class ModeSelectionState : public MenuState {
 public:

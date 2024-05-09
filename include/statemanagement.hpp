@@ -1,52 +1,49 @@
 #ifndef ENGINE_HPP
 #define ENGINE_HPP
+
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <memory>
 #include <stack>
 
-enum class GameMode { THEMSELVES, TWOPLAYER };
-class Settings {
-public:
-  std::string champs_filepath;
-  std::string items_filepath;
-  GameMode m;
-};
 class State;
 class StateManager {
 public:
-  StateManager(sf::RenderWindow& window);
+  void change_state(std::unique_ptr<State> state);
+  void push_state(std::unique_ptr<State> state);
+  void pop_state();
 
-  void ChangeState(std::unique_ptr<State> state);
-  void PushState(std::unique_ptr<State> state);
-  void PopState();
+  void handle_events(sf::RenderWindow &window);
+  void update();
+  void draw(sf::RenderWindow &window);
 
-  void HandleEvents();
-  void Update();
-  void Draw();
+  sf::Vector2f get_size(sf::RenderWindow &window)const;
+  inline bool has_state() const {return !states.empty();}
 
-  inline sf::RenderWindow& getwindow()const { return window;}
-  sf::Vector2f getSize()const;
-
-  inline bool hasState() const {
-    return !states.empty();
-  }
   void exit();
 
 private:
   std::stack<std::unique_ptr<State>> states;
-  sf::RenderWindow &window;
 };
 class State {
 public:
   virtual ~State() {}
-  virtual void HandleEvents(sf::Event &e) = 0;
-  virtual void Update() = 0;
-  virtual void Draw() = 0;
+  virtual void handle_events(sf::Event &event) = 0;
+  virtual void update() = 0;
+  virtual void draw() = 0;
 
 protected:
-  State(StateManager &s) : _state_manager(s) {}
-  StateManager &_state_manager;
+  State(StateManager &state_manager) : state_manager(state_manager) {}
+  StateManager &state_manager;
 };
+enum class GameMode { THEMSELVES, TWOPLAYER };
+class Settings {
+public:
+  Settings(std::string champs_filepath, std::string items_filepath, GameMode mode);
 
+private:
+  std::string champs_filepath;
+  std::string items_filepath;
+  GameMode mode;
+};
 #endif

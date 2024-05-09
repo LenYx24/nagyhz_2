@@ -1,17 +1,15 @@
 #include "../include/statemanagement.hpp"
 
-StateManager::StateManager(sf::RenderWindow& window):window(window) {}
-
-void StateManager::ChangeState(std::unique_ptr<State> state) {
+void StateManager::change_state(std::unique_ptr<State> state) {
   if (!states.empty()) {
     states.pop();
   }
   states.push(std::move(state));
 }
-void StateManager::PushState(std::unique_ptr<State> state) {
+void StateManager::push_state(std::unique_ptr<State> state) {
   states.push(std::move(state));
 }
-void StateManager::PopState() {
+void StateManager::pop_state() {
   if (!states.empty()) {
     states.pop();
   }
@@ -20,18 +18,21 @@ void StateManager::PopState() {
   }
 }
 
-void StateManager::HandleEvents() {
+void StateManager::handle_events(sf::RenderWindow &window) {
   sf::Event e;
-  while (window.pollEvent(e))
-    states.top()->HandleEvents(e);
+  while (window.pollEvent(e)){
+    if(!states.empty())
+      states.top()->handle_events(e);
+  }
 }
-void StateManager::Update() {
-  if(!states.empty()) // need to check this, because I didn't implemented the feature, that only changes state at the end of the main loop
-    states.top()->Update();
+void StateManager::update() {
+  // Todo: implement the feature that does state changes after a game loop cycle
+  if(!states.empty()) 
+    states.top()->update();
 }
-void StateManager::Draw() {
+void StateManager::draw(sf::RenderWindow &window) {
   if(!states.empty())
-    states.top()->Draw();
+    states.top()->draw();
   window.display();
 }
 
@@ -40,7 +41,12 @@ void StateManager::exit() {
   while (!states.empty())
     states.pop();
 }
-sf::Vector2f StateManager::getSize()const{
+sf::Vector2f StateManager::get_size(sf::RenderWindow &window)const{
   sf::Vector2u wsizeu = window.getSize();
   return sf::Vector2f{static_cast<float>(wsizeu.x),static_cast<float>(wsizeu.y)};
+}
+Settings::Settings(std::string champs_filepath, std::string items_filepath, GameMode mode){
+  this->champs_filepath = champs_filepath;
+  this->items_filepath = items_filepath;
+  this->mode = mode;
 }

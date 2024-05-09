@@ -49,7 +49,7 @@ public:
 class Wall : public Cell {
 public:
   Wall();
-  bool canmovehere()const{return false};
+  bool canmovehere()const{return false;};
 };
 // calculates vision differently than the ground object
 class Bush : public Ground {

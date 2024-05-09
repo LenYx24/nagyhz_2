@@ -5,7 +5,6 @@
 #include "resources.hpp"
 #include "statemanagement.hpp"
 #include "game.hpp"
-#include <list>
 #include <vector>
 class DraftTurn {
 public:

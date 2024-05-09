@@ -22,10 +22,10 @@ GameState::GameState(StateManager &state_manager, std::vector<Champion*> p1champ
   players.push_back(new Player{p1champs});
   players.push_back(new Player{p2champs});
   // create the UI components:
-  sf::Vector2f windowsize = _state_manager.getSize();
+  sf::Vector2f windowsize = state_manager.get_size();
   // todo: get the gamebuttons sizes, and position it accordingly
   buttons.push_back(new GameButton(h, "End round", [state = this](StateManager &s) { state->onclick_gamemove(); },{80,40}));
-  buttons.push_back(new GameButton(h, "back", [](StateManager &s) { s.PopState(); },{80,windowsize.y-50}));
+  buttons.push_back(new GameButton(h, "back", [](StateManager &s) { s.pop_state(); },{80,windowsize.y-50}));
 
   gamemovebuttons.push_back(new GameButton(h, "move", [state = this](StateManager &s) { state->onclick_gamemove(); }));
   gamemovebuttons.push_back(new GameButton(h, "attack", [state = this](StateManager &s) { state->onclick_attack(); }));

@@ -8,11 +8,11 @@ MenuButton::MenuButton(Resources::Holder &h, sf::String str, std::function<void(
 }
 
 void onclick_start(StateManager &s) {
-  s.PushState(std::make_unique<ModeSelectionState>(s));
+  s.push_state(std::make_unique<ModeSelectionState>(s));
 }
 
 void onclick_back(StateManager &s) {
-  s.PopState();
+  s.pop_state();
 }
 MainState::MainState(StateManager &s) : MenuState(s) {
   h.load(Resources::Type::FONT, "./fonts/Roboto.ttf");
@@ -53,9 +53,9 @@ void MenuState::Draw() {
 }
 
 void onclick_draft(StateManager &s) {
-  Settings settings;
+  Settings settings{"examples/champs.txt","examples/items.txt",GameMode::THEMSELVES};
   settings.m = GameMode::TWOPLAYER;
-  s.PushState(std::make_unique<DraftState>(s, settings));
+  s.push_state(std::make_unique<DraftState>(s, settings));
 }
 ModeSelectionState::ModeSelectionState(StateManager &s) : MenuState(s) {
   h.load(Resources::Type::FONT, "./fonts/Roboto.ttf");
