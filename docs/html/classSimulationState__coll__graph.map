@@ -1,7 +1,0 @@
-<map id="SimulationState" name="SimulationState">
-<area shape="rect" id="node1" title=" " alt="" coords="64,184,191,211"/>
-<area shape="rect" id="node2" href="$classState.html" title=" " alt="" coords="99,95,155,121"/>
-<area shape="rect" id="node3" href="$classResources_1_1Holder.html" title=" " alt="" coords="5,5,145,32"/>
-<area shape="rect" id="node4" href="$classMap.html" title=" " alt="" coords="179,95,230,121"/>
-<area shape="rect" id="node5" href="$classCell.html" title=" " alt="" coords="181,5,228,32"/>
-</map>

@@ -5,6 +5,7 @@
 #include <map>
 #include <memory>
 
+// Todo: szedjem külön
 namespace Resources {
 enum class Type { FONT };
 
