@@ -1,39 +1,40 @@
 #ifndef UICOMPONENTS_HPP
 #define UICOMPONENTS_HPP
-#include "resources.hpp"
-#include "statemanagement.hpp"
+
 #include <SFML/Graphics.hpp>
 #include <functional>
 #include <iostream>
 #include <vector>
-// Todo: add UI namespace
+
+#include "resources.hpp"
+#include "statemanagement.hpp"
+
 namespace UI {
 
 class GridElement {
 public:
   virtual ~GridElement() {}
   virtual void draw(sf::RenderWindow& window) = 0;
-  virtual sf::Vector2f getsize() = 0;
-  virtual void setposition(sf::Vector2f pos) = 0;
+  virtual void set_position(sf::Vector2f pos) = 0;
+  virtual sf::Vector2f get_size() = 0;
 };
+
 class Button : public GridElement {
 public:
   Button() {}
   Button(
-      sf::String str, std::function<void(StateManager &s)> onclick_ = [](StateManager &s) { std::cout << "onclick not implemented yet" << std::endl; },
+      sf::String text, std::function<void(StateManager &s)> onclick = [](StateManager &state_manager) { std::cout << "onclick not implemented yet" << std::endl;},
       sf::Vector2f pos = {0, 0});
-  void settext(sf::String str);
-  void setposition(sf::Vector2f pos);
-  void updatetextpos();
-  void draw_to_window(sf::RenderWindow &w);
+  void set_text(sf::String text);
+  void set_position(sf::Vector2f pos);
+  void update_text_position();
+  void draw_to_window(sf::RenderWindow &window);
 
   virtual void draw(sf::RenderWindow& window);
-  inline sf::Vector2f getsize() {
+  inline sf::Vector2f get_size() {
     return shape.getSize();
   }
-  inline sf::FloatRect getglobalbounds() const {
-    return shape.getGlobalBounds();
-  }
+  inline sf::FloatRect get_global_bounds() const {return shape.getGlobalBounds();}
   std::function<void(StateManager &s)> onclick;
 
 protected:
@@ -41,12 +42,13 @@ protected:
   sf::Text text;
 };
 class TextBox : public GridElement {
-  virtual void draw(sf::RenderWindow& window);
-  virtual void setposition(sf::Vector2f pos);
-  virtual sf::Vector2f getsize();
+  virtual void draw(sf::RenderWindow& window){}
+  virtual void set_position(sf::Vector2f pos){}
+  virtual sf::Vector2f get_size(){return shape.getSize();}
 
 private:
   sf::Text textbox;
+  sf::RectangleShape shape;
   bool isSelected;
   int width;
   int height;
@@ -70,33 +72,31 @@ public:
   virtual void draw(sf::RenderWindow& window);
 
 private:
-  TextBox tb;
+  TextBox textbox;
   sf::Text label;
 };
 class NamedBox : public GridElement {
 public:
-  NamedBox(Resources::Holder &h) {
-    _label.setFont(h.get(Resources::Type::FONT));
-  }
+  NamedBox(Resources::Holder &h) {label.setFont(h.get(Resources::Type::FONT));}
   NamedBox(std::string label, sf::RectangleShape frame, Resources::Holder &h);
   void setlabel(std::string l);
   void setframe(sf::RectangleShape);
-  void setposition(sf::Vector2f pos);
+  void set_position(sf::Vector2f pos);
   void setcharsize(int size);
   void setlabelcolor(const sf::Color &c);
   inline sf::FloatRect getglobalbounds() const {
-    return _frame.getGlobalBounds();
+    return frame.getGlobalBounds();
   }
   std::string getlabel() const {
-    return _label.getString();
+    return label.getString();
   }
 
-  sf::Vector2f getsize();
+  sf::Vector2f get_size();
   void draw(sf::RenderWindow& window);
 
 protected:
-  sf::RectangleShape _frame;
-  sf::Text _label;
+  sf::RectangleShape frame;
+  sf::Text label;
 };
 
 } // namespace UI

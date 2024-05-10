@@ -17,7 +17,7 @@ public:
   void update();
   void draw(sf::RenderWindow &window);
 
-  sf::Vector2f get_size(sf::RenderWindow &window)const;
+  sf::Vector2f get_size(sf::RenderWindow& window)const;
   inline bool has_state() const {return !states.empty();}
 
   void exit();
@@ -30,7 +30,7 @@ public:
   virtual ~State() {}
   virtual void handle_events(sf::Event &event) = 0;
   virtual void update() = 0;
-  virtual void draw() = 0;
+  virtual void draw(sf::RenderWindow& window) = 0;
 
 protected:
   State(StateManager &state_manager) : state_manager(state_manager) {}

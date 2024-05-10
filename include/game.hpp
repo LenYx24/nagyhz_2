@@ -48,11 +48,11 @@ public:
 };
 class GameState : public State {
 public:
-  GameState(StateManager &state_manager, std::vector<Champion *> p1champs,std::vector<Champion *> p2champs, GameMode mode);
+  GameState(StateManager &state_manager, std::vector<Champion *> p1champs,std::vector<Champion *> p2champs, GameMode mode,sf::RenderWindow& window);
   ~GameState();
-  void HandleEvents(sf::Event &e);
-  void Update();
-  void Draw();
+  void handle_events(sf::Event &e);
+  void update();
+  void draw(sf::RenderWindow& window);
 
   void onclick_gamemove();
   void onclick_attack();

@@ -4,9 +4,9 @@ GameButton::GameButton(Resources::Holder &h, sf::String str, std::function<void(
   shape.setSize({150, 70});
   text.setCharacterSize(14);
   text.setFont(h.get(Resources::Type::FONT));
-  this->setposition(pos);
+  this->set_position(pos);
 }
-GameState::GameState(StateManager &state_manager, std::vector<Champion*> p1champs,std::vector<Champion*> p2champs, GameMode mode) : State(state_manager),map(std::make_unique<Map>(sf::Vector2f{500,20})) {
+GameState::GameState(StateManager &state_manager, std::vector<Champion*> p1champs,std::vector<Champion*> p2champs, GameMode mode, sf::RenderWindow& window) : State(state_manager),map(std::make_unique<Map>(sf::Vector2f{500,20})) {
   // load items from the file and save them to the allitems variable
   iofile inp("examples/items.txt");
   for (std::string line; std::getline(inp.getfile(), line);) {
@@ -22,7 +22,7 @@ GameState::GameState(StateManager &state_manager, std::vector<Champion*> p1champ
   players.push_back(new Player{p1champs});
   players.push_back(new Player{p2champs});
   // create the UI components:
-  sf::Vector2f windowsize = state_manager.get_size();
+  sf::Vector2f windowsize = state_manager.get_size(window);
   // todo: get the gamebuttons sizes, and position it accordingly
   buttons.push_back(new GameButton(h, "End round", [state = this](StateManager &s) { state->onclick_gamemove(); },{80,40}));
   buttons.push_back(new GameButton(h, "back", [](StateManager &s) { s.pop_state(); },{80,windowsize.y-50}));
@@ -40,7 +40,7 @@ GameState::GameState(StateManager &state_manager, std::vector<Champion*> p1champ
   sf::RectangleShape itemshape{{100,40}};
   itemshape.setFillColor(sf::Color::Black);
   UI::NamedBox *itemslabel = new UI::NamedBox{"Items:",itemshape,h};
-  itemslabel->setposition({windowsize.x - itemslabel->getglobalbounds().width,20});
+  itemslabel->set_position({windowsize.x - itemslabel->getglobalbounds().width,20});
   itemslabel->setcharsize(12);
   labels.push_back(itemslabel);
 
@@ -121,19 +121,19 @@ void GameState::onclick_ward(){
   
 }
 void Round::roundend(){}
-void GameState::HandleEvents(sf::Event &e) {
+void GameState::handle_events(sf::Event &e) {
   if (e.type == sf::Event::Closed) {
-    _state_manager.exit();
+    state_manager.exit();
   } else if (e.type == sf::Event::MouseButtonPressed) {
     for (GameButton *b : buttons) {
-      if (b->getglobalbounds().contains(e.mouseButton.x, e.mouseButton.y)) {
-        b->onclick(_state_manager);
+      if (b->get_global_bounds().contains(e.mouseButton.x, e.mouseButton.y)) {
+        b->onclick(state_manager);
         return;
       }
     }
     for (GameButton *b : gamemovebuttons) {
-      if (b->getglobalbounds().contains(e.mouseButton.x, e.mouseButton.y)) {
-        b->onclick(_state_manager);
+      if (b->get_global_bounds().contains(e.mouseButton.x, e.mouseButton.y)) {
+        b->onclick(state_manager);
         return;
       }
     }
@@ -156,7 +156,7 @@ void GameState::HandleEvents(sf::Event &e) {
         statlabels.clear();
         UI::NamedBox *statlabel = new UI::NamedBox{"Cell:\nx: "+std::to_string((int)index.x+1) + "\ny: "+std::to_string((int)index.y+1),shape,h};
         statlabel->setcharsize(12);
-        statlabel->setposition({70,200});
+        statlabel->set_position({70,200});
         statlabels.push_back(statlabel);
         Entity *clickedentity = clickedcell->getentitiyclicked(e.mouseButton.x, e.mouseButton.y);
         if(clickedentity != nullptr){
@@ -165,7 +165,7 @@ void GameState::HandleEvents(sf::Event &e) {
           sf::Vector2f startpos{70,300};
           for(size_t i = 0; i < statsentity.size(); i++){
             UI::NamedBox *statlabel = new UI::NamedBox{statsentity[i],shape,h};
-            statlabel->setposition(startpos);
+            statlabel->set_position(startpos);
             int marginy = 20;
             startpos.y += shape.getSize().y + marginy;
             statlabel->setcharsize(12);
@@ -176,7 +176,7 @@ void GameState::HandleEvents(sf::Event &e) {
     }
   }
 }
-void GameState::Update() {
+void GameState::update() {
   // update time elapsed
   std::string s = "Time left: ";
   s += std::to_string(30 - (int)elapsedtime.getElapsedTime().asSeconds());
@@ -186,9 +186,8 @@ void GameState::Update() {
     // end turn
   }
 }
-void GameState::Draw() {
+void GameState::draw(sf::RenderWindow& window) {
   sf::Color background_color = sf::Color(220, 225, 222);
-  sf::RenderWindow &window = _state_manager.getwindow();
   window.clear(background_color);
   for (size_t i = 0; i < buttons.size(); i++) {
     buttons[i]->draw_to_window(window);

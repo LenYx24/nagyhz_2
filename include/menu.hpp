@@ -15,15 +15,15 @@ namespace Menu {
 
 class MenuState : public State {
 public:
-  MenuState(StateManager &s) : State(s) {}
+  MenuState(StateManager &state_manager) : State(state_manager) {}
 
-  virtual void HandleEvents(sf::Event &e);
-  virtual void Update();
-  virtual void Draw();
+  virtual void handle_events(sf::Event &event);
+  virtual void update();
+  virtual void draw(sf::RenderWindow& window);
 
 protected:
   std::vector<UI::Button> buttons;
-  Resources::Holder h;
+  Resources::Holder resources_holder;
 };
 class MainState : public MenuState {
 public:
@@ -31,7 +31,7 @@ public:
 };
 class ModeSelectionState : public MenuState {
 public:
-  ModeSelectionState(StateManager &s);
+  ModeSelectionState(StateManager &s, sf::RenderWindow& window);
 };
 
 class MenuButton : public UI::Button {

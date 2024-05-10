@@ -19,9 +19,9 @@ private:
 class DraftNamedBox : public UI::NamedBox {
 public:
   DraftNamedBox(Resources::Holder &h, std::string, sf::Vector2f size = {100,30}):NamedBox(h) {
-    _frame.setSize(size);
-    _frame.setFillColor(sf::Color::Red);
-    _label.setString("");
+    frame.setSize(size);
+    frame.setFillColor(sf::Color::Red);
+    label.setString("");
   }
 };
 class TeamCol {
@@ -50,12 +50,12 @@ public:
 };
 class DraftState : public State {
 public:
-  DraftState(StateManager &state_manager, const Settings s);
+  DraftState(StateManager &state_manager, const Settings s, sf::RenderWindow& window);
   ~DraftState();
-  void HandleEvents(sf::Event &e);
-  void Update();
-  void Draw();
-  void lockin(StateManager& s);
+  void handle_events(sf::Event &e);
+  void update();
+  void draw(sf::RenderWindow& window);
+  void lockin(StateManager& s, sf::RenderWindow& window);
   void dontban(StateManager& s);
 
 protected:

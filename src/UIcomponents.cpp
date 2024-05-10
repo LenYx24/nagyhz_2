@@ -1,7 +1,7 @@
 #include "../include/UIcomponents.hpp"
 using namespace UI;
 
-Button::Button(sf::String str, std::function<void(StateManager &s)> onclick_, sf::Vector2f pos) {
+Button::Button(sf::String str, std::function<void(StateManager &s)> onclick, sf::Vector2f pos) {
   // default button settings
   text.setString(str);
   text.setFillColor({220, 225, 223});
@@ -11,66 +11,66 @@ Button::Button(sf::String str, std::function<void(StateManager &s)> onclick_, sf
   shape.setFillColor({33, 104, 105});
   shape.setSize({500, 120});
   text.setOrigin({text.getLocalBounds().width / 2, text.getLocalBounds().height / 2});
-  setposition(pos);
-  onclick = onclick_;
+  set_position(pos);
+  this->onclick = onclick;
 }
 
-void Button::settext(sf::String str) {
+void Button::set_text(sf::String str) {
   text.setString(str);
 }
-void Button::setposition(sf::Vector2f pos) {
+void Button::set_position(sf::Vector2f pos) {
   shape.setOrigin(shape.getLocalBounds().width / 2.f, shape.getLocalBounds().height / 2.f);
   shape.setPosition(pos);
-  updatetextpos();
+  update_text_position();
 }
 void Button::draw(sf::RenderWindow& window) {
   window.draw(shape);
   window.draw(text);
 }
-void Button::updatetextpos() {
+void Button::update_text_position() {
   text.setPosition(shape.getPosition().x - text.getLocalBounds().width / 2.f, shape.getPosition().y - text.getLocalBounds().height / 1.5f);
 }
 void Button::draw_to_window(sf::RenderWindow &w) {
   w.draw(shape);
-  updatetextpos();
+  update_text_position();
   w.draw(text);
 }
 NamedBox::NamedBox(std::string label, sf::RectangleShape frame, Resources::Holder &h) {
-  _label.setString(label);
-  _frame = frame;
-  _label.setFont(h.get(Resources::Type::FONT));
+  this->label.setString(label);
+  this->label.setFont(h.get(Resources::Type::FONT));
+  this->frame = frame;
 }
 
 void NamedBox::setcharsize(int size) {
-  _label.setCharacterSize(size);
+  label.setCharacterSize(size);
 }
 void NamedBox::setlabelcolor(const sf::Color &c) {
-  _label.setFillColor(c);
+  label.setFillColor(c);
 }
-  void NamedBox::setlabel(std::string l){
-    _label.setString(l);
-  }
-
-void NamedBox::setposition(sf::Vector2f pos) {
-  _frame.setPosition(pos);
+void NamedBox::setlabel(std::string l){
+  label.setString(l);
 }
 
-sf::Vector2f NamedBox::getsize() {
-  return _frame.getSize();
+void NamedBox::set_position(sf::Vector2f pos) {
+  frame.setPosition(pos);
+}
+
+sf::Vector2f NamedBox::get_size() {
+  return frame.getSize();
 }
 
 void NamedBox::draw(sf::RenderWindow& w) {
-  w.draw(_frame);
-  _label.setPosition(_frame.getPosition() + sf::Vector2f{5, 5});
-  w.draw(_label);
+  w.draw(frame);
+  label.setPosition(frame.getPosition() + sf::Vector2f{5, 5});
+  w.draw(label);
 }
 
 void Grid::setelementspos() {
   sf::Vector2f pos = _startpos;
   for (size_t i = 0; i < _elements.size(); i++) {
-    _elements[i]->setposition(pos);
-    pos.x += (_elements[i]->getsize().x + _margin.x) * _direction.x;
-    pos.y += (_elements[i]->getsize().y + _margin.y) * _direction.y;
+    _elements[i]->set_position(pos);
+    pos.x += (_elements[i]->get_size().x + _margin.x) * _direction.x;
+    pos.y += (_elements[i]->get_size().y + _margin.y) * _direction.y;
   }
 }
 
