@@ -25,7 +25,7 @@ public:
   // resets its hp to full
   //virtual void spawn() = 0;
   //virtual void die() = 0;
-  std::vector<std::string> getstats();
+  virtual std::vector<std::string> getstats();
   inline bool isAlive() const {
     return respawn_timer == 0;
   }
@@ -34,7 +34,7 @@ public:
   inline void setcell(Cell *c){cell=c;}
   // checks
   // virtual void update_vision() = 0;
-
+  std::string to_ui_int_format(double num);
 protected:
   std::string name;
   double maxhp; // the maximum hp this entity could have
@@ -74,6 +74,7 @@ private:
 };
 class Champion : public Entity, public Ireadstring {
 public:
+  Champion();
   // spawns the champion with full health on the side he's on
   void spawn();
   void die();
@@ -87,21 +88,29 @@ public:
   bool add_item(Item *item);
   void setname(std::string name);
   void update_vision();
+  std::vector<std::string> getstats();
   inline void seticon(char c){icon.setString(c);}
   std::string getname() const {return name;}
   virtual bool clicked(const int, const int);
-  ~Champion(){}
+  ~Champion();
   void setfont(Resources::Holder &h);
   void readfromstring(std::string &line, const char delimiter = ';');
+  virtual void draw(sf::RenderWindow &w);
   virtual void draw(sf::RenderWindow &w, sf::Vector2f pos);
   int getmovepoints()const{return movepoints;}
-  bool canmove(int p){
+  void add_gamemove(GameMove *move){gamemoves.push_back(move); current_gamemove = gamemoves[gamemoves.size()-1];}
+  bool is_gamemove_complete()const{if(gamemoves.size() == 0)return false; else return current_gamemove->is_complete();}
+  bool can_move(int p){
     bool b = movepoints-p>=0;
     if(b)movepoints-=p; 
     return b;
   }
+  sf::Vector2f last_gamemove_index()const;
+  sf::Vector2f current_gamemove_index()const;
+  void finish_gamemove(Cell *cell);
 
 private:
+  sf::Vector2f gamemove_index(size_t offset)const;
   inline bool enough_gold(int gold){return this->gold >= gold;} // returns true, if the champion has more or the same gold given in the arguments
   inline bool isinventory_full(){return items.size() == 6;}    // checks if the champions inventory is full
   inline bool in_base(){return true;}             // checks if the current cell is the base cell for this champion
@@ -122,9 +131,8 @@ private:
 
   int movepoints;
   sf::Text icon;
-  // exra props:
-  // role (enum)
-  std::vector<GameMove> gamemoves; // stores the added gamemoves in a turn
+  std::vector<GameMove *> gamemoves; // stores the added gamemoves in a turn
+  GameMove *current_gamemove;
 };
 class Structure : public Entity {
   // common parent class for entities, it shouldn't have a move functions, it's position doesn't change
@@ -179,12 +187,12 @@ public:
   void setspawnpoint(sf::Vector2f point){spawnpoint = point;}
   void setchampicons(const std::string &icons);
   void setfont(Resources::Holder& h);
-  bool isgamemoveactive();
+  bool is_gamemove_active();
   void setgamemoveactive(bool b);
-  // loops through its champions and instructs them to do the moves
   void domoves();
   bool ishischamp(Champion *c);
   void showmoveoptions(const std::shared_ptr<Map>, Champion *c);
+  void draw_champs(sf::RenderWindow &window);
   Champion *getselectedchamp(sf::Vector2f index);
 
 private:

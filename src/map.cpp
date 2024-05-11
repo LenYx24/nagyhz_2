@@ -52,13 +52,13 @@ SpawnArea::SpawnArea() {
 }
 Map::Map(sf::Vector2f pos) {
   position = pos;
-  cells = new Cell **[size.x];
+  //cells = new Cell **[size.x];
   std::ifstream file("resources/map.txt");
   if (!file) {
     throw "error with opening map.txt";
   }
   for (size_t i = 0; i < size.x; i++) {
-    cells[i] = new Cell *[size.y];
+    //cells[i] = new Cell *[size.y];
     std::string line;
     std::getline(file, line);
     //std::cout << line << std::endl;
@@ -169,6 +169,13 @@ Map::~Map() {
 void Cell::addentity(Entity *entity) {
   entities.push_back(entity);
 }
+void Cell::remove_entity(Entity *entity){
+  std::vector<Entity *>::iterator element = std::find(entities.begin(),entities.end(),entity);
+  std::cout << "erasing element: size: " << entities.size() << std::endl;
+  entities.erase(element);
+  std::cout << "erased element: size: " << entities.size() << std::endl;
+
+}
 Cell *Map::getclickedcell(const int x, const int y) {
   for (size_t i = 0; i < size.x; i++) {
     for (size_t j = 0; j < size.y; j++) {
@@ -185,7 +192,9 @@ bool Cell::contains(const int x, const int y) {
 }
 
 Entity* Cell::getentitiyclicked(const int x, const int y){
-  for(size_t i = 0; i < entities.size(); i++){
+  // need to start iterating from the back, because of how the entities are drawn to the screen, 
+  //the last one is drawn on top of the other ones
+  for(size_t i = entities.size()-1; i >=0; i--){
     if(entities[i]->clicked(x,y))return entities[i];
   }
   return nullptr;
@@ -227,4 +236,10 @@ void Map::resetcolors(){
       cells[i][j]->resetcolor();
     }
   }
+}
+void Map::move(Entity *entity, sf::Vector2f from, sf::Vector2f to){
+  posindex from_index = toposindex(from); 
+  posindex to_index = toposindex(to); 
+  cells[from_index.i][from_index.j]->remove_entity(entity);
+  cells[to_index.i][to_index.j]->addentity(entity);
 }

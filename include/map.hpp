@@ -16,6 +16,7 @@ public:
   virtual void setselected();
   virtual bool canmovehere()const{return true;};
   virtual void addentity(Entity *entity);
+  virtual void remove_entity(Entity *entity);
   void setcolor(sf::Color c);
   bool contains(const int, const int);
   Entity *getentitiyclicked(const int, const int);
@@ -26,6 +27,7 @@ public:
   virtual void draw(sf::RenderWindow& window);
   virtual void updateshape(sf::Vector2f mappos, sf::Vector2f cellsize, float margin=2);
   inline sf::Vector2f getindex()const{return indicies;}
+  inline sf::Vector2f get_position()const{return pos;}
  
 private:
   std::vector<Entity *> entities;
@@ -86,6 +88,7 @@ public:
   bool inboundsrow(int p){return 0 <= p && p < size.x;}
   bool inboundscol(int p){return 0 <= p && p < size.y;}
   void resetcolors();
+  void move(Entity *entity, sf::Vector2f from, sf::Vector2f to);
 
 
 private:
@@ -97,7 +100,7 @@ private:
   sf::Vector2f size = {20,20};
   sf::Vector2f cellsize = {30,30};
 // todo, use std array
-  Cell ***cells;
+  Cell *cells[20][20];
 };
 
 #endif

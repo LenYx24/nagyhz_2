@@ -59,6 +59,10 @@ public:
   void onclick_base();
   void onclick_ward();
   void onclick_item();
+
+  void show_cellinfo(sf::Vector2f index);
+  void show_stats(std::vector<std::string> &statsentity);
+
   // void nextplayer();
   // Player *getcurrentplayer();
 

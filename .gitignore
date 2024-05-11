@@ -2,6 +2,7 @@ libs
 build_windows/*
 build_linux/*
 linuxbuild/*
+cmake-build-debug/*
 build/*
 docs/*
 out/*

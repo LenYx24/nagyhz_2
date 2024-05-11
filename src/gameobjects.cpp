@@ -36,6 +36,7 @@ void Champion::readfromstring(std::string &line, const char delimiter) {
   dmg_per_level = std::stod(tokens[2]);
   hp =std::stod(tokens[3]);
   hp_per_level = std::stod(tokens[4]);
+  cell = nullptr;
 }
 void Item::readfromstring(std::string &line, const char delimiter) {
   // Todo: read item datas
@@ -56,6 +57,19 @@ Player::Player(std::vector<Champion*> champs){
 void Entity::draw(sf::RenderWindow &w, sf::Vector2f pos){
   shape.setPosition(pos + sf::Vector2f{5,5});
   w.draw(shape);
+}
+void Champion::draw(sf::RenderWindow &window){
+  std::cout << "cellnullptr" << std::endl;
+  if(cell != nullptr){
+    std::cout << "cellnotnullptr" << std::endl;
+    sf::Vector2f pos = cell->get_position();
+    shape.setPosition(pos + sf::Vector2f{5,5});
+    window.draw(shape);
+    icon.setPosition(shape.getPosition() + sf::Vector2f{2,2});
+    icon.setCharacterSize(10);
+    icon.setFillColor(sf::Color::White);
+    window.draw(icon);
+  }
 }
 void Champion::draw(sf::RenderWindow &w, sf::Vector2f pos){
   shape.setPosition(pos + sf::Vector2f{5,5});
@@ -97,12 +111,20 @@ bool Entity::clicked(const int x, const int y){
 bool Champion::clicked(const int x, const int y){
   return icon.getGlobalBounds().contains(x,y);
 }
+std::string Entity::to_ui_int_format(double num){
+  return std::to_string(static_cast<int>(num));
+}
 std::vector<std::string> Entity::getstats(){
   std::vector<std::string> stats;
   std::cout << "name: " << name << "\nhp: " << hp << std::endl;
   stats.push_back("name: "+name);
-  stats.push_back("hp: "+std::to_string(hp));
-  stats.push_back("dmg: "+std::to_string(damage));
+  stats.push_back("hp: "+to_ui_int_format(hp));
+  stats.push_back("dmg: "+to_ui_int_format(damage));
+  return stats;
+}
+std::vector<std::string> Champion::getstats(){
+  std::vector<std::string> stats = Entity::getstats();
+  stats.push_back("movepoints: "+std::to_string(movepoints));
   return stats;
 }
 Tower::Tower(){
@@ -140,9 +162,49 @@ Champion *Player::getselectedchamp(sf::Vector2f index){
   std::cout << "returned nullptr as selected champ" << std::endl;
   return nullptr;
 }
-bool Player::isgamemoveactive(){
+bool Player::is_gamemove_active(){
   return gamemoveactive;
 }
 void Player::setgamemoveactive(bool b){
   gamemoveactive = b;
+}
+
+Champion::~Champion(){
+  for(size_t i = 0; i < gamemoves.size(); i++){
+    delete gamemoves[i];
+  }
+}
+
+void Player::draw_champs(sf::RenderWindow &window){
+  for(size_t i = 0; i < champs.size(); i++){
+    champs[i]->draw(window);
+  }
+}
+
+void Champion::finish_gamemove(Cell *cell){
+  if(current_gamemove != nullptr){
+    current_gamemove->finish(cell);
+    movepoints-= current_gamemove->get_movepoints();
+  }
+}
+Champion::Champion(){
+  current_gamemove = nullptr;
+  movepoints = 5;
+}
+sf::Vector2f Champion::gamemove_index(size_t offset)const{
+  if(!current_gamemove)throw "current game move is a nullptr";
+  size_t lastindex = gamemoves.size() - 1;
+  for(size_t i = lastindex - offset; i >= 0; i--){
+    if(gamemoves[i]->position_cell() != nullptr){
+      return gamemoves[i]->position_cell()->getindex();
+    }
+  }
+  std::cout << "cellgetindex" << std::endl;
+  return cell->getindex();
+}
+sf::Vector2f Champion::last_gamemove_index()const{
+  return gamemove_index(0);
+}
+sf::Vector2f Champion::current_gamemove_index()const{
+  return gamemove_index(1);
 }

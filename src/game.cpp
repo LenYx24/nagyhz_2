@@ -78,6 +78,8 @@ GameState::GameState(StateManager &state_manager, std::vector<Champion*> p1champ
   // Todo: randomly select starter champ
   currentplayer = players[0];
   selectedchamp = nullptr;
+
+  std::cout << "[[info]] initalized gamestate" << std::endl;
 }
 // onclicks:
 void onclick_endturn() {
@@ -87,9 +89,13 @@ void onclick_endturn() {
 }
 void GameState::onclick_gamemove() {
   currentplayer->setgamemoveactive(true);
-  if(currentplayer->ishischamp(selectedchamp)){
-    map->setselectednearbycells(selectedchamp);
+  if(selectedchamp != nullptr){
+    if(currentplayer->ishischamp(selectedchamp)){
+      map->setselectednearbycells(selectedchamp);
+      selectedchamp->add_gamemove(new MoveCell);
+    }
   }
+  
   // checks if a champion is selected
   // gets the current cell, where the champion is right now
   // asks the gamemove, to make certain cells clickable, which are valid
@@ -120,6 +126,28 @@ void GameState::onclick_base(){
 void GameState::onclick_ward(){
   
 }
+void GameState::show_cellinfo(sf::Vector2f index){
+  sf::RectangleShape shape{{100,60}};
+  shape.setFillColor(sf::Color::Black);
+  statlabels.clear();
+  UI::NamedBox *statlabel = new UI::NamedBox{"Cell:\nx: "+std::to_string((int)index.x+1) + "\ny: "+std::to_string((int)index.y+1),shape,h}; 
+  statlabel->setcharsize(12);
+  statlabel->set_position({70,200});
+  statlabels.push_back(statlabel);
+}
+void GameState::show_stats(std::vector<std::string> &statsentity){
+  sf::Vector2f startpos{70,300};
+  sf::RectangleShape shape{{100,60}};
+  shape.setFillColor(sf::Color::Black);
+  for(size_t i = 0; i < statsentity.size(); i++){
+    UI::NamedBox *statlabel = new UI::NamedBox{statsentity[i],shape,h};
+    statlabel->set_position(startpos);
+    int marginy = 20;
+    startpos.y += shape.getSize().y + marginy;
+    statlabel->setcharsize(12);
+    statlabels.push_back(statlabel);
+  }
+}
 void Round::roundend(){}
 void GameState::handle_events(sf::Event &e) {
   if (e.type == sf::Event::Closed) {
@@ -137,40 +165,28 @@ void GameState::handle_events(sf::Event &e) {
         return;
       }
     }
+
     Cell *clickedcell = map->getclickedcell(e.mouseButton.x,e.mouseButton.y);
     if(clickedcell != nullptr){
-      if(currentplayer->isgamemoveactive()){
-        //add the current cell and add the gamemove to the currently selected champion
-        //currentplayer->addmove();
+      std::cout << "clicked on cell" << std::endl;
+      if(selectedchamp && currentplayer->ishischamp(selectedchamp) && currentplayer->is_gamemove_active()){
+        std::cout << "finish gamemove" << std::endl;
+        selectedchamp->finish_gamemove(clickedcell);
+        std::cout << "moving champ" << std::endl;
+        map->move(selectedchamp, selectedchamp->current_gamemove_index(), selectedchamp->last_gamemove_index());
+        std::cout << "finished move" << std::endl;
       }
       else{
-        std::cout << "clicked on cell" << std::endl;
         map->resetcolors();
-        if(selectedchamp != nullptr && selectedchamp->getcell() != nullptr){
-          selectedchamp->getcell()->resetcolor();
-        }
         clickedcell->sethighlighted();
-        sf::Vector2f index = clickedcell->getindex();
-        sf::RectangleShape shape{{100,60}};
-        shape.setFillColor(sf::Color::Black);
-        statlabels.clear();
-        UI::NamedBox *statlabel = new UI::NamedBox{"Cell:\nx: "+std::to_string((int)index.x+1) + "\ny: "+std::to_string((int)index.y+1),shape,h};
-        statlabel->setcharsize(12);
-        statlabel->set_position({70,200});
-        statlabels.push_back(statlabel);
+
+        show_cellinfo(clickedcell->getindex());
+        std::cout << "showing cell info" << std::endl;
         Entity *clickedentity = clickedcell->getentitiyclicked(e.mouseButton.x, e.mouseButton.y);
         if(clickedentity != nullptr){
           selectedchamp = currentplayer->getselectedchamp(clickedcell->getindex());
           std::vector<std::string> statsentity = clickedentity->getstats();
-          sf::Vector2f startpos{70,300};
-          for(size_t i = 0; i < statsentity.size(); i++){
-            UI::NamedBox *statlabel = new UI::NamedBox{statsentity[i],shape,h};
-            statlabel->set_position(startpos);
-            int marginy = 20;
-            startpos.y += shape.getSize().y + marginy;
-            statlabel->setcharsize(12);
-            statlabels.push_back(statlabel);
-          }
+          show_stats(statsentity);
         }
       }
     }
@@ -189,6 +205,7 @@ void GameState::update() {
 void GameState::draw(sf::RenderWindow& window) {
   sf::Color background_color = sf::Color(220, 225, 222);
   window.clear(background_color);
+  map->draw(window);
   for (size_t i = 0; i < buttons.size(); i++) {
     buttons[i]->draw_to_window(window);
   }
@@ -204,7 +221,6 @@ void GameState::draw(sf::RenderWindow& window) {
   for(size_t i = 0; i < itemslist.size(); i++){
     itemslist[i]->draw(window);
   }
-  map->draw(window);
   window.draw(timer);
 }
 GameState::~GameState(){
