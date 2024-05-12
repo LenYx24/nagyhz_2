@@ -71,6 +71,8 @@ GameState::GameState(StateManager &state_manager, std::vector<Champion*> p1champ
   players[1]->setspawnpoint({map->getcellgridsize().x-1,0});
   players[0]->spawnchamps(map);
   players[1]->spawnchamps(map);
+  players[0]->set_side(Side::BLUE);
+  players[1]->set_side(Side::RED);
   // spawn minions
   create_simulation = [state = this, &window](){
     state->state_manager.push_state(std::make_unique<SimulationState>(state->players, state->map, window, state->mode,state->state_manager));

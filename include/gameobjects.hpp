@@ -104,6 +104,7 @@ public:
   virtual void update_shape_pos(sf::Vector2f pos);
   void do_move(std::shared_ptr<Map> map);
   void set_simulation(bool sim){simulation = sim;}
+  void round_end();
 
 private:
   sf::Vector2f gamemove_index(size_t offset)const;
@@ -211,6 +212,7 @@ public:
   void round_end(std::shared_ptr<Map> map);
   void set_simulation(bool sim);
   void update_champ_positions(std::shared_ptr<Map> map);
+  void set_side(Side s){side = s;}
   Champion *getselectedchamp(sf::Vector2f index);
   sf::Vector2f get_spawn_point()const{return spawnpoint;}
 

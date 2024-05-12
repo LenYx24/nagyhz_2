@@ -147,7 +147,7 @@ void Map::reset_cell_selections(){
   for (size_t i = 0; i < size.x; i++) {
     for (size_t j = 0; j < size.y; j++) {
       if (cells[i][j] != nullptr) {
-        cells[i][j]->setselected();
+        cells[i][j]->unselect();
         cells[i][j]->resetcolor();
       }
     }
@@ -213,12 +213,20 @@ std::vector<Cell*> Map::getnearbycells(sf::Vector2f pos, int distance){
   }
   return around;
 }
-void Map::setselectednearbycells(Champion *c){
+template<typename P>
+void Map::setselectednearbycells(Champion *c, P pred){
   sf::Vector2f index = c->get_simulation_cell()->getindex();
   std::vector<Cell *> nearbycells = getnearbycells(index);
   for(size_t i = 0; i < nearbycells.size(); i++){
-    nearbycells[i]->setselected();
+    if(pred(nearbycells[i]))
+      nearbycells[i]->setselected();
   }
+}
+void Map::select_accessible_cells(Champion *c){
+  setselectednearbycells(c,[](Cell *c){return c->canmovehere();});
+}
+void Map::select_wardable_cells(Champion *c){
+  setselectednearbycells(c,[](Cell *c){return c->can_ward_here();});
 }
 void Cell::unselect(){
   selected = false;

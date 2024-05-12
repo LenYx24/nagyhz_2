@@ -17,6 +17,7 @@ public:
   virtual void setselected();
   virtual inline bool is_selected()const{return selected;}
   virtual bool canmovehere()const{return true;};
+  virtual bool can_ward_here()const{return true;}
   virtual void addentity(Entity *entity);
   virtual void remove_entity(Entity *entity);
   void setcolor(sf::Color c);
@@ -88,7 +89,10 @@ public:
   Cell *getcell(sf::Vector2f pos){
     posindex p_index = toposindex(pos);
     return cells[p_index.i][p_index.j];}
-  void setselectednearbycells(Champion *c);
+  template<typename P>
+  void setselectednearbycells(Champion *c, P pred);
+  void select_accessible_cells(Champion *c);
+  void select_wardable_cells(Champion *c);
   inline bool inboundsrow(int p){return 0 <= p && p < size.x;}
   inline bool inboundscol(int p){return 0 <= p && p < size.y;}
   void move(Entity *entity, sf::Vector2f from, sf::Vector2f to);

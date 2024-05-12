@@ -72,6 +72,12 @@ void Player::round_end(std::shared_ptr<Map> map){
   if(minion_timer == minion_timer_mark){
     spawn_minions(map);
   }
+  for(size_t i = 0; i < champs.size(); i++){
+    champs[i]->round_end();
+  }
+}
+void Champion::round_end(){
+  this->movepoints = 3;
 }
 void Entity::update_shape_pos(sf::Vector2f pos){
   shape.setPosition(pos + sf::Vector2f{5,5});
@@ -197,7 +203,7 @@ Champion::Champion(){
   movepoints = 3;
   icon.setCharacterSize(10);
   icon.setFillColor(sf::Color::White);
-  simulation_points_counter = 0;
+  simulation_points_counter = 1;
   simulation = false;
 }
 void Champion::add_item(Item *item){
@@ -246,11 +252,10 @@ void MinionWave::spawn(sf::Vector2f startpoint, std::shared_ptr<Map> map){
 }
 void Champion::do_move(std::shared_ptr<Map> map){
   if(gamemoves.size() > 0){
-    std::cout << "did move" << std::endl;
     if(gamemoves[0]->get_movepoints() == simulation_points_counter){
       gamemoves[0]->do_move(this,map);
       gamemoves.erase(gamemoves.begin());
-      simulation_points_counter = 0;
+      simulation_points_counter = 1;
     }else{
       simulation_points_counter++;
     }
