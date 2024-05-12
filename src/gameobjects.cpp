@@ -49,35 +49,43 @@ void Item::readfromstring(std::string &line, const char delimiter) {
   setbonusdmg(std::stod(tokens[2]));
   setbonushp(std::stod(tokens[3]));
 }
-Player::Player(std::vector<Champion*> champs){
+Player::Player(std::vector<Champion*> champs):starter(false){
   this->champs = champs;
   gamemoveactive = false;
+  minion_timer = 0;
+  minion_timer_mark = 3;
+  is_simulation = false;
 }
-
-void Entity::draw(sf::RenderWindow &w, sf::Vector2f pos){
+void Player::spawn_minions(std::shared_ptr<Map> map){
+  int offset = 2;
+  if(side == Side::RED)offset=-offset;
+  std::vector<sf::Vector2f> points;
+  points.push_back({spawnpoint.x+offset,spawnpoint.y});
+  points.push_back({spawnpoint.x+offset,spawnpoint.y+offset});
+  points.push_back({spawnpoint.x,spawnpoint.y+offset});
+  for(size_t i = 0; i < points.size(); i++){
+    minion_waves[i]->spawn(points[i],map);
+  }
+}
+void Player::round_end(std::shared_ptr<Map> map){
+  minion_timer++;
+  if(minion_timer == minion_timer_mark){
+    spawn_minions(map);
+  }
+}
+void Entity::update_shape_pos(sf::Vector2f pos){
   shape.setPosition(pos + sf::Vector2f{5,5});
+}
+void Champion::update_shape_pos(sf::Vector2f pos){
+  Entity::update_shape_pos(pos);
+  icon.setPosition(shape.getPosition() + sf::Vector2f{2,2});
+}
+void Entity::draw(sf::RenderWindow &w){
   w.draw(shape);
 }
 void Champion::draw(sf::RenderWindow &window){
-  std::cout << "cellnullptr" << std::endl;
-  if(cell != nullptr){
-    std::cout << "cellnotnullptr" << std::endl;
-    sf::Vector2f pos = cell->get_position();
-    shape.setPosition(pos + sf::Vector2f{5,5});
-    window.draw(shape);
-    icon.setPosition(shape.getPosition() + sf::Vector2f{2,2});
-    icon.setCharacterSize(10);
-    icon.setFillColor(sf::Color::White);
-    window.draw(icon);
-  }
-}
-void Champion::draw(sf::RenderWindow &w, sf::Vector2f pos){
-  shape.setPosition(pos + sf::Vector2f{5,5});
-  w.draw(shape);
-  icon.setPosition(shape.getPosition() + sf::Vector2f{2,2});
-  icon.setCharacterSize(10);
-  icon.setFillColor(sf::Color::White);
-  w.draw(icon);
+  window.draw(shape);
+  window.draw(icon);
 }
 void Champion::setname(std::string name){this->name=name;}
 void Player::spawnchamps(const std::shared_ptr<Map> map){
@@ -86,8 +94,10 @@ void Player::spawnchamps(const std::shared_ptr<Map> map){
     champs[i]->setcell(map->getcell(spawnpoint));
   }
 }
-void Player::domoves(){
-  // do moves
+void Player::domoves(std::shared_ptr<Map> map){
+  for(size_t i = 0; i < champs.size(); i++){
+    champs[i]->do_move(map);
+  }
 }
 void Player::setchampicons(const std::string &icons){
   for(size_t i = 0; i < icons.length(); i++){
@@ -100,7 +110,7 @@ void Player::setfont(Resources::Holder &h){
   }
 }
 void Champion::setfont(Resources::Holder &h){
-  this->icon.setFont(h.get(Resources::Type::FONT));
+  icon.setFont(h.get(Resources::Type::FONT));
 }
 bool Entity::clicked(const int x, const int y){
   return shape.getGlobalBounds().contains(x,y);
@@ -108,15 +118,11 @@ bool Entity::clicked(const int x, const int y){
 // bool Tower::clicked(const int x, const int y){
 //   return true;
 // }
-bool Champion::clicked(const int x, const int y){
-  return icon.getGlobalBounds().contains(x,y);
-}
 std::string Entity::to_ui_int_format(double num){
   return std::to_string(static_cast<int>(num));
 }
 std::vector<std::string> Entity::getstats(){
   std::vector<std::string> stats;
-  std::cout << "name: " << name << "\nhp: " << hp << std::endl;
   stats.push_back("name: "+name);
   stats.push_back("hp: "+to_ui_int_format(hp));
   stats.push_back("dmg: "+to_ui_int_format(damage));
@@ -156,10 +162,9 @@ bool Player::ishischamp(Champion *c){
   return false;
 }
 Champion *Player::getselectedchamp(sf::Vector2f index){
-  for(size_t i = 0; i < champs.size(); i++){
-    if(champs[i]->getcell()->getindex() == index)return champs[i];
+  for(int i = static_cast<int>(champs.size())-1; i >=0; i--){
+    if(champs[i]->get_simulation_cell()->getindex() == index)return champs[i];
   }
-  std::cout << "returned nullptr as selected champ" << std::endl;
   return nullptr;
 }
 bool Player::is_gamemove_active(){
@@ -189,17 +194,25 @@ void Champion::finish_gamemove(Cell *cell){
 }
 Champion::Champion(){
   current_gamemove = nullptr;
-  movepoints = 5;
+  movepoints = 3;
+  icon.setCharacterSize(10);
+  icon.setFillColor(sf::Color::White);
+  simulation_points_counter = 0;
+  simulation = false;
+}
+void Champion::add_item(Item *item){
+  if(items.size() < 6){
+    items.push_back(item);
+  }
 }
 sf::Vector2f Champion::gamemove_index(size_t offset)const{
   if(!current_gamemove)throw "current game move is a nullptr";
-  size_t lastindex = gamemoves.size() - 1;
-  for(size_t i = lastindex - offset; i >= 0; i--){
+  int lastindex = static_cast<int>(gamemoves.size()) - 1;
+  for(int i = lastindex - offset; i >= 0; i--){
     if(gamemoves[i]->position_cell() != nullptr){
       return gamemoves[i]->position_cell()->getindex();
     }
   }
-  std::cout << "cellgetindex" << std::endl;
   return cell->getindex();
 }
 sf::Vector2f Champion::last_gamemove_index()const{
@@ -207,4 +220,55 @@ sf::Vector2f Champion::last_gamemove_index()const{
 }
 sf::Vector2f Champion::current_gamemove_index()const{
   return gamemove_index(1);
+}
+Cell *Champion::get_simulation_cell(){
+  int lastindex = static_cast<int>(gamemoves.size()) - 1;
+  for(int i = lastindex; i >= 0; i--){
+    if(gamemoves[i]->position_cell() != nullptr){
+      return gamemoves[i]->position_cell();
+    }
+  }
+  return cell;
+}
+bool Player::check_round_end(){
+  for(size_t i = 0; i < champs.size(); i++){
+    if(champs[i]->getmovepoints() !=0)return false;
+  }
+  return true;
+}
+void MinionWave::spawn(sf::Vector2f startpoint, std::shared_ptr<Map> map){
+  for(size_t i = 0; i < minion_wave_size; i++){
+    // Todo: maybe its overcomplicated, and the minion waves don't have to be stored, and the minions should only be stored on the map
+    Minion *minion = new Minion;
+    minions.push_back(minion);
+    map->spawn(minion,startpoint);
+  }
+}
+void Champion::do_move(std::shared_ptr<Map> map){
+  if(gamemoves.size() > 0){
+    std::cout << "did move" << std::endl;
+    if(gamemoves[0]->get_movepoints() == simulation_points_counter){
+      gamemoves[0]->do_move(this,map);
+      gamemoves.erase(gamemoves.begin());
+      simulation_points_counter = 0;
+    }else{
+      simulation_points_counter++;
+    }
+  }
+}
+
+void Player::set_simulation(bool sim){
+  for(size_t i = 0; i < champs.size(); i++){
+    champs[i]->set_simulation(sim);
+  }
+  is_simulation = sim;
+}
+void Player::update_champ_positions(std::shared_ptr<Map> map){
+  for(size_t i = 0; i < champs.size(); i++){
+    if(is_simulation){
+      map->move(champs[i], champs[i]->get_real_cell()->getindex(), champs[i]->get_simulation_cell()->getindex());
+    }else{
+      map->move(champs[i], champs[i]->get_simulation_cell()->getindex(), champs[i]->get_real_cell()->getindex());
+    }
+  }
 }

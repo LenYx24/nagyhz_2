@@ -21,7 +21,7 @@ class Entity {
 public:
   virtual ~Entity(){}
   Entity(std::string name = "");
-  virtual void draw(sf::RenderWindow &w, sf::Vector2f pos);
+  virtual void draw(sf::RenderWindow &w);
   // resets its hp to full
   //virtual void spawn() = 0;
   //virtual void die() = 0;
@@ -30,8 +30,12 @@ public:
     return respawn_timer == 0;
   }
   virtual bool clicked(const int, const int);
-  inline Cell *getcell(){return cell;}
-  inline void setcell(Cell *c){cell=c;}
+  // the cell where the entity is at the start of the round
+  inline Cell *get_real_cell(){return cell;}
+  // the cell which calculates in the gamemoves of the current cell
+  inline Cell *get_simulation_cell(){return cell;}
+  inline void setcell(Cell *c){if(c != nullptr)cell=c;}
+  virtual void update_shape_pos(sf::Vector2f pos);
   // checks
   // virtual void update_vision() = 0;
   std::string to_ui_int_format(double num);
@@ -75,39 +79,31 @@ private:
 class Champion : public Entity, public Ireadstring {
 public:
   Champion();
+  ~Champion();
   // spawns the champion with full health on the side he's on
   void spawn();
   void die();
   bool fight(Champion &other); // simulates a fight, by calculating each ones dmg
   double get_total_dmg();      // returns the total dmg that could be dealt by the champion with all the buffs and items
-  void do_game_moves();        // iterates through the gamemoves vector, does every move, then empties the vector
-  // tries to add an item to the champion, returns true if its successful
-  // and check if the champions position is in its own base cell
-  // if thats true, then check if the champion has enough gold to buy the item
-  // checks if the champions inventory is not full
-  bool add_item(Item *item);
+  void add_item(Item *item);
   void setname(std::string name);
   void update_vision();
   std::vector<std::string> getstats();
   inline void seticon(char c){icon.setString(c);}
   std::string getname() const {return name;}
-  virtual bool clicked(const int, const int);
-  ~Champion();
   void setfont(Resources::Holder &h);
   void readfromstring(std::string &line, const char delimiter = ';');
   virtual void draw(sf::RenderWindow &w);
-  virtual void draw(sf::RenderWindow &w, sf::Vector2f pos);
   int getmovepoints()const{return movepoints;}
   void add_gamemove(GameMove *move){gamemoves.push_back(move); current_gamemove = gamemoves[gamemoves.size()-1];}
-  bool is_gamemove_complete()const{if(gamemoves.size() == 0)return false; else return current_gamemove->is_complete();}
-  bool can_move(int p){
-    bool b = movepoints-p>=0;
-    if(b)movepoints-=p; 
-    return b;
-  }
+  bool is_gamemove_complete()const{if(gamemoves.size() == 0)return true; else return current_gamemove->is_complete();}
+  Cell *get_simulation_cell();
   sf::Vector2f last_gamemove_index()const;
   sf::Vector2f current_gamemove_index()const;
   void finish_gamemove(Cell *cell);
+  virtual void update_shape_pos(sf::Vector2f pos);
+  void do_move(std::shared_ptr<Map> map);
+  void set_simulation(bool sim){simulation = sim;}
 
 private:
   sf::Vector2f gamemove_index(size_t offset)const;
@@ -133,6 +129,8 @@ private:
   sf::Text icon;
   std::vector<GameMove *> gamemoves; // stores the added gamemoves in a turn
   GameMove *current_gamemove;
+  int simulation_points_counter;
+  bool simulation;
 };
 class Structure : public Entity {
   // common parent class for entities, it shouldn't have a move functions, it's position doesn't change
@@ -155,8 +153,9 @@ class Nexus : public Structure {
 };
 class Monster : public Entity {
   // a common class for entities, which are not managed by the player, they can attack champions, and champions can slain them
-protected:
+private:
   int xp_given; // the amount of xp given to the champion by slaying them
+  int gold_given;
 };
 class Camp : public Monster {
 public:
@@ -172,8 +171,20 @@ private:
 class Minion : public Monster {
 
 private:
-  Side side; // on which side the minion is on
   // Todo: add game moves for minions
+};
+class MinionWave{
+public:
+  MinionWave():minion_wave_size(6){}
+  void spawn(sf::Vector2f startpoint, std::shared_ptr<Map> map);
+  // check for minion deaths...
+  void round_end();
+
+  // checks if the minion can attack something in front of it, if not then moves forward
+  void do_minions_move();
+private:
+  std::vector<Minion *> minions;
+  size_t minion_wave_size;
 };
 class Ward : public Entity {
 public:
@@ -189,16 +200,30 @@ public:
   void setfont(Resources::Holder& h);
   bool is_gamemove_active();
   void setgamemoveactive(bool b);
-  void domoves();
+  void domoves(std::shared_ptr<Map> map);
   bool ishischamp(Champion *c);
   void showmoveoptions(const std::shared_ptr<Map>, Champion *c);
   void draw_champs(sf::RenderWindow &window);
+  bool did_start()const{return starter;}
+  void set_starter(bool s){starter = s;}
+  bool check_round_end();
+  void spawn_minions(std::shared_ptr<Map> minions);
+  void round_end(std::shared_ptr<Map> map);
+  void set_simulation(bool sim);
+  void update_champ_positions(std::shared_ptr<Map> map);
   Champion *getselectedchamp(sf::Vector2f index);
+  sf::Vector2f get_spawn_point()const{return spawnpoint;}
 
 private:
   std::vector<Champion*> champs;
   Side side;
   bool gamemoveactive;
+  bool starter;
   sf::Vector2f spawnpoint;
+  // minions
+  std::vector<MinionWave*> minion_waves;
+  int minion_timer;
+  int minion_timer_mark;
+  bool is_simulation;
 };
 #endif

@@ -15,16 +15,13 @@ GameState::GameState(StateManager &state_manager, std::vector<Champion*> p1champ
     allitems.push_back(item);
   }
   // set gamemode
-  _mode = mode;
+  this->mode = mode;
   // load font
   h.load(Resources::Type::FONT, "./fonts/Roboto.ttf");
-  // create players
-  players.push_back(new Player{p1champs});
-  players.push_back(new Player{p2champs});
   // create the UI components:
   sf::Vector2f windowsize = state_manager.get_size(window);
   // todo: get the gamebuttons sizes, and position it accordingly
-  buttons.push_back(new GameButton(h, "End round", [state = this](StateManager &s) { state->onclick_gamemove(); },{80,40}));
+  buttons.push_back(new GameButton(h, "End my turn", [state = this](StateManager &s) { state->end_turn(); },{80,40}));
   buttons.push_back(new GameButton(h, "back", [](StateManager &s) { s.pop_state(); },{80,windowsize.y-50}));
 
   gamemovebuttons.push_back(new GameButton(h, "move", [state = this](StateManager &s) { state->onclick_gamemove(); }));
@@ -62,58 +59,65 @@ GameState::GameState(StateManager &state_manager, std::vector<Champion*> p1champ
   timer.setPosition({250, 10});
   timer.setFont(h.get(Resources::Type::FONT));
   timer.setCharacterSize(18);
-  // spawn champs
+  // create players
+  players.push_back(new Player{p1champs});
+  players.push_back(new Player{p2champs});
   players[0]->setchampicons("ABCDE");
   players[1]->setchampicons("FGHIJ");
   players[0]->setfont(h);
   players[1]->setfont(h);
+  // spawn champs
   players[0]->setspawnpoint({0,map->getcellgridsize().y-1});
   players[1]->setspawnpoint({map->getcellgridsize().x-1,0});
   players[0]->spawnchamps(map);
   players[1]->spawnchamps(map);
   // spawn minions
+  create_simulation = [state = this, &window](){
+    state->state_manager.push_state(std::make_unique<SimulationState>(state->players, state->map, window, state->mode,state->state_manager));
+  };
   
   // seed the random generator
   srand(static_cast<unsigned>(time(0)));
   // Todo: randomly select starter champ
   currentplayer = players[0];
+  players[0]->set_starter(true);
   selectedchamp = nullptr;
 
   std::cout << "[[info]] initalized gamestate" << std::endl;
 }
 // onclicks:
-void onclick_endturn() {
+void GameState::end_turn() {
   // ends the turn and starts the other players turn, or does the simulation
   // a simulation substate needs the map, and the entities on the map
   // it also needs to know, who's able to see the moves
-}
-void GameState::onclick_gamemove() {
-  currentplayer->setgamemoveactive(true);
-  if(selectedchamp != nullptr){
-    if(currentplayer->ishischamp(selectedchamp)){
-      map->setselectednearbycells(selectedchamp);
-      selectedchamp->add_gamemove(new MoveCell);
+  if(currentplayer->did_start()){
+    // the other player is next
+    currentplayer->set_simulation(false);
+    currentplayer->update_champ_positions(map);
+    if(currentplayer == players[0])currentplayer = players[1];
+    else currentplayer = players[0];
+    currentplayer->set_simulation(true);
+  }else{
+    currentplayer->set_simulation(false);
+    currentplayer->update_champ_positions(map);
+    // round ends, simulation should start
+    std::cout << "round ends" << std::endl;
+    create_simulation();
+    for(size_t i = 0; i < players.size(); i++){
+      players[i]->round_end(map);
     }
   }
-  
-  // checks if a champion is selected
-  // gets the current cell, where the champion is right now
-  // asks the gamemove, to make certain cells clickable, which are valid
+  elapsedtime.restart();
 }
-void onclick_cell() {
-  // checks if there's a selected move right now
-  // if there's, then if the cell was clickable, then add the gamemove to the currently selected champions gamemove
-  // reset the timer
-  // reset clickable cells
+void GameState::onclick_gamemove() {
+  MoveCell *move_cell = new MoveCell;
+  move_cell->onclick(map,currentplayer,selectedchamp);
 }
-void onclick_champ() {
-  // update selected champs stats
-  // update the available game moves
-}
-void GameState::onclick_item() {
-  // check if there's currently a selected champion
-  if(currentplayer->ishischamp(selectedchamp)){
-    // tries to add the item to the champion (the checks are made by the champion class)
+void GameState::onclick_item(Item *selected_item) {
+  if(selectedchamp == nullptr)return;
+  Cell *spawnpoint = map->getcell(currentplayer->get_spawn_point());
+  if(currentplayer->ishischamp(selectedchamp) && selectedchamp->get_simulation_cell() == spawnpoint){
+    selectedchamp->add_item(selected_item);
   }
 }
 
@@ -121,10 +125,12 @@ void GameState::onclick_attack(){
 
 }
 void GameState::onclick_base(){
-
+  TeleportBase *teleport = new TeleportBase;
+  teleport->onclick(map,currentplayer,selectedchamp);
 }
 void GameState::onclick_ward(){
-  
+  PlaceWard *ward = new PlaceWard;
+  ward->onclick(map,currentplayer,selectedchamp);
 }
 void GameState::show_cellinfo(sf::Vector2f index){
   sf::RectangleShape shape{{100,60}};
@@ -148,7 +154,10 @@ void GameState::show_stats(std::vector<std::string> &statsentity){
     statlabels.push_back(statlabel);
   }
 }
-void Round::roundend(){}
+bool GameState::is_gamemove_finisher(Cell *clickedcell){
+  return selectedchamp && currentplayer->ishischamp(selectedchamp) && !selectedchamp->is_gamemove_complete() && clickedcell->is_selected();
+}
+//void Round::roundend(){}
 void GameState::handle_events(sf::Event &e) {
   if (e.type == sf::Event::Closed) {
     state_manager.exit();
@@ -165,47 +174,55 @@ void GameState::handle_events(sf::Event &e) {
         return;
       }
     }
+    for (ItemBox *b : itemslist) {
+      if (b->getglobalbounds().contains(e.mouseButton.x, e.mouseButton.y)) {
+        // Todo: make itemboxes item a private member
+        onclick_item(b->item);
+        return;
+      }
+    }
 
     Cell *clickedcell = map->getclickedcell(e.mouseButton.x,e.mouseButton.y);
     if(clickedcell != nullptr){
-      std::cout << "clicked on cell" << std::endl;
-      if(selectedchamp && currentplayer->ishischamp(selectedchamp) && currentplayer->is_gamemove_active()){
-        std::cout << "finish gamemove" << std::endl;
+      map->reset_cell_selections();
+      std::vector<std::string> statsentity;
+      
+      show_cellinfo(clickedcell->getindex());
+      if(is_gamemove_finisher(clickedcell)){
         selectedchamp->finish_gamemove(clickedcell);
-        std::cout << "moving champ" << std::endl;
         map->move(selectedchamp, selectedchamp->current_gamemove_index(), selectedchamp->last_gamemove_index());
-        std::cout << "finished move" << std::endl;
+        statsentity = selectedchamp->getstats();
       }
       else{
-        map->resetcolors();
         clickedcell->sethighlighted();
-
-        show_cellinfo(clickedcell->getindex());
-        std::cout << "showing cell info" << std::endl;
         Entity *clickedentity = clickedcell->getentitiyclicked(e.mouseButton.x, e.mouseButton.y);
         if(clickedentity != nullptr){
           selectedchamp = currentplayer->getselectedchamp(clickedcell->getindex());
-          std::vector<std::string> statsentity = clickedentity->getstats();
-          show_stats(statsentity);
+          statsentity = clickedentity->getstats();
         }
       }
+      show_stats(statsentity);
     }
   }
 }
 void GameState::update() {
   // update time elapsed
   std::string s = "Time left: ";
-  s += std::to_string(30 - (int)elapsedtime.getElapsedTime().asSeconds());
+  int timeleft = 60;
+  s += std::to_string(timeleft - (int)elapsedtime.getElapsedTime().asSeconds());
   timer.setString(s);
-  if ((int)elapsedtime.getElapsedTime().asSeconds() == 30) {
+  if (static_cast<int>(elapsedtime.getElapsedTime().asSeconds()) == timeleft) {
     elapsedtime.restart();
     // end turn
+  }
+  // check round end
+  if(currentplayer->check_round_end()){
+    end_turn();
   }
 }
 void GameState::draw(sf::RenderWindow& window) {
   sf::Color background_color = sf::Color(220, 225, 222);
   window.clear(background_color);
-  map->draw(window);
   for (size_t i = 0; i < buttons.size(); i++) {
     buttons[i]->draw_to_window(window);
   }
@@ -221,6 +238,7 @@ void GameState::draw(sf::RenderWindow& window) {
   for(size_t i = 0; i < itemslist.size(); i++){
     itemslist[i]->draw(window);
   }
+  map->draw(window);
   window.draw(timer);
 }
 GameState::~GameState(){

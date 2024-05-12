@@ -89,12 +89,18 @@ DraftState::DraftState(StateManager &state_manager, const Settings s, sf::Render
   DraftTurn p1ban{columns[2].champs,true};
   DraftTurn p2ban{columns[3].champs,true};
   this->turns = std::vector<DraftTurn>{p1ban, p2ban, p1ban, p2ban, p1ban, p2ban, p1, p2, p2, p1, p1, p2, p1ban, p2ban, p1ban, p2ban, p2, p1, p1, p2};
+ 
 
   turn_counter = 0;
   elapsedtime.restart();
   selectedchamp = nullptr;
   timer.setPosition({200, 40});
   timer.setFont(h.get(Resources::Type::FONT));
+
+  // temporarily here, so i dont have to do the draft phase while debugging
+   for(size_t i = 0; i < 20; i++){
+    this->turns[turn_counter++].doturn(champlist[i]->champ);
+  }
 }
 // onclicks:
 // select champ -> shows the champ details on the small grid

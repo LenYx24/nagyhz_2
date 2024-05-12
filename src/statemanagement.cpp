@@ -1,25 +1,29 @@
 #include "../include/statemanagement.hpp"
 
 void StateManager::change_state(std::unique_ptr<State> state) {
-  if (!states.empty()) {
-    states.pop();
-  }
-  states.push(std::move(state));
+  pop = true;
+  buffer_state = std::move(state);
 }
 
 void StateManager::push_state(std::unique_ptr<State> state) {
-  states.push(std::move(state));
+  buffer_state = std::move(state);
 }
 
 void StateManager::pop_state() {
-  if (!states.empty()) {
+  pop = true;
+}
+void StateManager::update_state(){
+  if(pop){
     states.pop();
+    pop = false;
+  }
+  if(buffer_state){
+    states.push(std::move(buffer_state));
   }
   if (states.empty()) {
     exit();
   }
 }
-
 void StateManager::handle_events(sf::RenderWindow &window) {
   sf::Event e;
   while (window.pollEvent(e)){

@@ -9,11 +9,13 @@ enum class vision { PLAYER1, PLAYER2, BOTH };
 class Cell {
 public:
   Cell():selected(false){}
+  virtual ~Cell(){}
   // updates the vision of the cell, should be called after every move
   virtual void updateVision();
   // returns true, if the 
-  virtual bool canbuyitems();
+  virtual bool canbuyitems()const;
   virtual void setselected();
+  virtual inline bool is_selected()const{return selected;}
   virtual bool canmovehere()const{return true;};
   virtual void addentity(Entity *entity);
   virtual void remove_entity(Entity *entity);
@@ -28,6 +30,8 @@ public:
   virtual void updateshape(sf::Vector2f mappos, sf::Vector2f cellsize, float margin=2);
   inline sf::Vector2f getindex()const{return indicies;}
   inline sf::Vector2f get_position()const{return pos;}
+  void update_entities_shape(sf::Vector2f mappos);
+  void unselect();
  
 private:
   std::vector<Entity *> entities;
@@ -72,7 +76,7 @@ public:
   ~Map();
   // tells every cell to draw its contents to the screen
   void draw(sf::RenderWindow& w);
-  // checks on every cell, if there are certain entities that can interact
+  // called when you need the real position at the turn of the entities
   void update();
   void spawn(Entity *entity, sf::Vector2f pos);
   Cell *getclickedcell(const int, const int);
@@ -85,11 +89,10 @@ public:
     posindex p_index = toposindex(pos);
     return cells[p_index.i][p_index.j];}
   void setselectednearbycells(Champion *c);
-  bool inboundsrow(int p){return 0 <= p && p < size.x;}
-  bool inboundscol(int p){return 0 <= p && p < size.y;}
-  void resetcolors();
+  inline bool inboundsrow(int p){return 0 <= p && p < size.x;}
+  inline bool inboundscol(int p){return 0 <= p && p < size.y;}
   void move(Entity *entity, sf::Vector2f from, sf::Vector2f to);
-
+  void reset_cell_selections();
 
 private:
   struct posindex{

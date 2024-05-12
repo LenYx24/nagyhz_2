@@ -12,3 +12,9 @@ ezreal;20;4;30;2
 irelia;19;5;23;4
 skarner;20;4;22;2
 miss fortune;15;5;15;5
+kayle;15;5;15;5
+viktor;15;5;15;5
+orianna;17;3;25;4
+xerath;14;4;16;6
+renekton;13;4;14;4
+zed;12;4;35;5

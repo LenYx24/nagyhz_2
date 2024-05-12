@@ -9,21 +9,25 @@
 class State;
 class StateManager {
 public:
+  StateManager():pop(false){buffer_state = std::move(std::unique_ptr<State>(nullptr));}
   void change_state(std::unique_ptr<State> state);
   void push_state(std::unique_ptr<State> state);
   void pop_state();
+  void update_state();
 
   void handle_events(sf::RenderWindow &window);
   void update();
   void draw(sf::RenderWindow &window);
 
   sf::Vector2f get_size(sf::RenderWindow& window)const;
-  inline bool has_state() const {return !states.empty();}
+  inline bool has_state() const {return !states.empty() || buffer_state;}
 
   void exit();
 
 private:
   std::stack<std::unique_ptr<State>> states;
+  std::unique_ptr<State> buffer_state;
+  bool pop;
 };
 class State {
 public:

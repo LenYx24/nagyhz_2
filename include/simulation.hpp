@@ -7,20 +7,24 @@
 #include "statemanagement.hpp"
 #include <vector>
 class SimulationState : public State {
-  SimulationState(Champion *allchamps[10], GameMode mode);
+  public:
+  SimulationState(std::vector<Player *> &players, std::shared_ptr<Map> map, sf::RenderWindow& window, GameMode mode, StateManager &state_manager);
   ~SimulationState() {}
-  virtual void HandleEvents(sf::Event &e);
-  virtual void Update();
-  virtual void Draw();
-
-  void doOneMove();
+  virtual void handle_events(sf::Event &e);
+  virtual void update();
+  virtual void draw(sf::RenderWindow& window);
 
 protected:
   Resources::Holder h;
-  std::vector<Player> players;
-  Map *map;
-  std::vector<UI::Button> buttons;
-  sf::Time elapsed_time;
+  std::vector<Player *> &players;
+  std::shared_ptr<Map> map;
+  //std::vector<UI::Button> buttons;
+  sf::Clock elapsed_time;
   sf::Time oneturn_time; // the amount of time the current turn that was done is shown
+  GameMode mode;
+  int round_count;
+  int round_counter;
+  // timer
+  sf::Text timer;
 };
 #endif

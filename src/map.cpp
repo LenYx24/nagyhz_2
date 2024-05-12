@@ -1,19 +1,24 @@
 #include "../include/map.hpp"
 
-void Cell::setpos(sf::Vector2f pos) {
-  indicies = pos;
+void Cell::setpos(sf::Vector2f index) {
+  indicies = index;
 }
 void Cell::updateshape(sf::Vector2f mappos, sf::Vector2f cellsize, float margin) {
   shape.setFillColor(color);
   pos = {mappos.x + cellsize.x * indicies.x, mappos.y + cellsize.y * indicies.y};
   shape.setSize({cellsize.x - margin, cellsize.y - margin});
   shape.setPosition(pos);
-  //std::cout << "pos: " << pos.x << " " << pos.y << std::endl;
+  update_entities_shape(pos);
+}
+void Cell::update_entities_shape(sf::Vector2f mappos){
+  for(size_t i = 0; i < entities.size(); i++){
+    entities[i]->update_shape_pos(mappos);
+  }
 }
 void Cell::updateVision() {
   // update vision
 }
-bool Cell::canbuyitems() {
+bool Cell::canbuyitems()const {
   return true;
 }
 void Cell::resetcolor(){
@@ -29,7 +34,8 @@ void Cell::sethighlighted() {
 void Cell::draw(sf::RenderWindow &w) {
   w.draw(shape);
   for(size_t i = 0; i < entities.size(); i++){
-    entities[i]->draw(w,pos);
+    if(entities[i] != nullptr)
+      entities[i]->draw(w);
   }
 }
 void Cell::setcolor(sf::Color c) {
@@ -58,68 +64,55 @@ Map::Map(sf::Vector2f pos) {
     throw "error with opening map.txt";
   }
   for (size_t i = 0; i < size.x; i++) {
-    //cells[i] = new Cell *[size.y];
     std::string line;
     std::getline(file, line);
-    //std::cout << line << std::endl;
+    std::cout << line << std::endl;
     int lineindex = 0;
     for (size_t j = 0; j < size.y; j++) {
-      //std::cout << "lineitem: " << line[lineindex] << std::endl;
       switch (line[lineindex]) {
       case 'o': {
-        std::cout << "ground" << std::endl;
         cells[i][j] = new Ground{};
         break;
       }
       case '~': {
-        std::cout << "river" << std::endl;
         cells[i][j] = new River{};
         break;
       }
       case '|': {
-        std::cout << "wall" << std::endl;
         cells[i][j] = new Wall{};
         break;
       }
       case 'b': {
-        std::cout << "bush" << std::endl;
         cells[i][j] = new Bush{};
         break;
       }
       case 't': {
-        std::cout << "tower" << std::endl;
         cells[i][j] = new Ground{};
         cells[i][j]->addentity(new Tower);
         break;
       }
-      
       case 'n': {
-        std::cout << "nexus" << std::endl;
         cells[i][j] = new Ground{};
         cells[i][j]->addentity(new Nexus);
         break;
       }
       case 'j': {
-        std::cout << "jungle" << std::endl;
         cells[i][j] = new Ground{};
         cells[i][j]->addentity(new Camp);
         break;
       }
       case 'd': {
-        std::cout << "drake" << std::endl;
         cells[i][j] = new Ground{};
         cells[i][j]->addentity(new Camp);
         break;
       }
       case 'r': {
-        std::cout << "jungle" << std::endl;
         cells[i][j] = new Ground{};
         cells[i][j]->addentity(new Camp);
         break;
       }
       case 'y':
       case 'x': {
-        std::cout << "spawn" << std::endl;
         cells[i][j] = new SpawnArea{};
         break;
       }
@@ -150,7 +143,16 @@ void Map::draw(sf::RenderWindow &w) {
 void Map::update() {
   // update
 }
-
+void Map::reset_cell_selections(){
+  for (size_t i = 0; i < size.x; i++) {
+    for (size_t j = 0; j < size.y; j++) {
+      if (cells[i][j] != nullptr) {
+        cells[i][j]->setselected();
+        cells[i][j]->resetcolor();
+      }
+    }
+  }
+}
 Map::posindex Map::toposindex(sf::Vector2f pos) {
   return posindex{static_cast<size_t>(pos.x), static_cast<size_t>(pos.y)};
 }
@@ -168,13 +170,11 @@ Map::~Map() {
 
 void Cell::addentity(Entity *entity) {
   entities.push_back(entity);
+  update_entities_shape(shape.getPosition());
 }
 void Cell::remove_entity(Entity *entity){
   std::vector<Entity *>::iterator element = std::find(entities.begin(),entities.end(),entity);
-  std::cout << "erasing element: size: " << entities.size() << std::endl;
   entities.erase(element);
-  std::cout << "erased element: size: " << entities.size() << std::endl;
-
 }
 Cell *Map::getclickedcell(const int x, const int y) {
   for (size_t i = 0; i < size.x; i++) {
@@ -194,22 +194,17 @@ bool Cell::contains(const int x, const int y) {
 Entity* Cell::getentitiyclicked(const int x, const int y){
   // need to start iterating from the back, because of how the entities are drawn to the screen, 
   //the last one is drawn on top of the other ones
-  for(size_t i = entities.size()-1; i >=0; i--){
+  for(int i = static_cast<int>(entities.size())-1; i >=0; i--){
     if(entities[i]->clicked(x,y))return entities[i];
   }
   return nullptr;
 }
 std::vector<Cell*> Map::getnearbycells(sf::Vector2f pos, int distance){
   std::vector<Cell *> around;
-  std::cout << "searching for nearby cells" << std::endl;
-  std::cout << "pos: " << pos.x << ":" << pos.y << std::endl;
   for(int i = pos.x-distance; i <= pos.x+distance; i++){
-    std::cout << "i: " << i << std::endl;
     if(inboundsrow(i)){
       for(int j = pos.y-distance; j <= pos.y+distance; j++){
-        std::cout << "j: " << j << std::endl;
         if(inboundscol(j) && cells[i][j] != nullptr){
-          std::cout << "cell added at: i: " << i << " j: " << j << std::endl;
           around.push_back(cells[i][j]);
         }
       }
@@ -219,27 +214,23 @@ std::vector<Cell*> Map::getnearbycells(sf::Vector2f pos, int distance){
   return around;
 }
 void Map::setselectednearbycells(Champion *c){
-  sf::Vector2f index = c->getcell()->getindex();
+  sf::Vector2f index = c->get_simulation_cell()->getindex();
   std::vector<Cell *> nearbycells = getnearbycells(index);
   for(size_t i = 0; i < nearbycells.size(); i++){
     nearbycells[i]->setselected();
   }
 }
+void Cell::unselect(){
+  selected = false;
+}
 void Cell::setselected(){
   sethighlighted();
   selected = true;
 }
-
-void Map::resetcolors(){
-  for(size_t i = 0; i < size.x; i++){
-    for(size_t j = 0; j < size.y; j++){
-      cells[i][j]->resetcolor();
-    }
-  }
-}
 void Map::move(Entity *entity, sf::Vector2f from, sf::Vector2f to){
   posindex from_index = toposindex(from); 
-  posindex to_index = toposindex(to); 
+  posindex to_index = toposindex(to);
   cells[from_index.i][from_index.j]->remove_entity(entity);
   cells[to_index.i][to_index.j]->addentity(entity);
+  //entity->update_shape_pos(position);
 }

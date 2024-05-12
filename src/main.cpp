@@ -16,6 +16,7 @@ int main() {
       state_manager.handle_events(window);
       state_manager.update();
       state_manager.draw(window);
+      state_manager.update_state();
     }
     window.close();
   } catch (const char *error) {
