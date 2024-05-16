@@ -11,3 +11,4 @@ test/build_test/*
 .idea
 .vs
 .vscode
+CMakeFiles/*
