@@ -244,7 +244,6 @@ bool Player::check_round_end(){
 }
 void MinionWave::spawn(sf::Vector2f startpoint, std::shared_ptr<Map> map){
   for(size_t i = 0; i < minion_wave_size; i++){
-    // Todo: maybe its overcomplicated, and the minion waves don't have to be stored, and the minions should only be stored on the map
     Minion *minion = new Minion;
     minions.push_back(minion);
     map->spawn(minion,startpoint);

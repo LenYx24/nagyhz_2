@@ -17,7 +17,7 @@ GameState::GameState(StateManager &state_manager, std::vector<Champion*> p1champ
   // set gamemode
   this->mode = mode;
   // load font
-  h.load(Resources::Type::FONT, "./fonts/Roboto.ttf");
+  h.load(Resources::Type::FONT, "./resources/fonts/Roboto.ttf");
   // create the UI components:
   sf::Vector2f windowsize = state_manager.get_size(window);
   // todo: get the gamebuttons sizes, and position it accordingly

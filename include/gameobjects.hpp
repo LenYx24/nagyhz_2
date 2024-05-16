@@ -119,7 +119,7 @@ private:
   int level; // by leveling up the basic attributes of a champion get multiplied by level_multiplier
   double level_multiplier;
   int xp;        // the current amount of xp
-  int xp_cutoff; // the amount of xp needed to
+  int xp_cutoff; // the amount of xp needed to level up
   int xp_given;  // the xp given to the other champion, if this one gets slain by them
   int vision_range;
   int wards;          // starts from 0, goes to the max value of 2
@@ -176,7 +176,7 @@ private:
 };
 class MinionWave{
 public:
-  MinionWave():minion_wave_size(6){}
+  MinionWave():minion_wave_size(3){}
   void spawn(sf::Vector2f startpoint, std::shared_ptr<Map> map);
   // check for minion deaths...
   void round_end();
@@ -222,6 +222,7 @@ private:
   bool gamemoveactive;
   bool starter;
   sf::Vector2f spawnpoint;
+  // save global buffs here, so the minions know, if there's nashor buff
   // minions
   std::vector<MinionWave*> minion_waves;
   int minion_timer;

@@ -29,8 +29,8 @@ public:
   void setpos(sf::Vector2f pos);
   virtual void draw(sf::RenderWindow& window);
   virtual void updateshape(sf::Vector2f mappos, sf::Vector2f cellsize, float margin=2);
-  inline sf::Vector2f getindex()const{return indicies;}
-  inline sf::Vector2f get_position()const{return pos;}
+  sf::Vector2f getindex()const{return indicies;}
+  sf::Vector2f get_position()const{return pos;}
   void update_entities_shape(sf::Vector2f mappos);
   void unselect();
  

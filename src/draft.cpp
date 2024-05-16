@@ -4,8 +4,8 @@ void onclick_back(StateManager &s) {
 }
 
 void DraftState::lockin(StateManager &s, sf::RenderWindow& window) {
-  elapsedtime.restart();
   if (selectedchamp != nullptr) {
+    elapsedtime.restart();
     turns[turn_counter++].doturn(selectedchamp);
     std::vector<ChampBox*>::iterator it = champlist.begin();
     for(;it != champlist.end();it++){
@@ -51,7 +51,7 @@ DraftState::DraftState(StateManager &state_manager, const Settings s, sf::Render
   // create the UI components
   sf::Vector2f windowsize = state_manager.get_size(window);
 
-  h.load(Resources::Type::FONT, "./fonts/Roboto.ttf");
+  h.load(Resources::Type::FONT, "./resources/fonts/Roboto.ttf");
   buttons.push_back(new DraftButton(h, "Lock in", [state = this, &window](StateManager &s) { state->lockin(s,window); }));
   buttons.push_back(new DraftButton(h, "Don't ban", [state = this](StateManager &s) { state->dontban(s); }));
   buttons.push_back(new DraftButton(h, "back", onclick_back));
@@ -101,19 +101,18 @@ DraftState::DraftState(StateManager &state_manager, const Settings s, sf::Render
    for(size_t i = 0; i < 20; i++){
     this->turns[turn_counter++].doturn(champlist[i]->champ);
   }
+  GameMode m = GameMode::THEMSELVES;
+  // this should be change state, but then the champions should be moved
+  state_manager.push_state(std::make_unique<GameState>(state_manager,columns[0].champs,columns[1].champs,m, window));
 }
-// onclicks:
-// select champ -> shows the champ details on the small grid
-// lock in -> sets current champ pointer to null, removes champ from listofchamps
-//  adds it to the
-// dont ban -> sets current champ pointer to null, ads to the ban list, and moves phases
-// back button -> cleans up after himself (should be automatic) and pops the current state
 
 void DraftTurn::doturn(Champion *c) {
   champs.push_back(c);
 }
 DraftState::~DraftState() {
-  champlist.clear();
+  for(size_t i = 0; i < champlist.size(); i++){
+    delete champlist[i];
+  }
 }
 void DraftState::handle_events(sf::Event &e) {
   if (e.type == sf::Event::Closed) {
@@ -134,10 +133,19 @@ void DraftState::handle_events(sf::Event &e) {
 }
 void DraftState::update() {
   std::string s = "Time: ";
-  s += std::to_string(30 - (int)elapsedtime.getElapsedTime().asSeconds());
+  int waiting_time = 30;
+  s += std::to_string(waiting_time - (int)elapsedtime.getElapsedTime().asSeconds());
   timer.setString(s);
-  if ((int)elapsedtime.getElapsedTime().asSeconds() == 30) {
-    turns[turn_counter++].doturn(selectedchamp);
+  if ((int)elapsedtime.getElapsedTime().asSeconds() == waiting_time) {
+    if(selectedchamp != nullptr){
+      turns[turn_counter++].doturn(selectedchamp);
+    }else{
+      if(turns[turn_counter].isbanphase()){
+        turns[turn_counter++].doturn(emptychamp);
+      }else{
+        state_manager.pop_state();
+      }
+    }
     elapsedtime.restart();
   }
   for (size_t i = 0; i < champlist.size(); i++) {
