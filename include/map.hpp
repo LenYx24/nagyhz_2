@@ -18,6 +18,7 @@ public:
   virtual inline bool is_selected()const{return selected;}
   virtual bool canmovehere()const{return true;};
   virtual bool can_ward_here()const{return true;}
+  virtual bool can_attack_entity()const{return entities.size() > 0;}
   virtual void addentity(Entity *entity);
   virtual void remove_entity(Entity *entity);
   void setcolor(sf::Color c);
@@ -32,6 +33,7 @@ public:
   sf::Vector2f getindex()const{return indicies;}
   sf::Vector2f get_position()const{return pos;}
   void update_entities_shape(sf::Vector2f mappos);
+  Entity *get_first_entity(){if(entities.size() == 0)return nullptr; else return entities[0];}
   void unselect();
  
 private:
@@ -92,11 +94,13 @@ public:
   template<typename P>
   void setselectednearbycells(Champion *c, P pred);
   void select_accessible_cells(Champion *c);
+  void select_attackable_entities(Champion *c);
   void select_wardable_cells(Champion *c);
   inline bool inboundsrow(int p){return 0 <= p && p < size.x;}
   inline bool inboundscol(int p){return 0 <= p && p < size.y;}
   void move(Entity *entity, sf::Vector2f from, sf::Vector2f to);
   void reset_cell_selections();
+  void update_vision();
 
 private:
   struct posindex{

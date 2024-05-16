@@ -78,7 +78,7 @@ DraftState::DraftState(StateManager &state_manager, const Settings s, sf::Render
   int colgap = 7;
   sf::Vector2f teamcolrectsize = {150,40};
   sf::Vector2f teamcol_margin = {10,10};
-  std::vector<sf::Vector2f> startposes = {teamcol_margin, {windowsize.x-teamcolrectsize.x, teamcol_margin.x}, {teamcol_margin.x, windowsize.y-(teamcolrectsize.y+teamcol_margin.y) * colgap }, {windowsize.x-teamcolrectsize.x, windowsize.y-(teamcolrectsize.y+teamcol_margin.y) * colgap}};
+  std::vector<sf::Vector2f> startposes = {teamcol_margin, {windowsize.x-(teamcolrectsize.x+teamcol_margin.x), teamcol_margin.x}, {teamcol_margin.x, windowsize.y-(teamcolrectsize.y+teamcol_margin.y) * colgap }, {windowsize.x-(teamcolrectsize.x + teamcol_margin.x), windowsize.y-(teamcolrectsize.y+teamcol_margin.y) * colgap}};
   for (size_t i = 0; i < 4; i++) {
     TeamCol c{h,startposes[i],teamcolrectsize,static_cast<int>(teamcol_margin.x)};
     columns.push_back(c);
@@ -110,9 +110,9 @@ void DraftTurn::doturn(Champion *c) {
   champs.push_back(c);
 }
 DraftState::~DraftState() {
-  for(size_t i = 0; i < champlist.size(); i++){
-    delete champlist[i];
-  }
+  // for(size_t i = 0; i < champlist.size(); i++){
+  //   delete champlist[i];
+  // }
 }
 void DraftState::handle_events(sf::Event &e) {
   if (e.type == sf::Event::Closed) {

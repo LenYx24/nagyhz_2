@@ -69,7 +69,7 @@ public:
   void show_stats(std::vector<std::string> &statsentity);
 
   std::function<void()> create_simulation;
-  // void nextplayer();
+  void next_player();
   // Player *getcurrentplayer();
 
 private:

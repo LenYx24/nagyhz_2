@@ -1,4 +1,5 @@
 #include "../include/game.hpp"
+#include <exception>
 GameButton::GameButton(Resources::Holder &h, sf::String str, std::function<void(StateManager &s)> onclick_, sf::Vector2f pos) : Button(str, onclick_) {
   // menu button specific override settings
   shape.setSize({150, 70});
@@ -87,6 +88,10 @@ GameState::GameState(StateManager &state_manager, std::vector<Champion*> p1champ
 
   std::cout << "[[info]] initalized gamestate" << std::endl;
 }
+void GameState::next_player(){
+  if(currentplayer == players[0])currentplayer = players[1];
+  else currentplayer = players[0];
+}
 // onclicks:
 void GameState::end_turn() {
   // ends the turn and starts the other players turn, or does the simulation
@@ -96,8 +101,7 @@ void GameState::end_turn() {
     // the other player is next
     currentplayer->set_simulation(false);
     currentplayer->update_champ_positions(map);
-    if(currentplayer == players[0])currentplayer = players[1];
-    else currentplayer = players[0];
+    next_player();
     currentplayer->set_simulation(true);
   }else{
     currentplayer->set_simulation(false);
@@ -108,12 +112,15 @@ void GameState::end_turn() {
     for(size_t i = 0; i < players.size(); i++){
       players[i]->round_end(map);
     }
+    next_player();
   }
   elapsedtime.restart();
 }
 void GameState::onclick_gamemove() {
-  MoveCell *move_cell = new MoveCell;
-  move_cell->onclick(map,currentplayer,selectedchamp);
+  if(GameMove::basic_check(map,currentplayer,selectedchamp)){
+    map->select_accessible_cells(selectedchamp);
+    selectedchamp->add_gamemove(new MoveCell);
+  }
 }
 void GameState::onclick_item(Item *selected_item) {
   if(selectedchamp == nullptr)return;
@@ -124,15 +131,22 @@ void GameState::onclick_item(Item *selected_item) {
 }
 
 void GameState::onclick_attack(){
-
+  if(GameMove::basic_check(map,currentplayer,selectedchamp)){
+    map->select_attackable_entities(selectedchamp);
+    selectedchamp->add_gamemove(new AttackMove);
+  }
 }
 void GameState::onclick_base(){
-  TeleportBase *teleport = new TeleportBase;
-  teleport->onclick(map,currentplayer,selectedchamp);
+  if(GameMove::basic_check(map,currentplayer,selectedchamp)){
+    selectedchamp->add_gamemove(new TeleportBase);
+    selectedchamp->finish_gamemove(map->getcell(currentplayer->get_spawn_point()));
+  }
 }
 void GameState::onclick_ward(){
-  PlaceWard *ward = new PlaceWard;
-  ward->onclick(map,currentplayer,selectedchamp);
+  if(GameMove::basic_check(map,currentplayer,selectedchamp)){
+    map->select_accessible_cells(selectedchamp);
+    selectedchamp->add_gamemove(new PlaceWard);
+  }
 }
 void GameState::show_cellinfo(sf::Vector2f index){
   sf::RectangleShape shape{{100,60}};
@@ -186,7 +200,6 @@ void GameState::handle_events(sf::Event &e) {
 
     Cell *clickedcell = map->getclickedcell(e.mouseButton.x,e.mouseButton.y);
     if(clickedcell != nullptr){
-      map->reset_cell_selections();
       std::vector<std::string> statsentity;
       
       show_cellinfo(clickedcell->getindex());
@@ -194,6 +207,7 @@ void GameState::handle_events(sf::Event &e) {
         selectedchamp->finish_gamemove(clickedcell);
         map->move(selectedchamp, selectedchamp->current_gamemove_index(), selectedchamp->last_gamemove_index());
         statsentity = selectedchamp->getstats();
+        map->reset_cell_selections();
       }
       else{
         clickedcell->sethighlighted();
@@ -215,7 +229,7 @@ void GameState::update() {
   timer.setString(s);
   if (static_cast<int>(elapsedtime.getElapsedTime().asSeconds()) == timeleft) {
     elapsedtime.restart();
-    // end turn
+    end_turn();
   }
   // check round end
   if(currentplayer->check_round_end()){
