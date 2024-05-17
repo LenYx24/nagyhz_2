@@ -48,11 +48,7 @@ else()
     # target_link_options(lolmacrogame PRIVATE -fsanitize=address)
     # endif()
     target_compile_options(lolmacrogame PRIVATE -fsanitize=address) # -Wextra -Wpedantic -Wconversion -Werror -g -O0 -Wall
-<<<<<<< HEAD
-    target_link_options(lolmacrogame PRIVATE -fsanitize=address) 
-=======
     target_link_options(lolmacrogame PRIVATE -fsanitize=address)
->>>>>>> d8155afb05935cca65634229b62b8a7b74ad4b41
 endif()
 
 install(TARGETS lolmacrogame)
