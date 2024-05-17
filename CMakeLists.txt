@@ -44,6 +44,7 @@ target_sources(lolmacrogame
     ./src/main.cpp 
     ./src/menu.cpp
 )
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address")
 target_link_libraries(lolmacrogame PRIVATE sfml-graphics)
 target_compile_features(lolmacrogame PRIVATE cxx_std_17)
 
@@ -62,7 +63,8 @@ else()
     #     -fno-omit-frame-pointer)
     # target_link_options(lolmacrogame PRIVATE -fsanitize=address)
     # endif()
-    target_compile_options(lolmacrogame PRIVATE ) # -Wextra -Wpedantic -Wconversion -Werror -g -O0 -Wall 
+    target_compile_options(lolmacrogame PRIVATE -fsanitize=address) # -Wextra -Wpedantic -Wconversion -Werror -g -O0 -Wall
+    target_link_options(lolmacrogame PRIVATE -fsanitize=address) 
 endif()
 
 install(TARGETS lolmacrogame)
