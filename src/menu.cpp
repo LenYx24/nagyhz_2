@@ -11,11 +11,11 @@ void onclick_back(StateManager &state_manager){
   state_manager.pop_state();
 }
 MainState::MainState(StateManager &state_manager, sf::RenderWindow &window) : MenuState(state_manager) {
-  resources_holder.load(Resources::Type::FONT, "./fonts/Roboto.ttf");
+  resources_holder.load(Resources::Type::FONT, "./resources/fonts/Roboto.ttf");
 
   std::function<void(StateManager &state_manager)> onclick_start = [&window](StateManager &state_manager){state_manager.push_state(std::make_unique<ModeSelectionState>(state_manager,window));};
   buttons.push_back(MenuButton{resources_holder, "Start", onclick_start});
-  buttons.push_back(MenuButton{resources_holder, "Settings"});
+  //buttons.push_back(MenuButton{resources_holder, "Settings"});
   buttons.push_back(MenuButton{resources_holder, "Exit", onclick_back});
   // Todo: put this into its own grid class
   float marginy = 20 + buttons[0].get_size().y / 2.f;
@@ -47,7 +47,7 @@ void MenuState::draw(sf::RenderWindow& window) {
   }
 }
 ModeSelectionState::ModeSelectionState(StateManager &s, sf::RenderWindow& window) : MenuState(s) {
-  resources_holder.load(Resources::Type::FONT, "./fonts/Roboto.ttf");
+  resources_holder.load(Resources::Type::FONT, "./resources/fonts/Roboto.ttf");
 
   std::function<void(StateManager& s)> onclick_draft = [&s, &window](StateManager& state_manager){
     Settings settings{"examples/champs.txt","examples/items.txt",GameMode::THEMSELVES};

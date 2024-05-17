@@ -12,7 +12,7 @@ class Map;
 class Entity;
 class GameMove {
 public:
-  GameMove() : points(1), cell(nullptr) {}
+  GameMove(): cell(nullptr) {}
   virtual ~GameMove() {}
   void setcell(Cell *cell) {
     this->cell = cell;
@@ -35,10 +35,10 @@ public:
   void set_movepoints(int p) {
     this->points = p;
   }
-  bool basic_check(std::shared_ptr<Map> map, Player *current_player, Champion *selected_champ) const;
+  static bool basic_check(std::shared_ptr<Map> map, Player *current_player, Champion *selected_champ);
 
 protected:
-  int points; // the amount of points needed to do the move
+  static int points; // the amount of points needed to do the move
   Cell *cell; // the cell to move to
 };
 

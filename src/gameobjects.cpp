@@ -1,4 +1,6 @@
 #include "../include/gameobjects.hpp"
+#include "SFML/Graphics/Color.hpp"
+#include <cstdlib>
 
 Entity::Entity(std::string name) : name(name) {
   shape.setSize({15,15});
@@ -61,10 +63,12 @@ void Player::spawn_minions(std::shared_ptr<Map> map){
   if(side == Side::RED)offset=-offset;
   std::vector<sf::Vector2f> points;
   points.push_back({spawnpoint.x+offset,spawnpoint.y});
-  points.push_back({spawnpoint.x+offset,spawnpoint.y+offset});
-  points.push_back({spawnpoint.x,spawnpoint.y+offset});
+  points.push_back({spawnpoint.x+offset,spawnpoint.y-offset});
+  points.push_back({spawnpoint.x,spawnpoint.y-offset});
   for(size_t i = 0; i < points.size(); i++){
-    minion_waves[i]->spawn(points[i],map);
+    MinionWave *wave = new MinionWave;
+    wave->spawn(points[i],map);
+    minion_waves.push_back(wave);
   }
 }
 void Player::round_end(std::shared_ptr<Map> map){
@@ -92,6 +96,9 @@ void Entity::draw(sf::RenderWindow &w){
 void Champion::draw(sf::RenderWindow &window){
   window.draw(shape);
   window.draw(icon);
+}
+Minion::Minion(){
+  set_color(sf::Color{235,65,90});
 }
 void Champion::setname(std::string name){this->name=name;}
 void Player::spawnchamps(const std::shared_ptr<Map> map){
@@ -198,6 +205,36 @@ void Champion::finish_gamemove(Cell *cell){
     movepoints-= current_gamemove->get_movepoints();
   }
 }
+Drake::Drake(){
+  set_name("drake");
+  shape.setFillColor(sf::Color{235,200,60});
+  decide_which_type();
+}
+void Drake::decide_which_type(){
+  int type = rand() % 2 +1;
+  std::cout << "drake type: " << type << std::endl;
+  Effect e;
+  switch(type){
+    case 0:{
+      e.setbonusdmg(10);
+      setEffect(e);
+      break;
+    }
+    case 1:{
+      e.setbonushp(10);
+      setEffect(e);
+      break;
+    }
+  }
+}
+void Champion::place_ward(std::shared_ptr<Map> map, Cell *c){
+  if(wards.size() < wards_max){
+    Ward *ward = new Ward;
+    ward->setcell(c);
+    map->spawn(ward, c->getindex());
+    wards.push_back(ward);
+  }
+}
 Champion::Champion(){
   current_gamemove = nullptr;
   movepoints = 3;
@@ -244,7 +281,6 @@ bool Player::check_round_end(){
 }
 void MinionWave::spawn(sf::Vector2f startpoint, std::shared_ptr<Map> map){
   for(size_t i = 0; i < minion_wave_size; i++){
-    // Todo: maybe its overcomplicated, and the minion waves don't have to be stored, and the minions should only be stored on the map
     Minion *minion = new Minion;
     minions.push_back(minion);
     map->spawn(minion,startpoint);
@@ -276,4 +312,28 @@ void Player::update_champ_positions(std::shared_ptr<Map> map){
       map->move(champs[i], champs[i]->get_simulation_cell()->getindex(), champs[i]->get_real_cell()->getindex());
     }
   }
+}
+void Champion::fight(Entity *other){
+  if(!isAlive() || !other->isAlive())return;
+  // if the champ is in kill range
+  if(damage >= other->get_hp() || other->get_dmg() >= hp){
+    if(other->can_fight_back()){
+      double chance = ((damage+other->get_dmg())/damage + (hp+other->get_hp())/hp) /2;
+      double ran = rand();
+      std::cout << "change for the fight: " << chance << std::endl;
+      std::cout << "random number: " << ran << std::endl;
+      // the champ won
+      if(chance <= ran){
+        other->remove_hp(damage);
+      } 
+      else{ // the other entity won
+        remove_hp(other->get_dmg());
+      }
+    }
+  }
+  else{
+    remove_hp(other->get_dmg());
+    other->remove_hp(damage);
+  }
+  // Todo: check if enemy is in execute range, then calculate chance of escape for them
 }

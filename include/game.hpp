@@ -49,7 +49,7 @@ public:
 };
 class GameState : public State {
 public:
-  GameState(StateManager &state_manager, std::vector<Champion *> p1champs,std::vector<Champion *> p2champs, GameMode mode,sf::RenderWindow& window);
+  GameState(StateManager &state_manager, std::vector<Champion*> p1champs,std::vector<Champion*> p2champs, GameMode mode, sf::RenderWindow& window);
   ~GameState();
   void handle_events(sf::Event &e);
   void update();
@@ -69,7 +69,7 @@ public:
   void show_stats(std::vector<std::string> &statsentity);
 
   std::function<void()> create_simulation;
-  // void nextplayer();
+  void next_player();
   // Player *getcurrentplayer();
 
 private:

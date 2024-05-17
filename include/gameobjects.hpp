@@ -26,9 +26,11 @@ public:
   //virtual void spawn() = 0;
   //virtual void die() = 0;
   virtual std::vector<std::string> getstats();
-  inline bool isAlive() const {
-    return respawn_timer == 0;
-  }
+  bool isAlive() const {return respawn_timer == 0;}
+  virtual double get_hp()const{return hp;}
+  virtual double get_dmg()const{return damage;}
+  virtual void remove_hp(double dmg){this->hp-=damage; check_death();}
+  virtual void check_death(){if(hp <= 0){respawn_counter = respawn_timer;}}
   virtual bool clicked(const int, const int);
   // the cell where the entity is at the start of the round
   inline Cell *get_real_cell(){return cell;}
@@ -39,11 +41,15 @@ public:
   // checks
   // virtual void update_vision() = 0;
   std::string to_ui_int_format(double num);
+  void set_color(sf::Color color){shape.setFillColor(color);}
+  void set_name(std::string name){this->name = name;}
+  virtual bool can_fight_back()const{return false;}
 protected:
   std::string name;
   double maxhp; // the maximum hp this entity could have
   double hp;
   double damage;
+  int respawn_counter; // the amount of seconds needed to respawn
   int respawn_timer; // the amount of seconds needed to respawn
   Cell *cell;       // pointer to the cell this entity occupies
   // Todo: implement the correct sequence in which entities get drawn to the map, by utilizing the z-index
@@ -53,6 +59,8 @@ protected:
 };
 class Effect {
 public:
+  Effect():bonusdmg(0),bonushp(0){}
+  Effect(int dmg, int hp):bonusdmg(dmg),bonushp(hp){}
   double getbonusdmg()const{return bonusdmg;}
   double getbonushp()const{return bonushp;}
   void setbonusdmg(double bonusdmg){this->bonusdmg = bonusdmg;}
@@ -76,6 +84,15 @@ private:
   // is it a percentage bonus, or direct value
   // callback fnc, that does something to its champion, or on the map
 };
+class Structure : public Entity {
+  // common parent class for entities, it shouldn't have a move functions, it's position doesn't change
+};
+class Ward: public Structure{
+public:
+  Ward():cooldown(5){set_color(sf::Color{25,25,25});}
+private:
+  int cooldown;
+};
 class Champion : public Entity, public Ireadstring {
 public:
   Champion();
@@ -83,7 +100,7 @@ public:
   // spawns the champion with full health on the side he's on
   void spawn();
   void die();
-  bool fight(Champion &other); // simulates a fight, by calculating each ones dmg
+  void fight(Entity *other); // simulates a fight, by calculating each ones dmg
   double get_total_dmg();      // returns the total dmg that could be dealt by the champion with all the buffs and items
   void add_item(Item *item);
   void setname(std::string name);
@@ -105,6 +122,8 @@ public:
   void do_move(std::shared_ptr<Map> map);
   void set_simulation(bool sim){simulation = sim;}
   void round_end();
+  virtual bool can_fight_back()const{return true;}
+  void place_ward(std::shared_ptr<Map> map, Cell *c);
 
 private:
   sf::Vector2f gamemove_index(size_t offset)const;
@@ -119,10 +138,10 @@ private:
   int level; // by leveling up the basic attributes of a champion get multiplied by level_multiplier
   double level_multiplier;
   int xp;        // the current amount of xp
-  int xp_cutoff; // the amount of xp needed to
+  int xp_cutoff; // the amount of xp needed to level up
   int xp_given;  // the xp given to the other champion, if this one gets slain by them
   int vision_range;
-  int wards;          // starts from 0, goes to the max value of 2
+  std::vector<Ward *> wards;
   int wards_max;      // default is 2
   int wards_cooldown; // default should be 4 rounds
 
@@ -133,9 +152,7 @@ private:
   int simulation_points_counter;
   bool simulation;
 };
-class Structure : public Entity {
-  // common parent class for entities, it shouldn't have a move functions, it's position doesn't change
-};
+
 class Tower : public Structure {
 public:
   Tower();
@@ -158,25 +175,30 @@ private:
   int xp_given; // the amount of xp given to the champion by slaying them
   int gold_given;
 };
+// a common class for monsters, which are not able to move (baron nashor, drakes and jungle camps)
+// because of how the game works, every camp can give an effect to the champion(s) that slain it
 class Camp : public Monster {
 public:
   Camp();
-  // a common class for monsters, which are not able to move (baron nashor, drakes and jungle camps)
-  // because of how the game works, every camp can give an effect to the champion(s) that slain it
-public:
-  inline void setEffect(Effect e){effect = e;}
+  
+  void setEffect(Effect e){effect = e;}
 private:
   Effect effect;
 };
+class Drake : public Camp{
+public:
+  Drake();
+  void decide_which_type();
+};
 // minions can have effects too (currently one, but it could increase in the future), this is the baron buff, which gives flat buffs
 class Minion : public Monster {
-
+  Minion();
 private:
   // Todo: add game moves for minions
 };
 class MinionWave{
 public:
-  MinionWave():minion_wave_size(6){}
+  MinionWave():minion_wave_size(3){}
   void spawn(sf::Vector2f startpoint, std::shared_ptr<Map> map);
   // check for minion deaths...
   void round_end();
@@ -186,11 +208,6 @@ public:
 private:
   std::vector<Minion *> minions;
   size_t minion_wave_size;
-};
-class Ward : public Entity {
-public:
-protected:
-  int radius; // the amount of cells this one gets vision for
 };
 class Player {
 public:
@@ -222,6 +239,7 @@ private:
   bool gamemoveactive;
   bool starter;
   sf::Vector2f spawnpoint;
+  // save global buffs here, so the minions know, if there's nashor buff
   // minions
   std::vector<MinionWave*> minion_waves;
   int minion_timer;

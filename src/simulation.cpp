@@ -5,7 +5,7 @@ SimulationState::SimulationState(std::vector<Player *> &players, std::shared_ptr
   this->mode = mode;
   this->map = map;
   // load font
-  h.load(Resources::Type::FONT, "./fonts/Roboto.ttf");
+  h.load(Resources::Type::FONT, "./resources/fonts/Roboto.ttf");
   // create the UI components:
   //sf::Vector2f windowsize = state_manager.get_size(window);
 

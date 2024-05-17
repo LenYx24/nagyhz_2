@@ -66,7 +66,6 @@ Map::Map(sf::Vector2f pos) {
   for (size_t i = 0; i < size.x; i++) {
     std::string line;
     std::getline(file, line);
-    std::cout << line << std::endl;
     int lineindex = 0;
     for (size_t j = 0; j < size.y; j++) {
       switch (line[lineindex]) {
@@ -96,19 +95,46 @@ Map::Map(sf::Vector2f pos) {
         cells[i][j]->addentity(new Nexus);
         break;
       }
+      // sima jungle camp
       case 'j': {
         cells[i][j] = new Ground{};
         cells[i][j]->addentity(new Camp);
         break;
       }
-      case 'd': {
+      // baron
+      case 'a': {
         cells[i][j] = new Ground{};
-        cells[i][j]->addentity(new Camp);
+        Camp *baron = new Camp;
+        baron->set_name("baron");
+        baron->set_color(sf::Color{130,50,170});
+        // Todo: set it's effect to minionbuff
+        cells[i][j]->addentity(baron);
         break;
       }
+      // drake
+      case 'd': {
+        cells[i][j] = new Ground{};
+        cells[i][j]->addentity(new Drake);
+        break;
+      }
+      // redbuff
       case 'r': {
         cells[i][j] = new Ground{};
-        cells[i][j]->addentity(new Camp);
+        Camp *c = new Camp;
+        c->set_name("red buff");
+        c->set_color(sf::Color{250,50,50});
+        c->setEffect(Effect{10,0});
+        cells[i][j]->addentity(c);
+        break;
+      }
+      // bluebuff
+      case 'c': {
+        cells[i][j] = new Ground{};
+        Camp *c = new Camp;
+        c->set_name("blue buff");
+        c->set_color(sf::Color{50,50,250});
+        c->setEffect(Effect{0,10});
+        cells[i][j]->addentity(c);
         break;
       }
       case 'y':
@@ -184,13 +210,12 @@ Cell *Map::getclickedcell(const int x, const int y) {
       }
     }
   }
-  std::cout << "cellnullptr" << std::endl;
+  std::cout << "x:" <<x << "y: " << y << "  !!cellnullptr" << std::endl;
   return nullptr;
 }
 bool Cell::contains(const int x, const int y) {
   return shape.getGlobalBounds().contains(x, y);
 }
-
 Entity* Cell::getentitiyclicked(const int x, const int y){
   // need to start iterating from the back, because of how the entities are drawn to the screen, 
   //the last one is drawn on top of the other ones
@@ -227,6 +252,9 @@ void Map::select_accessible_cells(Champion *c){
 }
 void Map::select_wardable_cells(Champion *c){
   setselectednearbycells(c,[](Cell *c){return c->can_ward_here();});
+}
+void Map::select_attackable_entities(Champion *c){
+  setselectednearbycells(c,[](Cell *c){return c->can_attack_entity();});
 }
 void Cell::unselect(){
   selected = false;
