@@ -1,15 +1,15 @@
 #include "../include/game.hpp"
 #include <exception>
-GameButton::GameButton(Resources::Holder &h, sf::String str, std::function<void(StateManager &s)> onclick_, sf::Vector2f pos) : Button(str, onclick_) {
+GameButton::GameButton(Resources::Holder &h, sf::String str, std::function<void()> onclick_, sf::Vector2f pos) : Button(str, onclick_) {
   // menu button specific override settings
   shape.setSize({150, 70});
   text.setCharacterSize(14);
   text.setFont(h.get(Resources::Type::FONT));
   this->set_position(pos);
 }
-GameState::GameState(StateManager &state_manager, std::vector<Champion*> p1champs,std::vector<Champion*> p2champs, GameMode mode, sf::RenderWindow& window) : State(state_manager),map(std::make_unique<Map>(sf::Vector2f{500,20})) {
+GameState::GameState(StateManager &state_manager, std::vector<Champion*> p1champs,std::vector<Champion*> p2champs, const Settings settings, sf::RenderWindow& window) : State(state_manager),map(std::make_unique<Map>(sf::Vector2f{500,20})) {
   // load items from the file and save them to the allitems variable
-  iofile inp("examples/items.txt");
+  iofile inp(settings.items_filepath);
   for (std::string line; std::getline(inp.getfile(), line);) {
     Item item;
     item.readfromstring(line);
@@ -22,13 +22,14 @@ GameState::GameState(StateManager &state_manager, std::vector<Champion*> p1champ
   // create the UI components:
   sf::Vector2f windowsize = state_manager.get_size(window);
   // todo: get the gamebuttons sizes, and position it accordingly
-  buttons.push_back(new GameButton(h, "End my turn", [state = this](StateManager &s) { state->end_turn(); },{80,40}));
-  buttons.push_back(new GameButton(h, "back", [](StateManager &s) { s.pop_state(); },{80,windowsize.y-50}));
+  buttons.push_back(new GameButton(h, "End my turn", [state = this]() { state->end_turn(); },{80,40}));
+  buttons.push_back(new GameButton(h, "back", [&state_manager]() { state_manager.pop_state(); },{80,windowsize.y-50}));
 
-  gamemovebuttons.push_back(new GameButton(h, "move", [state = this](StateManager &s) { state->onclick_gamemove(); }));
-  gamemovebuttons.push_back(new GameButton(h, "attack", [state = this](StateManager &s) { state->onclick_attack(); }));
-  gamemovebuttons.push_back(new GameButton(h, "ward", [state = this](StateManager &s) { state->onclick_ward(); }));
-  gamemovebuttons.push_back(new GameButton(h, "base", [state = this](StateManager &s) { state->onclick_base(); }));
+  gamemovebuttons.push_back(new GameButton(h, "move", [state = this]() { state->onclick_gamemove(); }));
+  gamemovebuttons.push_back(new GameButton(h, "attack", [state = this]() { state->onclick_attack(); }));
+  gamemovebuttons.push_back(new GameButton(h, "ward", [state = this]() { state->onclick_ward(); }));
+  gamemovebuttons.push_back(new GameButton(h, "base", [state = this]() { state->onclick_base(); }));
+
   UI::Grid grid{{windowsize.x/4, 100}, {5, 5},{0,1}};
   std::vector<UI::GridElement *> els(gamemovebuttons.begin(), gamemovebuttons.end());
   grid.setelements(els);
@@ -38,7 +39,7 @@ GameState::GameState(StateManager &state_manager, std::vector<Champion*> p1champ
   sf::RectangleShape itemshape{{100,40}};
   itemshape.setFillColor(sf::Color::Black);
   UI::NamedBox *itemslabel = new UI::NamedBox{"Items:",itemshape,h};
-  itemslabel->set_position({windowsize.x - itemslabel->getglobalbounds().width,20});
+  itemslabel->set_position({windowsize.x - itemslabel->get_global_bounds().width,20});
   itemslabel->setcharsize(12);
   labels.push_back(itemslabel);
 
@@ -61,20 +62,19 @@ GameState::GameState(StateManager &state_manager, std::vector<Champion*> p1champ
   timer.setFont(h.get(Resources::Type::FONT));
   timer.setCharacterSize(18);
   // create players
-  players.push_back(new Player{p1champs});
-  players.push_back(new Player{p2champs});
-  players[0]->setchampicons("ABCDE");
-  players[1]->setchampicons("FGHIJ");
-  players[0]->setfont(h);
-  players[1]->setfont(h);
+  Player *player_1 = new Player{std::move(p1champs)};
+  Player *player_2 = new Player{std::move(p2champs)};
+  player_1->setchampicons("ABCDE");
+  player_2->setchampicons("FGHIJ");
+  player_1->setfont(h);
+  player_2->setfont(h);
   // spawn champs
-  players[0]->setspawnpoint({0,map->getcellgridsize().y-1});
-  players[1]->setspawnpoint({map->getcellgridsize().x-1,0});
-  players[0]->spawnchamps(map);
-  players[1]->spawnchamps(map);
-  players[0]->set_side(Side::BLUE);
-  players[1]->set_side(Side::RED);
-  // spawn minions
+  player_1->setspawnpoint({0,static_cast<float>(map->getcellgridsize().y)-1});
+  player_2->setspawnpoint({static_cast<float>(map->getcellgridsize().x)-1,0});
+  player_1->spawn_champs(map);
+  player_2->spawn_champs(map);
+  player_1->set_side(Side::BLUE);
+  player_2->set_side(Side::RED);
   create_simulation = [state = this, &window](){
     state->state_manager.push_state(std::make_unique<SimulationState>(state->players, state->map, window, state->mode,state->state_manager));
   };
@@ -82,13 +82,16 @@ GameState::GameState(StateManager &state_manager, std::vector<Champion*> p1champ
   // seed the random generator
   srand(static_cast<unsigned>(time(0)));
   // Todo: randomly select starter champ
-  currentplayer = players[0];
-  players[0]->set_starter(true);
+  currentplayer = player_1;
+  player_1->set_starter(true);
   selectedchamp = nullptr;
 
+  players.push_back(player_1);
+  players.push_back(player_2);
   std::cout << "[[info]] initalized gamestate" << std::endl;
 }
 void GameState::next_player(){
+  if(players.size() < 2)throw "Not enough players to play the game";
   if(currentplayer == players[0])currentplayer = players[1];
   else currentplayer = players[0];
 }
@@ -117,7 +120,7 @@ void GameState::end_turn() {
   elapsedtime.restart();
 }
 void GameState::onclick_gamemove() {
-  if(GameMove::basic_check(map,currentplayer,selectedchamp)){
+  if(GameMove::basic_check(currentplayer,selectedchamp)){
     map->select_accessible_cells(selectedchamp);
     selectedchamp->add_gamemove(new MoveCell);
   }
@@ -131,19 +134,19 @@ void GameState::onclick_item(Item *selected_item) {
 }
 
 void GameState::onclick_attack(){
-  if(GameMove::basic_check(map,currentplayer,selectedchamp)){
+  if(GameMove::basic_check(currentplayer,selectedchamp)){
     map->select_attackable_entities(selectedchamp);
     selectedchamp->add_gamemove(new AttackMove);
   }
 }
 void GameState::onclick_base(){
-  if(GameMove::basic_check(map,currentplayer,selectedchamp)){
+  if(GameMove::basic_check(currentplayer,selectedchamp)){
     selectedchamp->add_gamemove(new TeleportBase);
     selectedchamp->finish_gamemove(map->getcell(currentplayer->get_spawn_point()));
   }
 }
 void GameState::onclick_ward(){
-  if(GameMove::basic_check(map,currentplayer,selectedchamp)){
+  if(GameMove::basic_check(currentplayer,selectedchamp)){
     map->select_accessible_cells(selectedchamp);
     selectedchamp->add_gamemove(new PlaceWard);
   }
@@ -164,7 +167,7 @@ void GameState::show_stats(std::vector<std::string> &statsentity){
   for(size_t i = 0; i < statsentity.size(); i++){
     UI::NamedBox *statlabel = new UI::NamedBox{statsentity[i],shape,h};
     statlabel->set_position(startpos);
-    int marginy = 20;
+    float marginy = 20;
     startpos.y += shape.getSize().y + marginy;
     statlabel->setcharsize(12);
     statlabels.push_back(statlabel);
@@ -179,19 +182,19 @@ void GameState::handle_events(sf::Event &e) {
     state_manager.exit();
   } else if (e.type == sf::Event::MouseButtonPressed) {
     for (GameButton *b : buttons) {
-      if (b->get_global_bounds().contains(e.mouseButton.x, e.mouseButton.y)) {
-        b->onclick(state_manager);
+      if (b->contains(e.mouseButton.x,e.mouseButton.y)) {
+        b->onclick();
         return;
       }
     }
     for (GameButton *b : gamemovebuttons) {
-      if (b->get_global_bounds().contains(e.mouseButton.x, e.mouseButton.y)) {
-        b->onclick(state_manager);
+      if (b->contains(e.mouseButton.x, e.mouseButton.y)) {
+        b->onclick();
         return;
       }
     }
     for (ItemBox *b : itemslist) {
-      if (b->getglobalbounds().contains(e.mouseButton.x, e.mouseButton.y)) {
+      if (b->contains(e.mouseButton.x, e.mouseButton.y)) {
         // Todo: make itemboxes item a private member
         onclick_item(b->item);
         return;
@@ -239,36 +242,36 @@ void GameState::update() {
 void GameState::draw(sf::RenderWindow& window) {
   sf::Color background_color = sf::Color(220, 225, 222);
   window.clear(background_color);
-  for (size_t i = 0; i < buttons.size(); i++) {
-    buttons[i]->draw_to_window(window);
+  for (auto & button : buttons) {
+    button->draw_to_window(window);
   }
-  for (size_t i = 0; i < gamemovebuttons.size(); i++) {
-    gamemovebuttons[i]->draw_to_window(window);
+  for (auto & gamemovebutton : gamemovebuttons) {
+    gamemovebutton->draw_to_window(window);
   }
-  for(size_t i = 0; i < labels.size(); i++){
-    labels[i]->draw(window);
+  for(auto & label : labels){
+    label->draw(window);
   }
-  for(size_t i = 0; i < statlabels.size(); i++){
-    statlabels[i]->draw(window);
+  for(auto & statlabel : statlabels){
+    statlabel->draw(window);
   }
-  for(size_t i = 0; i < itemslist.size(); i++){
-    itemslist[i]->draw(window);
+  for(auto & i : itemslist){
+    i->draw(window);
   }
   map->draw(window);
   window.draw(timer);
 }
 GameState::~GameState(){
-  for(size_t i = 0; i < players.size(); i++){
-    delete players[i];
+  for(auto & player : players){
+    delete player;
   }
   // this is buggy yet
   // for(size_t i = 0; i < labels.size(); i++){
   //   delete labels[i];
   // }
-  for(size_t i = 0; i < buttons.size(); i++){
-    delete buttons[i];
+  for(auto & button : buttons){
+    delete button;
   }
-  for(size_t i = 0; i < gamemovebuttons.size(); i++){
-    delete gamemovebuttons[i];
+  for(auto & gamemovebutton : gamemovebuttons){
+    delete gamemovebutton;
   }
 }

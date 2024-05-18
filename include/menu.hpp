@@ -15,14 +15,14 @@ namespace Menu {
 
 class MenuState : public State {
 public:
-  MenuState(StateManager &state_manager) : State(state_manager) {}
+  MenuState(StateManager &state_manager) : State(state_manager){}
 
   virtual void handle_events(sf::Event &event);
   virtual void update();
   virtual void draw(sf::RenderWindow& window);
 
 protected:
-  std::vector<UI::Button> buttons;
+  std::vector<UI::Button *> buttons;
   Resources::Holder resources_holder;
 };
 class MainState : public MenuState {
@@ -37,7 +37,7 @@ public:
 class MenuButton : public UI::Button {
 public:
   MenuButton(
-      Resources::Holder &h, sf::String str, std::function<void(StateManager &s)> onclick = [](StateManager &s) { std::cout << "not impl" << std::endl; });
+      Resources::Holder &h, sf::String str, std::function<void()> onclick = []() { std::cout << "not impl" << std::endl; });
 };
 
 } // namespace Menu

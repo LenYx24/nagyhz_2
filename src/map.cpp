@@ -15,12 +15,6 @@ void Cell::update_entities_shape(sf::Vector2f mappos){
     entities[i]->update_shape_pos(mappos);
   }
 }
-void Cell::updateVision() {
-  // update vision
-}
-bool Cell::canbuyitems()const {
-  return true;
-}
 void Cell::resetcolor(){
   sf::Color c = shape.getFillColor();
   c.a = 255;
@@ -55,6 +49,7 @@ Bush::Bush() {
 }
 SpawnArea::SpawnArea() {
   setcolor(sf::Color::Yellow);
+  set_shop(true);
 }
 Map::Map(sf::Vector2f pos) {
   position = pos;
@@ -85,14 +80,34 @@ Map::Map(sf::Vector2f pos) {
         cells[i][j] = new Bush{};
         break;
       }
+      // the blue side turret
       case 't': {
         cells[i][j] = new Ground{};
-        cells[i][j]->addentity(new Tower);
+        Tower *tower = new Tower;
+        tower->set_side(Side::BLUE);
+        cells[i][j]->addentity(tower);
+        break;
+      }
+      // the red side turret
+      case 'z': {
+        cells[i][j] = new Ground{};
+        Tower *tower = new Tower;
+        tower->set_side(Side::RED);
+        cells[i][j]->addentity(tower);
         break;
       }
       case 'n': {
         cells[i][j] = new Ground{};
-        cells[i][j]->addentity(new Nexus);
+        Nexus *nexus = new Nexus;
+        nexus->set_side(Side::BLUE);
+        cells[i][j]->addentity(nexus);
+        break;
+      }
+      case 'm': {
+        cells[i][j] = new Ground{};
+        Nexus *nexus = new Nexus;
+        nexus->set_side(Side::RED);
+        cells[i][j]->addentity(nexus);
         break;
       }
       // sima jungle camp
@@ -137,8 +152,7 @@ Map::Map(sf::Vector2f pos) {
         cells[i][j]->addentity(c);
         break;
       }
-      case 'y':
-      case 'x': {
+      case 'x':{
         cells[i][j] = new SpawnArea{};
         break;
       }
@@ -193,7 +207,25 @@ Map::~Map() {
     }
   }
 }
-
+bool Cell::should_update_vision_around(Side current_side){
+  for(size_t i = 0; i < entities.size(); i++){
+    if(entities[i]->get_side() == current_side){
+      return true;
+    }
+  }
+  return false;
+}
+void Map::update_vision(Side current_side){
+  // first reset every cells shapes opacity to default
+  for (size_t i = 0; i < size.x; i++) {
+    for (size_t j = 0; j < size.y; j++) {
+      bool should_update = cells[i][j]->should_update_vision_around(current_side);
+      if(should_update){
+        // Todo: get nearby cells, and set their shapes opacity
+      }
+    }
+  }
+}
 void Cell::addentity(Entity *entity) {
   entities.push_back(entity);
   update_entities_shape(shape.getPosition());
@@ -214,7 +246,7 @@ Cell *Map::getclickedcell(const int x, const int y) {
   return nullptr;
 }
 bool Cell::contains(const int x, const int y) {
-  return shape.getGlobalBounds().contains(x, y);
+  return shape.getGlobalBounds().contains(static_cast<float>(x),static_cast<float>(y));
 }
 Entity* Cell::getentitiyclicked(const int x, const int y){
   // need to start iterating from the back, because of how the entities are drawn to the screen, 
@@ -226,9 +258,10 @@ Entity* Cell::getentitiyclicked(const int x, const int y){
 }
 std::vector<Cell*> Map::getnearbycells(sf::Vector2f pos, int distance){
   std::vector<Cell *> around;
-  for(int i = pos.x-distance; i <= pos.x+distance; i++){
+  sf::Vector2 pos_ = {static_cast<int>(pos.x),static_cast<int>(pos.y)};
+  for(int i = pos_.x-distance; i <= pos_.x+distance; i++){
     if(inboundsrow(i)){
-      for(int j = pos.y-distance; j <= pos.y+distance; j++){
+      for(int j = pos_.y-distance; j <= pos_.y+distance; j++){
         if(inboundscol(j) && cells[i][j] != nullptr){
           around.push_back(cells[i][j]);
         }

@@ -1,7 +1,7 @@
 #include "../include/UIcomponents.hpp"
 using namespace UI;
 
-Button::Button(sf::String str, std::function<void(StateManager &s)> onclick, sf::Vector2f pos) {
+Button::Button(sf::String str, std::function<void()> onclick, sf::Vector2f pos) {
   // default button settings
   text.setString(str);
   text.setFillColor({220, 225, 223});
@@ -13,6 +13,22 @@ Button::Button(sf::String str, std::function<void(StateManager &s)> onclick, sf:
   text.setOrigin({text.getLocalBounds().width / 2, text.getLocalBounds().height / 2});
   set_position(pos);
   this->onclick = onclick;
+}
+void TextBox::draw(sf::RenderWindow& window){
+  window.draw(shape);
+  window.draw(text);
+}
+bool Button::contains(int x, int y)const{
+  return get_global_bounds().contains(static_cast<float>(x), static_cast<float>(y));
+}
+bool Grid::contains(int x, int y)const{
+  return get_global_bounds().contains(static_cast<float>(x), static_cast<float>(y));
+}
+bool TextBox::contains(int x, int y)const{
+  return get_global_bounds().contains(static_cast<float>(x), static_cast<float>(y));
+}
+bool NamedBox::contains(int x, int y)const{
+  return get_global_bounds().contains(static_cast<float>(x), static_cast<float>(y));
 }
 
 void Button::set_text(sf::String str) {

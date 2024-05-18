@@ -5,6 +5,13 @@
 Entity::Entity(std::string name) : name(name) {
   shape.setSize({15,15});
   shape.setFillColor(sf::Color::Cyan);
+  damage = 10;
+  hp = 10;
+  cell = nullptr;
+  maxhp = 20;
+  respawn_counter = 0;
+  respawn_timer = 5;
+  xp_given = 10;
 }
 
 void Champion::spawn() {
@@ -28,16 +35,15 @@ std::vector<std::string> splitString(const std::string& str, char delimiter) {
     return tokens;
 }
 void Champion::readfromstring(std::string &line, const char delimiter) {
-  // Todo: read champ data
   std::vector<std::string> tokens = splitString(line, delimiter);
   if(tokens.size() < 5){
     throw "wrong file format";
   }
   name = tokens[0];
   damage = std::stod(tokens[1]);
-  dmg_per_level = std::stod(tokens[2]);
-  hp =std::stod(tokens[3]);
-  hp_per_level = std::stod(tokens[4]);
+  dmg_per_level = std::stoi(tokens[2]);
+  hp = std::stod(tokens[3]);
+  hp_per_level = std::stoi(tokens[4]);
   cell = nullptr;
 }
 void Item::readfromstring(std::string &line, const char delimiter) {
@@ -47,27 +53,45 @@ void Item::readfromstring(std::string &line, const char delimiter) {
     throw "wrong file format";
   }
   name = tokens[0];
-  gold_value = std::stod(tokens[1]);
+  gold_value = std::stoi(tokens[1]);
   setbonusdmg(std::stod(tokens[2]));
   setbonushp(std::stod(tokens[3]));
 }
-Player::Player(std::vector<Champion*> champs):starter(false){
-  this->champs = champs;
+Player::Player(std::vector<Champion*> champs):side(Side::BLUE),starter(false){
+  this->champs = std::move(champs);
   gamemoveactive = false;
   minion_timer = 0;
   minion_timer_mark = 3;
   is_simulation = false;
 }
-void Player::spawn_minions(std::shared_ptr<Map> map){
-  int offset = 2;
-  if(side == Side::RED)offset=-offset;
+void Player::spawn_minions(const std::shared_ptr<Map>& map){
+  float offset = 2;
+  float sign = 1;
+  if(side == Side::RED)sign=-sign;
   std::vector<sf::Vector2f> points;
-  points.push_back({spawnpoint.x+offset,spawnpoint.y});
-  points.push_back({spawnpoint.x+offset,spawnpoint.y-offset});
-  points.push_back({spawnpoint.x,spawnpoint.y-offset});
+  std::vector<std::vector<sf::Vector2f>> directions;
+
+  // top
+  std::vector<sf::Vector2f> dir_top = {{0,sign*1},{sign*1,0}};
+  points.emplace_back(spawnpoint.x+offset*sign,spawnpoint.y);
+  // need to reverse the sequence, because on redside the minion first moves horizontally left, then vertically down
+  // but on the blue side it first goes up then right (first vertically then horizontally)
+  if(side == Side::RED)std::reverse(dir_top.begin(), dir_top.end());
+  directions.push_back(dir_top);
+  // mid
+  std::vector<sf::Vector2f> dir_mid = {{sign*1,sign*1}};
+  directions.push_back(dir_mid);
+  points.emplace_back(spawnpoint.x+offset*sign,spawnpoint.y-offset*sign);
+  // bot
+  std::vector<sf::Vector2f> dir_bot = {{sign*1,0},{0,sign*1}};
+  if(side == Side::RED)std::reverse(dir_top.begin(), dir_top.end());
+  directions.push_back(dir_bot);
+  points.emplace_back(spawnpoint.x,spawnpoint.y-offset*sign);
+
+  // spawn
   for(size_t i = 0; i < points.size(); i++){
     MinionWave *wave = new MinionWave;
-    wave->spawn(points[i],map);
+    wave->spawn(points[i],directions[i],map);
     minion_waves.push_back(wave);
   }
 }
@@ -75,13 +99,32 @@ void Player::round_end(std::shared_ptr<Map> map){
   minion_timer++;
   if(minion_timer == minion_timer_mark){
     spawn_minions(map);
+    minion_timer = 0;
   }
-  for(size_t i = 0; i < champs.size(); i++){
-    champs[i]->round_end();
+  for(auto & champ : champs){
+    champ->round_end();
   }
 }
 void Champion::round_end(){
-  this->movepoints = 3;
+  movepoints = 3;
+  // Todo: dont forget to free it first
+  gamemoves.clear();
+  this->current_gamemove = nullptr;
+  this->simulation_points_counter = 0;
+}
+void Champion::update_total_dmg(){
+  double total_dmg_ = get_base_dmg();
+  for(auto &item: items){
+    total_dmg_+=item->getbonusdmg();
+  }
+  total_damage = total_dmg_;
+}
+void Champion::update_total_hp(){
+  double total_hp_ = get_base_hp();
+  for(auto &item: items){
+    total_hp_+=item->getbonushp();
+  }
+  total_hp = total_hp_;
 }
 void Entity::update_shape_pos(sf::Vector2f pos){
   shape.setPosition(pos + sf::Vector2f{5,5});
@@ -98,18 +141,22 @@ void Champion::draw(sf::RenderWindow &window){
   window.draw(icon);
 }
 Minion::Minion(){
-  set_color(sf::Color{235,65,90});
+  set_color(sf::Color{150,65,90});
+  this->set_name("minion");
+  this->hp = 30;
+  this->damage = 30;
+  this->shape.setSize({20,20});
 }
-void Champion::setname(std::string name){this->name=name;}
-void Player::spawnchamps(const std::shared_ptr<Map> map){
-  for(size_t i = 0; i < champs.size(); i++){
-    map->spawn(champs[i],spawnpoint);
-    champs[i]->setcell(map->getcell(spawnpoint));
+void Champion::setname(std::string name_){name=std::move(name_);}
+void Player::spawn_champs(const std::shared_ptr<Map> &map){
+  for(auto & champ : champs){
+    map->spawn(champ,spawnpoint);
+    champ->setcell(map->getcell(spawnpoint));
   }
 }
-void Player::domoves(std::shared_ptr<Map> map){
-  for(size_t i = 0; i < champs.size(); i++){
-    champs[i]->do_move(map);
+void Player::domoves(std::shared_ptr<Map> &map){
+  for(auto & champ : champs){
+    champ->do_move(map);
   }
 }
 void Player::setchampicons(const std::string &icons){
@@ -126,7 +173,7 @@ void Champion::setfont(Resources::Holder &h){
   icon.setFont(h.get(Resources::Type::FONT));
 }
 bool Entity::clicked(const int x, const int y){
-  return shape.getGlobalBounds().contains(x,y);
+  return shape.getGlobalBounds().contains(static_cast<float>(x),static_cast<float>(y));
 }
 // bool Tower::clicked(const int x, const int y){
 //   return true;
@@ -242,6 +289,14 @@ Champion::Champion(){
   icon.setFillColor(sf::Color::White);
   simulation_points_counter = 1;
   simulation = false;
+  gold = 0;
+  xp = 0;
+  xp_cutoff = 100;
+  xp_given = 20;
+  level = 0;
+  level_xp_increase = 3;
+  cs = 0;
+  max_level = 18;
 }
 void Champion::add_item(Item *item){
   if(items.size() < 6){
@@ -250,8 +305,8 @@ void Champion::add_item(Item *item){
 }
 sf::Vector2f Champion::gamemove_index(size_t offset)const{
   if(!current_gamemove)throw "current game move is a nullptr";
-  int lastindex = static_cast<int>(gamemoves.size()) - 1;
-  for(int i = lastindex - offset; i >= 0; i--){
+  int last_index = static_cast<int>(gamemoves.size()) - 1;
+  for(int i = last_index - static_cast<int>(offset); i >= 0; i--){
     if(gamemoves[i]->position_cell() != nullptr){
       return gamemoves[i]->position_cell()->getindex();
     }
@@ -279,11 +334,17 @@ bool Player::check_round_end(){
   }
   return true;
 }
-void MinionWave::spawn(sf::Vector2f startpoint, std::shared_ptr<Map> map){
+void MinionWave::spawn(sf::Vector2f startpoint,std::vector<sf::Vector2f> directions, std::shared_ptr<Map> map){
+  this->directions = directions;
   for(size_t i = 0; i < minion_wave_size; i++){
     Minion *minion = new Minion;
     minions.push_back(minion);
     map->spawn(minion,startpoint);
+  }
+}
+void MinionWave::round_end(){
+  for(auto &minion: minions){
+    minion->check_death();
   }
 }
 void Champion::do_move(std::shared_ptr<Map> map){
@@ -316,24 +377,38 @@ void Player::update_champ_positions(std::shared_ptr<Map> map){
 void Champion::fight(Entity *other){
   if(!isAlive() || !other->isAlive())return;
   // if the champ is in kill range
-  if(damage >= other->get_hp() || other->get_dmg() >= hp){
+  double total_dmg = get_total_dmg();
+  double total_hp = get_total_hp();
+  double other_total_dmg = other->get_total_dmg();
+  double other_total_hp = other->get_total_hp();
+  // if one of them can kill the other
+  if(total_dmg >= other_total_hp || other_total_dmg >= total_hp){
     if(other->can_fight_back()){
-      double chance = ((damage+other->get_dmg())/damage + (hp+other->get_hp())/hp) /2;
+      double chance = ((total_dmg+other_total_dmg)/total_dmg + (total_hp+other_total_hp)/total_hp) /2;
       double ran = rand();
       std::cout << "change for the fight: " << chance << std::endl;
       std::cout << "random number: " << ran << std::endl;
       // the champ won
       if(chance <= ran){
         other->remove_hp(damage);
+        if(!other->isAlive()) {
+          if (other->gives_creep_score())
+            cs++;
+          xp += other->get_xp_given();
+          gold += other->get_gold_given();
+        }
       } 
       else{ // the other entity won
-        remove_hp(other->get_dmg());
+        remove_hp(other_total_dmg);
+        if(!isAlive()){
+          // Todo: give the enemy the xp and gold it got
+        }
       }
     }
   }
   else{
-    remove_hp(other->get_dmg());
-    other->remove_hp(damage);
+    remove_hp(other_total_dmg);
+    other->remove_hp(total_dmg);
   }
   // Todo: check if enemy is in execute range, then calculate chance of escape for them
 }

@@ -26,7 +26,7 @@ public:
 };
 class TeamCol {
 public:
-  TeamCol(Resources::Holder &h,sf::Vector2f startpos,sf::Vector2f size = {100,30}, int margin = 10);
+  TeamCol(Resources::Holder &h,sf::Vector2f startpos,sf::Vector2f size = {100,30}, float margin = 10);
   void setpos();
   std::vector<Champion *> champs;
   void draw_to_window(sf::RenderWindow &w);
@@ -34,13 +34,13 @@ public:
 protected:
   std::vector<DraftNamedBox> elements;
   sf::Vector2f startpos;
-  int margin;
+  float margin;
 };
 class DraftButton : public UI::Button {
 public:
 // Todo: static fgv, ami visszaad egy draftbutton stílusú gombot
   DraftButton(
-      Resources::Holder &h, sf::String str, std::function<void(StateManager &s)> onclick = [](StateManager &s) { std::cout << "not impl" << std::endl; });
+      Resources::Holder &h, sf::String str, std::function<void()> onclick = []() { std::cout << "not impl" << std::endl; });
 };
 
 class ChampBox : public UI::NamedBox {
@@ -55,8 +55,9 @@ public:
   void handle_events(sf::Event &e);
   void update();
   void draw(sf::RenderWindow& window);
-  void lockin(StateManager& s, sf::RenderWindow& window);
-  void dontban(StateManager& s);
+
+  void lockin(StateManager& s, sf::RenderWindow& window, const Settings settings);
+  void dontban();
 
 protected:
   Resources::Holder h;

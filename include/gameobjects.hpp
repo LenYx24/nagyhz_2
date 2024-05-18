@@ -8,6 +8,7 @@
 #include <iostream>
 #include <sstream>
 #include <memory>
+#include <utility>
 class Cell;
 class Map;
 enum class Side { BLUE, RED };
@@ -25,13 +26,21 @@ public:
   // resets its hp to full
   //virtual void spawn() = 0;
   //virtual void die() = 0;
+  virtual double get_base_dmg()const{return damage;}
+  virtual double get_base_hp()const{return hp;}
+  virtual double get_total_dmg()const{return total_damage;}
+  virtual double get_total_hp()const{return total_hp;}
+  virtual int get_xp_given()const{return xp_given;}
+  virtual int get_gold_given()const{return gold_given;}
+  virtual void set_side(Side side_){side = side_;}
+  virtual Side get_side()const {return side;}
   virtual std::vector<std::string> getstats();
   bool isAlive() const {return respawn_timer == 0;}
-  virtual double get_hp()const{return hp;}
-  virtual double get_dmg()const{return damage;}
-  virtual void remove_hp(double dmg){this->hp-=damage; check_death();}
-  virtual void check_death(){if(hp <= 0){respawn_counter = respawn_timer;}}
-  virtual bool clicked(const int, const int);
+  virtual bool should_focus()const{return false;}
+  virtual bool gives_creep_score()const {return false;}
+  virtual void remove_hp(double dmg){if(get_total_hp()-dmg > 0)hp-=dmg; check_death();}
+  virtual void check_death(){if(total_hp <= 0){respawn_counter = respawn_timer;}}
+  virtual bool clicked(int, int);
   // the cell where the entity is at the start of the round
   inline Cell *get_real_cell(){return cell;}
   // the cell which calculates in the gamemoves of the current cell
@@ -41,19 +50,22 @@ public:
   // checks
   // virtual void update_vision() = 0;
   std::string to_ui_int_format(double num);
-  void set_color(sf::Color color){shape.setFillColor(color);}
-  void set_name(std::string name){this->name = name;}
+  void set_color(sf::Color color_){shape.setFillColor(color_);}
+  void set_name(std::string name_){name = std::move(name_);}
   virtual bool can_fight_back()const{return false;}
 protected:
   std::string name;
   double maxhp; // the maximum hp this entity could have
   double hp;
   double damage;
+  double total_hp;
+  double total_damage;
   int respawn_counter; // the amount of seconds needed to respawn
   int respawn_timer; // the amount of seconds needed to respawn
+  int xp_given;  // the xp given to the other entity, if this one gets slain by them
+  int gold_given;  // the gold given to the other entity, if this one gets slain by them
   Cell *cell;       // pointer to the cell this entity occupies
-  // Todo: implement the correct sequence in which entities get drawn to the map, by utilizing the z-index
-  // Todo: use sprite with/instead of color coding entities
+  Side side; // the side on which the entity is on, either blue or red
   sf::Color color;
   sf::RectangleShape shape;
 };
@@ -96,12 +108,13 @@ private:
 class Champion : public Entity, public Ireadstring {
 public:
   Champion();
-  ~Champion();
+  ~Champion() override;
   // spawns the champion with full health on the side he's on
   void spawn();
   void die();
   void fight(Entity *other); // simulates a fight, by calculating each ones dmg
-  double get_total_dmg();      // returns the total dmg that could be dealt by the champion with all the buffs and items
+  void update_total_dmg(); // returns the total dmg that could be dealt by the entity with all the buffs and items
+  void update_total_hp(); // returns the total hp that this entity has with all the buffs and items
   void add_item(Item *item);
   void setname(std::string name);
   void update_vision();
@@ -135,15 +148,13 @@ private:
   int hp_per_level;  // the amount of hp given per level up
   int dmg_per_level; // the amount of dmg given per level up
   std::vector<Item *> items;
-  int level; // by leveling up the basic attributes of a champion get multiplied by level_multiplier
-  double level_multiplier;
+  int level; // the current level of the champion
+  int max_level;
+  double level_xp_increase; // the amount of xp which is added to xp_cutoff at every levelup
   int xp;        // the current amount of xp
   int xp_cutoff; // the amount of xp needed to level up
-  int xp_given;  // the xp given to the other champion, if this one gets slain by them
-  int vision_range;
   std::vector<Ward *> wards;
-  int wards_max;      // default is 2
-  int wards_cooldown; // default should be 4 rounds
+  size_t wards_max;      // default is 2
 
   int movepoints;
   sf::Text icon;
@@ -192,14 +203,17 @@ public:
 };
 // minions can have effects too (currently one, but it could increase in the future), this is the baron buff, which gives flat buffs
 class Minion : public Monster {
+public:
   Minion();
+  bool should_focus()const override{return true;}
+  bool gives_creep_score()const{return true;}
 private:
   // Todo: add game moves for minions
 };
 class MinionWave{
 public:
   MinionWave():minion_wave_size(3){}
-  void spawn(sf::Vector2f startpoint, std::shared_ptr<Map> map);
+  void spawn(sf::Vector2f startpoint,std::vector<sf::Vector2f> directions, std::shared_ptr<Map> map);
   // check for minion deaths...
   void round_end();
 
@@ -207,25 +221,27 @@ public:
   void do_minions_move();
 private:
   std::vector<Minion *> minions;
+  std::vector<sf::Vector2f> directions;
+  sf::Vector2f current_direction;
   size_t minion_wave_size;
 };
 class Player {
 public:
   Player(std::vector<Champion*> champs);
-  void spawnchamps(const std::shared_ptr<Map> map);
+  void spawn_champs(const std::shared_ptr<Map> &map);
   void setspawnpoint(sf::Vector2f point){spawnpoint = point;}
   void setchampicons(const std::string &icons);
   void setfont(Resources::Holder& h);
   bool is_gamemove_active();
   void setgamemoveactive(bool b);
-  void domoves(std::shared_ptr<Map> map);
+  void domoves(std::shared_ptr<Map> &map);
   bool ishischamp(Champion *c);
   void showmoveoptions(const std::shared_ptr<Map>, Champion *c);
   void draw_champs(sf::RenderWindow &window);
   bool did_start()const{return starter;}
   void set_starter(bool s){starter = s;}
   bool check_round_end();
-  void spawn_minions(std::shared_ptr<Map> minions);
+  void spawn_minions(const std::shared_ptr<Map>& minions);
   void round_end(std::shared_ptr<Map> map);
   void set_simulation(bool sim);
   void update_champ_positions(std::shared_ptr<Map> map);

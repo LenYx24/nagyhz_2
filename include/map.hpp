@@ -3,7 +3,7 @@
 #include "gameobjects.hpp"
 #include <vector>
 #include <memory>
-
+enum class Side;
 // specifies who is able to see the others monsters on this field
 enum class vision { PLAYER1, PLAYER2, BOTH };
 class Cell {
@@ -11,9 +11,10 @@ public:
   Cell():selected(false){}
   virtual ~Cell(){}
   // updates the vision of the cell, should be called after every move
-  virtual void updateVision();
+  virtual bool should_update_vision_around(Side side_);
   // returns true, if the 
-  virtual bool canbuyitems()const;
+  virtual bool canbuyitems()const{return shop;}
+  virtual void set_shop(bool shop_){shop=shop_;}
   virtual void setselected();
   virtual inline bool is_selected()const{return selected;}
   virtual bool canmovehere()const{return true;};
@@ -42,6 +43,7 @@ private:
   sf::Vector2f pos;
   sf::Vector2f indicies; // basically the index + 1 coordinates of the cell, it's useful if we want to calculate things
   sf::RectangleShape shape;
+  bool shop;
   bool selected;
 };
 // the basic cell type, that can be moved on by the player
@@ -65,13 +67,10 @@ class Bush : public Ground {
 public:
   Bush();
 };
-// players with the correct side can buy items here
 class SpawnArea : public Ground {
 public:
   SpawnArea();
-  bool canbuyitems()const{return true;}
 };
-// Todo: make map zoomable
 class Map {
 public:
   Map(sf::Vector2f pos);
@@ -86,7 +85,7 @@ public:
   // given the position of a cell, it gives the nearby cells to it in a square, the square size depends on the distance given
   std::vector<Cell *> getnearbycells(sf::Vector2f pos, int distance = 1);
   // this is the amount of cells
-  sf::Vector2f getcellgridsize()const{return size;}
+  sf::Vector2u getcellgridsize()const{return size;}
   Champion *getselectedchamp();
   Cell *getcell(sf::Vector2f pos){
     posindex p_index = toposindex(pos);
@@ -96,11 +95,11 @@ public:
   void select_accessible_cells(Champion *c);
   void select_attackable_entities(Champion *c);
   void select_wardable_cells(Champion *c);
-  inline bool inboundsrow(int p){return 0 <= p && p < size.x;}
-  inline bool inboundscol(int p){return 0 <= p && p < size.y;}
+  bool inboundsrow(int p){return 0 <= p && p < static_cast<int>(size.x);}
+  bool inboundscol(int p){return 0 <= p && p < static_cast<int>(size.x);}
   void move(Entity *entity, sf::Vector2f from, sf::Vector2f to);
   void reset_cell_selections();
-  void update_vision();
+  void update_vision(Side side_);
 
 private:
   struct posindex{
@@ -108,7 +107,7 @@ private:
   };
   posindex toposindex(sf::Vector2f pos);
   sf::Vector2f position;
-  sf::Vector2f size = {20,20};
+  sf::Vector2u size = {20,20};
   sf::Vector2f cellsize = {30,30};
 // todo, use std array
   Cell *cells[20][20];

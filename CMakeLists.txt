@@ -37,18 +37,15 @@ if(WIN32)
         COMMENT "Copy OpenAL DLL"
         PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${SFML_SOURCE_DIR}/extlibs/bin/$<IF:$<EQUAL:${CMAKE_SIZEOF_VOID_P},8>,x64,x86>/openal32.dll $<TARGET_FILE_DIR:lolmacrogame>
         VERBATIM)
-    target_compile_options(lolmacrogame PRIVATE -Wall -g -O0)
-    target_link_options(lolmacrogame PRIVATE)
 else()
-    # if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    # target_compile_options(lolmacrogame
-    #    PRIVATE
-    #     -fsanitize=address
-    #     -fno-omit-frame-pointer)
-    # target_link_options(lolmacrogame PRIVATE -fsanitize=address)
-    # endif()
-    target_compile_options(lolmacrogame PRIVATE -fsanitize=address) # -Wextra -Wpedantic -Wconversion -Werror -g -O0 -Wall
-    target_link_options(lolmacrogame PRIVATE -fsanitize=address)
+    if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    target_compile_options(lolmacrogame
+        PRIVATE
+         -fsanitize=address
+         -fno-omit-frame-pointer)
+    endif()
 endif()
+target_link_options(lolmacrogame PRIVATE -fsanitize=address)
+target_compile_options(lolmacrogame PRIVATE -fsanitize=address -Wall -Wextra -Wpedantic -Wconversion -Werror) #  -g -O0
 
 install(TARGETS lolmacrogame)

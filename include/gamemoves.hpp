@@ -26,8 +26,7 @@ public:
   virtual void finish(Cell *cell) {
     this->cell = cell;
   }
-  // make this one abstract, after the testing is done
-  virtual void do_move(Champion *champ, std::shared_ptr<Map> map){}
+  virtual void do_move(Champion *champ, std::shared_ptr<Map> map)=0;
   virtual void onclick(std::shared_ptr<Map> map, Player *currentplayer, Champion *selected_champ) = 0;
   int get_movepoints() const {
     return points;
@@ -35,7 +34,7 @@ public:
   void set_movepoints(int p) {
     this->points = p;
   }
-  static bool basic_check(std::shared_ptr<Map> map, Player *current_player, Champion *selected_champ);
+  static bool basic_check(Player *current_player, Champion *selected_champ);
 
 protected:
   static int points; // the amount of points needed to do the move

@@ -40,12 +40,10 @@ protected:
   State(StateManager &state_manager) : state_manager(state_manager) {}
   StateManager &state_manager;
 };
-enum class GameMode { THEMSELVES, TWOPLAYER };
-class Settings {
+enum class GameMode { TWOPLAYER };
+struct Settings {
 public:
   Settings(std::string champs_filepath, std::string items_filepath, GameMode mode);
-
-private:
   std::string champs_filepath;
   std::string items_filepath;
   GameMode mode;

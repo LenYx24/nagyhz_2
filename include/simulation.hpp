@@ -21,6 +21,7 @@ protected:
   //std::vector<UI::Button> buttons;
   sf::Clock elapsed_time;
   sf::Time oneturn_time; // the amount of time the current turn that was done is shown
+  UI::NamedBox *title;
   GameMode mode;
   int round_count;
   int round_counter;
