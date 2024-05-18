@@ -17,8 +17,8 @@ SimulationState::SimulationState(std::vector<Player *> &players, std::shared_ptr
   timer.setPosition({250, 10});
   timer.setFont(h.get(Resources::Type::FONT));
   timer.setCharacterSize(18);
-  round_counter = 0;
-  round_count = 3;
+  // reset vision
+  map->reset_cell_selections();
 };
 void SimulationState::handle_events(sf::Event &e){
     if (e.type == sf::Event::Closed) {
@@ -36,8 +36,9 @@ void SimulationState::update(){
         for(auto & player : players){
             player->domoves(map);
         }
-        // Todo: check game end
-        map->check_game_end();
+        if(map->did_game_end()){
+          state_manager.pop_state();
+        }
         if(round_counter == round_count){
             state_manager.pop_state();
         }
@@ -46,6 +47,11 @@ void SimulationState::update(){
 }
 SimulationState::~SimulationState(){
   delete title;
+  // no gamemoves should be on any champion
+  //for(Player *player: players){
+    //player->clear_gamemoves();
+    std::cout << "clearing gamemoves" << std::endl;
+  //}
 }
 void SimulationState::draw(sf::RenderWindow& window){
     sf::Color background_color = sf::Color(220, 225, 222);

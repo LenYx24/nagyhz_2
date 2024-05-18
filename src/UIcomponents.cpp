@@ -17,6 +17,7 @@ Button::Button(sf::String str, std::function<void()> onclick, sf::Vector2f pos) 
 void TextBox::draw(sf::RenderWindow& window){
   window.draw(shape);
   window.draw(text);
+  window.draw(label);
 }
 bool Button::contains(int x, int y)const{
   return get_global_bounds().contains(static_cast<float>(x), static_cast<float>(y));
@@ -30,7 +31,35 @@ bool TextBox::contains(int x, int y)const{
 bool NamedBox::contains(int x, int y)const{
   return get_global_bounds().contains(static_cast<float>(x), static_cast<float>(y));
 }
+TextBox::TextBox(std::string label_, Resources::Holder &holder, sf::Vector2f pos){
+  shape.setFillColor(sf::Color::White);
+  shape.setSize({200,50});
+  shape.setOutlineColor({sf::Color::Black});
+  shape.setOutlineThickness(3);
+  shape.setPosition(pos);
 
+  text.setString("");
+  text.setCharacterSize(15);
+  text.setFillColor(sf::Color{100,100,50});
+  text.setFont(holder.get(Resources::Type::FONT));
+  text.setPosition(pos + sf::Vector2f{5,5});
+
+  label.setString(label_);
+  label.setCharacterSize(15);
+  label.setFillColor(sf::Color::Black);
+  label.setFont(holder.get(Resources::Type::FONT));
+  label.setPosition(pos - sf::Vector2f{150,0});
+}
+void TextBox::add_char(char c) {
+  std::string str = text.getString();
+  str.push_back(c);
+  text.setString(str);
+}
+void TextBox::remove_char(){
+  std::string str = text.getString();
+  str.pop_back();
+  text.setString(str);
+}
 void Button::set_text(sf::String str) {
   text.setString(str);
 }

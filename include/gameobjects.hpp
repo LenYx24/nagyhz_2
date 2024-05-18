@@ -35,7 +35,7 @@ public:
   void set_side(Side side_){side = side_;}
   Side get_side()const {return side;}
   void set_xp_given(int xp_given_){xp_given = xp_given_;}
-  virtual std::vector<std::string> getstats();
+  virtual std::vector<std::string> get_stats();
   bool isAlive() const {return respawn_timer == 0;}
   virtual bool should_focus()const{return false;}
   virtual bool gives_creep_score()const {return false;}
@@ -44,10 +44,11 @@ public:
   virtual bool clicked(int, int);
   // the cell where the entity is at the start of the round
   inline Cell *get_real_cell(){return cell;}
-  // the cell which calculates in the gamemoves of the current cell
+  virtual // the cell which calculates in the gamemoves of the current cell
   inline Cell *get_simulation_cell(){return cell;}
-  inline void setcell(Cell *c){if(c != nullptr)cell=c;}
+  inline void set_cell(Cell *c){if(c != nullptr)cell=c;}
   virtual void update_shape_pos(sf::Vector2f pos);
+  virtual bool gives_vision()const{return false;}
   // checks
   // virtual void update_vision() = 0;
   std::string to_ui_int_format(double num);
@@ -56,7 +57,7 @@ public:
   virtual bool can_fight_back()const{return false;}
 protected:
   std::string name;
-  double maxhp = 10; // the maximum hp this entity could have
+  double max_hp = 10; // the maximum hp this entity could have
   double hp = 10;
   double damage = 10;
   double total_hp = 10;
@@ -97,8 +98,11 @@ private:
   // is it a percentage bonus, or direct value
   // callback fnc, that does something to its champion, or on the map
 };
+/**
+ * @brief common parent class for structures, it shouldn't have a move (as in map movements) functions, it's position doesn't change
+ */
 class Structure : public Entity {
-  // common parent class for entities, it shouldn't have a move functions, it's position doesn't change
+  bool gives_vision()const override{return true;}
 };
 class Ward: public Structure{
 public:
@@ -110,36 +114,33 @@ class Champion : public Entity, public Ireadstring {
 public:
   Champion();
   ~Champion() override;
-  // spawns the champion with full health on the side he's on
-  void spawn();
-  void die();
   void fight(Entity *other); // simulates a fight, by calculating each ones dmg
   void update_total_dmg(); // returns the total dmg that could be dealt by the entity with all the buffs and items
   void update_total_hp(); // returns the total hp that this entity has with all the buffs and items
   void add_item(Item *item);
-  void setname(std::string name);
-  void update_vision();
-  std::vector<std::string> getstats();
-  inline void seticon(char c){icon.setString(c);}
-  std::string getname() const {return name;}
-  void setfont(Resources::Holder &h);
-  void readfromstring(std::string &line, const char delimiter = ';');
+  std::vector<std::string> get_stats();
+  inline void set_icon(char c){icon.setString(c);}
+  std::string get_name() const {return name;}
+  void set_font(Resources::Holder &h);
+  void read_from_string(std::string &line, const char delimiter = ';');
   virtual void draw(sf::RenderWindow &w);
   int getmovepoints()const{return movepoints;}
   void add_gamemove(GameMove *move){gamemoves.push_back(move); current_gamemove = gamemoves[gamemoves.size()-1];}
-  bool is_gamemove_complete()const{if(gamemoves.size() == 0)return true; else return current_gamemove->is_complete();}
+  bool is_gamemove_complete()const{if(gamemoves.empty())return true; else return current_gamemove->is_complete();}
   Cell *get_simulation_cell();
   sf::Vector2f last_gamemove_index()const;
   sf::Vector2f current_gamemove_index()const;
   void finish_gamemove(Cell *cell);
-  virtual void update_shape_pos(sf::Vector2f pos);
+  void update_shape_pos(sf::Vector2f pos)override;
   void do_move(std::shared_ptr<Map> map);
   void set_simulation(bool sim){simulation = sim;}
   void round_end();
   void add_xp(int xp);
-  virtual bool can_fight_back()const{return true;}
+  bool can_fight_back()const override{return true;}
   void place_ward(std::shared_ptr<Map> map, Cell *c);
-  void refill_hp(){hp = maxhp;}
+  bool gives_vision()const override{return false;}
+  void refill_hp(){hp = max_hp;}
+  void clear_gamemoves();
 
 private:
   sf::Vector2f gamemove_index(size_t offset)const;
@@ -203,15 +204,14 @@ public:
 class Minion : public Monster {
 public:
   Minion();
+  virtual bool gives_vision()const{return false;}
   bool should_focus()const override{return true;}
   bool gives_creep_score()const{return true;}
-private:
-  // Todo: add game moves for minions
 };
 class MinionWave{
 public:
   MinionWave():minion_wave_size(3){}
-  void spawn(sf::Vector2f startpoint,std::vector<sf::Vector2f> directions, std::shared_ptr<Map> map);
+  void spawn(sf::Vector2f startpoint,std::vector<sf::Vector2f> directions, std::shared_ptr<Map> map, Side side_);
   // check for minion deaths...
   void round_end();
 
@@ -226,6 +226,7 @@ private:
 class Player {
 public:
   Player(std::vector<Champion*> champs);
+  ~Player();
   void spawn_champs(const std::shared_ptr<Map> &map);
   void setspawnpoint(sf::Vector2f point){spawnpoint = point;}
   void setchampicons(const std::string &icons);
@@ -243,10 +244,13 @@ public:
   void round_end(std::shared_ptr<Map> map);
   void set_simulation(bool sim);
   void update_champ_positions(std::shared_ptr<Map> map);
-  void set_side(Side s){side = s;}
+  void set_side(Side s);
   Side get_side()const{return side;}
   Champion *getselectedchamp(sf::Vector2f index);
   sf::Vector2f get_spawn_point()const{return spawnpoint;}
+  void clear_gamemoves();
+  void despawn_champs(std::shared_ptr<Map> &map);
+
 
 private:
   std::vector<Champion*> champs;

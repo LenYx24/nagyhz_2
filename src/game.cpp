@@ -212,15 +212,16 @@ void GameState::handle_events(sf::Event &e) {
       if(is_gamemove_finisher(clickedcell)){
         selectedchamp->finish_gamemove(clickedcell);
         map->move(selectedchamp, selectedchamp->current_gamemove_index(), selectedchamp->last_gamemove_index());
-        statsentity = selectedchamp->getstats();
-        map->reset_cell_selections();
+        statsentity = selectedchamp->get_stats();
+        map->update_vision_side(currentplayer->get_side());
+        map->update_vision();
       }
       else{
         clickedcell->sethighlighted();
         Entity *clickedentity = clickedcell->getentitiyclicked(e.mouseButton.x, e.mouseButton.y);
         if(clickedentity != nullptr){
           selectedchamp = currentplayer->getselectedchamp(clickedcell->getindex());
-          statsentity = clickedentity->getstats();
+          statsentity = clickedentity->get_stats();
         }
       }
       show_stats(statsentity);
@@ -276,9 +277,6 @@ void GameState::draw(sf::RenderWindow& window) {
   window.draw(timer);
 }
 GameState::~GameState(){
-  for(auto & player : players){
-    delete player;
-  }
   for(auto & button : buttons){
     delete button;
   }
@@ -293,5 +291,9 @@ GameState::~GameState(){
   }
   for(auto & item : items_boxes){
     delete item;
+  }
+  for(size_t i = 0; i < players.size(); i++){
+    players[i]->despawn_champs(map);
+    delete players[i];
   }
 }

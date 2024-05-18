@@ -54,8 +54,6 @@ private:
   // need this variable, because after a round ends the whole main loops runs,
   // and only after does the simulation state begin
   bool was_round_end = false;
-  //std::vector<Round *> rounds;
-  std::shared_ptr<Map> map;
   // selection
   Champion *selectedchamp;
   // UI
@@ -65,6 +63,8 @@ private:
   std::vector<GameButton*> gamemove_buttons;
   std::vector<UI::NamedBox*> labels;
   std::vector<UI::NamedBox*> stat_labels;
+  // map
+  std::shared_ptr<Map> map;
   // timer
   sf::Text timer;
   sf::Clock elapsed_time;

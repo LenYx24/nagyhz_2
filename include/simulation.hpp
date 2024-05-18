@@ -22,8 +22,8 @@ protected:
   sf::Clock elapsed_time;
   UI::NamedBox *title;
   GameMode mode;
-  int round_count;
-  int round_counter;
+  int round_count = 3;
+  int round_counter = 0;
   // timer
   sf::Text timer;
 };

@@ -83,6 +83,7 @@ public:
   // called when you need the real position at the turn of the entities
   void update();
   void spawn(Entity *entity, sf::Vector2f pos);
+  void despawn(Entity *entity, sf::Vector2f pos);
   Cell *getclickedcell(const int, const int);
   // given the position of a cell, it gives the nearby cells to it in a square, the square size depends on the distance given
   std::vector<Cell *> getnearbycells(sf::Vector2f pos, int distance = 1);
@@ -104,14 +105,14 @@ public:
   void update_vision();
   void update_vision_side(Side side_){vision_side = side_;}
   void check_game_end();
-  bool did_game_end()const{return game_end;}
+  bool did_game_end(){check_game_end();return game_end;}
 
 private:
   struct posindex{
     size_t i, j;
   };
   posindex toposindex(sf::Vector2f pos);
-  bool game_end;
+  bool game_end = false;
   Side vision_side; // the side which has vision
   sf::Vector2f position;
   sf::Vector2u size = {20,20};

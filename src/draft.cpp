@@ -9,7 +9,7 @@ void DraftState::lockin(StateManager &s, sf::RenderWindow& window, const Setting
     turns[turn_counter++].doturn(selectedchamp);
     std::vector<ChampBox*>::iterator it = champlist.begin();
     for(;it != champlist.end();it++){
-      if((*it)->get_champ()->getname() == selectedchamp->getname()){
+      if((*it)->get_champ()->get_name() == selectedchamp->get_name()){
         champlist.erase(it);
         break;
       }
@@ -17,8 +17,17 @@ void DraftState::lockin(StateManager &s, sf::RenderWindow& window, const Setting
     selectedchamp = nullptr;
   }
   if(turn_counter == 20){
-    // this should be change state, but then the champions should be moved
-    state_manager.push_state(std::make_unique<GameState>(s,columns[0].champs,columns[1].champs,settings, window));
+    std::vector<Champion *> p1champs{columns[0].champs.size()};
+    std::vector<Champion *> p2champs{columns[1].champs.size()};
+    for(size_t i = 0; i < columns[0].champs.size(); i++){
+      p1champs[i] = new Champion;
+      *p1champs[i] = *columns[0].champs[i];
+    }
+    for(size_t i = 0; i < columns[1].champs.size(); i++){
+      p2champs[i] = new Champion;
+      *p2champs[i] = *columns[1].champs[i];
+    }
+    state_manager.change_state(std::make_unique<GameState>(s,p1champs,p2champs,settings, window));
   }
 }
 void DraftState::dontban() {
@@ -35,7 +44,7 @@ DraftState::DraftState(StateManager &state_manager, const Settings settings, sf:
   iofile inp("examples/champions.txt");
   for (std::string line; std::getline(inp.getfile(), line);) {
     Champion *c = new Champion;
-    c->readfromstring(line);
+    c->read_from_string(line);
     allchamps.push_back(c);
   }
   if (allchamps.size() < 10) {
@@ -43,7 +52,7 @@ DraftState::DraftState(StateManager &state_manager, const Settings settings, sf:
   }
   // create the placeholder empty champ
   emptychamp = new Champion;
-  emptychamp->setname("empty");
+  emptychamp->set_name("empty");
   // create the UI components
   sf::Vector2f windowsize = state_manager.get_size(window);
 
@@ -62,7 +71,7 @@ DraftState::DraftState(StateManager &state_manager, const Settings settings, sf:
   sf::RectangleShape baseshape{{150, 30}};
   baseshape.setOutlineColor({33, 35, 45});
   for (size_t i = 0; i < allchamps.size(); i++) {
-    champlist.push_back(new ChampBox{allchamps[i]->getname(), baseshape, h, allchamps[i]});
+    champlist.push_back(new ChampBox{allchamps[i]->get_name(), baseshape, h, allchamps[i]});
     champlist[i]->setcharsize(11);
     champlist[i]->setlabelcolor(sf::Color::Black);
   }
@@ -199,7 +208,7 @@ TeamCol::TeamCol(Resources::Holder &h, sf::Vector2f startpos,sf::Vector2f size, 
 void TeamCol::draw_to_window(sf::RenderWindow &w) {
   for (size_t i = 0; i < elements.size(); i++) {
     if (i < champs.size()) {
-      elements[i].setlabel(champs[i]->getname());
+      elements[i].setlabel(champs[i]->get_name());
     }
     elements[i].draw(w);
   }

@@ -12,7 +12,44 @@ MainState::MainState(StateManager &state_manager, sf::RenderWindow &window) : Me
   std::vector<UI::GridElement *> els(buttons.begin(), buttons.end());
   grid.setelements(els);
   grid.setelementspos();
-
+  sf::Vector2f window_size_f = {static_cast<float>(window_size.x),static_cast<float>(window_size.y)};
+  textboxes.push_back(new UI::TextBox{"champions file:",resources_holder,{window_size_f.x/2,300}});
+  textboxes.push_back(new UI::TextBox{"items file:",resources_holder,{window_size_f.x/2,360}});
+}
+void MainState::handle_events(sf::Event &event){
+  if (event.type == sf::Event::Closed) {
+    state_manager.exit();
+  }
+  if (event.type == sf::Event::MouseButtonPressed) {
+    for (UI::TextBox* t : textboxes) {
+      if (t->contains(event.mouseButton.x,event.mouseButton.y)) {
+        for (UI::TextBox* t1 : textboxes) {t1->set_selected(false);}
+        t->set_selected(true);
+        return;
+      }
+    }
+    // if the user clicked outside of the textboxes, then unselected them
+    for (UI::TextBox* t : textboxes) {t->set_selected(false);}
+    for (UI::Button* b : buttons) {
+      if (b->contains(event.mouseButton.x,event.mouseButton.y)) {
+        b->onclick();
+      }
+    }
+  }
+  for(UI::TextBox *textbox : textboxes){
+    if(textbox->get_is_selected()){
+      if(sf::Keyboard::isKeyPressed(sf::Keyboard::BackSpace)){
+          textbox->remove_char();
+          std::cout << "removing char" << std::endl;
+          break;
+      }
+      if(event.type == sf::Event::TextEntered){
+        char c = static_cast<char>(event.text.unicode);
+        std::cout << "char : " << c << std::endl;
+        textbox->add_char(c);
+      }
+    }
+  }
 }
 MenuButton::MenuButton(Resources::Holder &h, sf::String str, std::function<void()> onclick_) : Button(str, onclick_) {
   // menu button specific override settings
@@ -40,9 +77,20 @@ void MenuState::draw(sf::RenderWindow& window) {
     button->draw_to_window(window);
   }
 }
+void MainState::draw(sf::RenderWindow& window){
+    MenuState::draw(window);
+    for(UI::TextBox *textbox : textboxes){
+      textbox->draw(window);
+    }
+}
 MenuState::~MenuState(){
   for(auto & button : buttons){
     delete button;
+  }
+}
+MainState::~MainState(){
+  for(auto & textbox : textboxes){
+    delete textbox;
   }
 }
 ModeSelectionState::ModeSelectionState(StateManager &s, sf::RenderWindow& window) : MenuState(s) {

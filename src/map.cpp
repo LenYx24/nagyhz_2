@@ -200,7 +200,12 @@ void Map::spawn(Entity *entity, sf::Vector2f pos) {
   posindex pindex = toposindex(pos);
   cells[pindex.i][pindex.j]->addentity(entity);
 }
+void Map::despawn(Entity *entity, sf::Vector2f pos){
+  posindex pindex = toposindex(pos);
+  cells[pindex.i][pindex.j]->remove_entity(entity);
+}
 Map::~Map() {
+  std::cout << "deleting map" << std::endl;
   for (size_t i = 0; i < size.x; i++) {
     for (size_t j = 0; j < size.y; j++) {
       delete cells[i][j];
@@ -208,14 +213,15 @@ Map::~Map() {
   }
 }
 Cell::~Cell(){
-  for(size_t i = 0; i < entities.size(); i++){
+  std::cout << "deleting cells: " << this->indicies.x << ":" << this->indicies.y << std::endl;
+  for(auto & entity : entities){
     // Todo: only delete the appropriate entities
-    if(!entities[i]->can_fight_back())delete entities[i];
+    if(!entity->can_fight_back())delete entity;
   }
 }
 bool Cell::should_update_vision_around(Side current_side){
   for(size_t i = 0; i < entities.size(); i++){
-    if(entities[i]->get_side() == current_side){
+    if(entities[i]->get_side() == current_side && entities[i]->gives_vision()){
       return true;
     }
   }
@@ -242,8 +248,8 @@ void Map::update_vision(){
   }
 }
 Entity *Cell::get_attackable_entity(Side side_){
-  for(size_t i = 0; i < entities.size(); i++){
-    if(entities[i]->get_side() != side_)return entities[i];
+  for(auto & entitie : entities){
+    if(entitie->get_side() != side_)return entitie;
   }
   return nullptr;
 }
@@ -269,8 +275,10 @@ void Cell::addentity(Entity *entity) {
   update_entities_shape(shape.getPosition());
 }
 void Cell::remove_entity(Entity *entity){
-  std::vector<Entity *>::iterator element = std::find(entities.begin(),entities.end(),entity);
-  entities.erase(element);
+  auto element = std::find(entities.begin(),entities.end(),entity);
+  if(element != entities.end())
+    entities.erase(element);
+  else std::cout << "no such entity on given cell" << std::endl;
 }
 Cell *Map::getclickedcell(const int x, const int y) {
   for (size_t i = 0; i < size.x; i++) {

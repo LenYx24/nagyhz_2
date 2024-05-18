@@ -44,6 +44,8 @@ protected:
   sf::Text text;
 };
 class TextBox : public GridElement {
+public:
+  TextBox(std::string label,Resources::Holder &holder, sf::Vector2f pos = {0, 0});
   virtual void draw(sf::RenderWindow& window);
   virtual void set_position(sf::Vector2f pos){shape.setPosition(pos);}
   virtual sf::Vector2f get_size(){return shape.getSize();}
@@ -51,10 +53,15 @@ class TextBox : public GridElement {
   inline sf::FloatRect get_global_bounds() const {
     return shape.getGlobalBounds();
   }
+  void set_selected(bool s){is_selected = s;}
+  bool get_is_selected()const{return is_selected;}
+  void add_char(char c);
+  void remove_char();
 private:
   sf::Text text;
   sf::RectangleShape shape;
-  bool is_selected;
+  sf::Text label;
+  bool is_selected = false;
   int limit;
 };
 class Grid {

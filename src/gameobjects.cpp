@@ -8,20 +8,12 @@ Entity::Entity(std::string name) : name(name) {
   damage = 10;
   hp = 10;
   cell = nullptr;
-  maxhp = 20;
+  max_hp = 20;
   respawn_counter = 0;
   respawn_timer = 5;
   xp_given = 10;
 }
 
-void Champion::spawn() {
-  // spawns the champion
-}
-void Champion::die() {
-  // champions dies
-}
-
-void Champion::update_vision() {}
 
 std::vector<std::string> splitString(const std::string& str, char delimiter) {
     std::vector<std::string> tokens;
@@ -34,7 +26,7 @@ std::vector<std::string> splitString(const std::string& str, char delimiter) {
 
     return tokens;
 }
-void Champion::readfromstring(std::string &line, const char delimiter) {
+void Champion::read_from_string(std::string &line, const char delimiter) {
   std::vector<std::string> tokens = splitString(line, delimiter);
   if(tokens.size() < 5){
     throw "wrong file format";
@@ -91,7 +83,7 @@ void Player::spawn_minions(const std::shared_ptr<Map>& map){
   // spawn
   for(size_t i = 0; i < points.size(); i++){
     MinionWave *wave = new MinionWave;
-    wave->spawn(points[i],directions[i],map);
+    wave->spawn(points[i],directions[i],map, side);
     minion_waves.push_back(wave);
   }
 }
@@ -149,11 +141,10 @@ Minion::Minion(){
   this->damage = 30;
   this->shape.setSize({10,10});
 }
-void Champion::setname(std::string name_){name=std::move(name_);}
 void Player::spawn_champs(const std::shared_ptr<Map> &map){
   for(auto & champ : champs){
     map->spawn(champ,spawnpoint);
-    champ->setcell(map->getcell(spawnpoint));
+    champ->set_cell(map->getcell(spawnpoint));
   }
 }
 void Player::domoves(std::shared_ptr<Map> map){
@@ -163,15 +154,15 @@ void Player::domoves(std::shared_ptr<Map> map){
 }
 void Player::setchampicons(const std::string &icons){
   for(size_t i = 0; i < icons.length(); i++){
-    champs[i]->seticon(icons[i]);
+    champs[i]->set_icon(icons[i]);
   }
 }
 void Player::setfont(Resources::Holder &h){
   for(size_t i = 0; i < champs.size(); i++){
-    champs[i]->setfont(h);
+    champs[i]->set_font(h);
   }
 }
-void Champion::setfont(Resources::Holder &h){
+void Champion::set_font(Resources::Holder &h){
   icon.setFont(h.get(Resources::Type::FONT));
 }
 bool Entity::clicked(const int x, const int y){
@@ -183,16 +174,16 @@ bool Entity::clicked(const int x, const int y){
 std::string Entity::to_ui_int_format(double num){
   return std::to_string(static_cast<int>(num));
 }
-std::vector<std::string> Entity::getstats(){
+std::vector<std::string> Entity::get_stats(){
   std::vector<std::string> stats;
   stats.push_back("name: "+name);
   stats.push_back("hp: "+to_ui_int_format(hp));
-  stats.push_back("maxhp: "+to_ui_int_format(maxhp));
+  stats.push_back("max_hp: "+to_ui_int_format(max_hp));
   stats.push_back("dmg: "+to_ui_int_format(damage));
   return stats;
 }
-std::vector<std::string> Champion::getstats(){
-  std::vector<std::string> stats = Entity::getstats();
+std::vector<std::string> Champion::get_stats(){
+  std::vector<std::string> stats = Entity::get_stats();
   stats.push_back("movepoints: "+std::to_string(movepoints));
   stats.push_back("items: ");
   for(auto & item : items){
@@ -202,7 +193,7 @@ std::vector<std::string> Champion::getstats(){
 }
 Tower::Tower(){
   name = "tower";
-  maxhp = 100;
+  max_hp = 100;
   hp = 100;
   damage = 10;
   xp_given = 40;
@@ -210,7 +201,7 @@ Tower::Tower(){
 }
 Camp::Camp(){
   name = "camp";
-  maxhp = 100;
+  max_hp = 100;
   hp = 100;
   damage = 15;
   set_xp_given(30);
@@ -218,7 +209,7 @@ Camp::Camp(){
 }
 Nexus::Nexus(){
   name = "nexus";
-  maxhp = 300;
+  max_hp = 300;
   hp = 300;
   damage = 0;
   shape.setFillColor(sf::Color{100,50,88});
@@ -226,7 +217,7 @@ Nexus::Nexus(){
 bool Player::ishischamp(Champion *c){
   if(c == nullptr)return false;
   for(size_t i = 0; i < champs.size(); i++){
-    if(champs[i]->getname() == c->getname())return true;
+    if(champs[i]->get_name() == c->get_name())return true;
   }
   return false;
 }
@@ -261,6 +252,12 @@ void Champion::finish_gamemove(Cell *cell){
     movepoints-= current_gamemove->get_movepoints();
   }
 }
+void Player::set_side(Side side_){
+  side = side_;
+  for(Champion *champ:champs){
+    champ->set_side(side_);
+  }
+}
 void Tower::attack(std::shared_ptr<Map> &map){
   // checks if there are nearby enemies, and attacks them
   std::vector<Cell *> nearby_cells = map->getnearbycells(cell->getindex());
@@ -288,7 +285,6 @@ Drake::Drake(){
 }
 void Drake::decide_which_type(){
   int type = rand() % 2 +1;
-  std::cout << "drake type: " << type << std::endl;
   Effect e;
   switch(type){
     case 0:{
@@ -306,9 +302,33 @@ void Drake::decide_which_type(){
 void Champion::place_ward(std::shared_ptr<Map> map, Cell *c){
   if(wards.size() < wards_max){
     Ward *ward = new Ward;
-    ward->setcell(c);
+    ward->set_cell(c);
     map->spawn(ward, c->getindex());
     wards.push_back(ward);
+  }
+}
+void Champion::clear_gamemoves(){
+  for(GameMove *gamemove: gamemoves){
+    delete gamemove;
+  }
+  current_gamemove = nullptr;
+}
+void Player::clear_gamemoves(){
+  for(Champion *champ: champs){
+    champ->clear_gamemoves();
+  }
+}
+void Player::despawn_champs(std::shared_ptr<Map> &map){
+  for(Champion *champ: champs){
+    map->despawn(champ, champ->get_real_cell()->getindex());
+  }
+}
+Player::~Player(){
+  for(Champion *champ: champs){
+    delete champ;
+  }
+  for(MinionWave *wave: minion_waves){
+    delete wave;
   }
 }
 Champion::Champion(){
@@ -355,10 +375,11 @@ bool Player::check_round_end(){
   }
   return true;
 }
-void MinionWave::spawn(sf::Vector2f startpoint,std::vector<sf::Vector2f> directions, std::shared_ptr<Map> map){
+void MinionWave::spawn(sf::Vector2f startpoint,std::vector<sf::Vector2f> directions, std::shared_ptr<Map> map, Side side_){
   this->directions = directions;
   for(size_t i = 0; i < minion_wave_size; i++){
     Minion *minion = new Minion;
+    minion->set_side(side_);
     minions.push_back(minion);
     map->spawn(minion,startpoint);
   }

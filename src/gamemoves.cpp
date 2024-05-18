@@ -35,11 +35,11 @@ void AttackMove::onclick(std::shared_ptr<Map> map, Player *current_player, Champ
 }
 void MoveCell::do_move(Champion *champ, std::shared_ptr<Map> map){
     map->move(champ,champ->get_real_cell()->getindex(),cell->getindex());
-    champ->setcell(cell);
+    champ->set_cell(cell);
 }
 void TeleportBase::do_move(Champion *champ, std::shared_ptr<Map> map){
     map->move(champ,champ->get_real_cell()->getindex(),cell->getindex());
-    champ->setcell(cell);
+    champ->set_cell(cell);
     champ->refill_hp();
 }
 void PlaceWard::do_move(Champion *champ, std::shared_ptr<Map> map){
@@ -48,7 +48,7 @@ void PlaceWard::do_move(Champion *champ, std::shared_ptr<Map> map){
 }
 void AttackMove::do_move(Champion *champ, std::shared_ptr<Map> map){
     map->move(champ,champ->get_real_cell()->getindex(),cell->getindex());
-    champ->setcell(cell);
+    champ->set_cell(cell);
     // Todo: if there are no enemy entity to attack, then cancel move
     Entity *other = cell->get_first_entity();
     if(champ->get_side() != other->get_side())

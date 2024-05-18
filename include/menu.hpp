@@ -28,6 +28,11 @@ protected:
 class MainState : public MenuState {
 public:
   MainState(StateManager &s, sf::RenderWindow& window);
+  ~MainState();
+  void handle_events(sf::Event &event);
+  void draw(sf::RenderWindow& window);
+private:
+  std::vector<UI::TextBox *> textboxes;
 };
 class ModeSelectionState : public MenuState {
 public:
