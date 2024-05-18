@@ -57,6 +57,7 @@ void TextBox::add_char(char c) {
 }
 void TextBox::remove_char(){
   std::string str = text.getString();
+  if(str.empty())return;
   str.pop_back();
   text.setString(str);
 }

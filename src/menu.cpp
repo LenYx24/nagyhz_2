@@ -20,7 +20,7 @@ void MainState::handle_events(sf::Event &event){
   if (event.type == sf::Event::Closed) {
     state_manager.exit();
   }
-  if (event.type == sf::Event::MouseButtonPressed) {
+  else if (event.type == sf::Event::MouseButtonPressed) {
     for (UI::TextBox* t : textboxes) {
       if (t->contains(event.mouseButton.x,event.mouseButton.y)) {
         for (UI::TextBox* t1 : textboxes) {t1->set_selected(false);}
@@ -36,14 +36,18 @@ void MainState::handle_events(sf::Event &event){
       }
     }
   }
-  for(UI::TextBox *textbox : textboxes){
-    if(textbox->get_is_selected()){
-      if(sf::Keyboard::isKeyPressed(sf::Keyboard::BackSpace)){
-          textbox->remove_char();
-          std::cout << "removing char" << std::endl;
-          break;
+  else if(event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::BackSpace){
+    for(UI::TextBox *textbox : textboxes){
+      if(textbox->get_is_selected()){
+        std::cout << "remove char" << std::endl;
+        textbox->remove_char();
+        return;
       }
-      if(event.type == sf::Event::TextEntered){
+    }
+  }
+  else if(event.type == sf::Event::TextEntered){
+    for(UI::TextBox *textbox : textboxes){
+      if(textbox->get_is_selected()){
         char c = static_cast<char>(event.text.unicode);
         std::cout << "char : " << c << std::endl;
         textbox->add_char(c);
