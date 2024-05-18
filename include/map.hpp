@@ -9,7 +9,7 @@ enum class vision { PLAYER1, PLAYER2, BOTH };
 class Cell {
 public:
   Cell():selected(false){}
-  virtual ~Cell(){}
+  virtual ~Cell();
   // updates the vision of the cell, should be called after every move
   virtual bool should_update_vision_around(Side side_);
   // returns true, if the 
@@ -28,6 +28,7 @@ public:
   // sets the current cell to a highlighted color, to indicate it's clickable
   virtual void sethighlighted();
   virtual void resetcolor();
+  virtual void set_vision(bool has_vision);
   void setpos(sf::Vector2f pos);
   virtual void draw(sf::RenderWindow& window);
   virtual void updateshape(sf::Vector2f mappos, sf::Vector2f cellsize, float margin=2);
@@ -35,6 +36,7 @@ public:
   sf::Vector2f get_position()const{return pos;}
   void update_entities_shape(sf::Vector2f mappos);
   Entity *get_first_entity(){if(entities.size() == 0)return nullptr; else return entities[0];}
+  Entity *get_attackable_entity(Side side_);
   void unselect();
  
 private:
@@ -99,16 +101,22 @@ public:
   bool inboundscol(int p){return 0 <= p && p < static_cast<int>(size.x);}
   void move(Entity *entity, sf::Vector2f from, sf::Vector2f to);
   void reset_cell_selections();
-  void update_vision(Side side_);
+  void update_vision();
+  void update_vision_side(Side side_){vision_side = side_;}
+  void check_game_end();
+  bool did_game_end()const{return game_end;}
 
 private:
   struct posindex{
     size_t i, j;
   };
   posindex toposindex(sf::Vector2f pos);
+  bool game_end;
+  Side vision_side; // the side which has vision
   sf::Vector2f position;
   sf::Vector2u size = {20,20};
   sf::Vector2f cellsize = {30,30};
+  std::vector<Entity *> nexuses;
 // todo, use std array
   Cell *cells[20][20];
 };

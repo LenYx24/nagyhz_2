@@ -10,32 +10,6 @@
 #include <ctime>
 #include <vector>
 
-// class Turn {
-// public:
-//   // a turn starts for the player given in the arguments
-//   // the round variable is increased by one, the elapsed_time is reset to zero
-//   void start_turn(Player *p);
-//   // when the turn ends the object calls the currently pointed player to do its selected moves
-//   void end_turn();
-
-// private:
-//   int points;
-//   const Player *player;
-//   sf::Time elapsed_time; // starts from 0
-//   sf::Time turn_time;    // something like 1 minute to do the moves
-// };
-// // responsible for doing one round
-// class Round {
-// public:
-//   // sets the variables necessary to start a round
-//   Round();
-//   // when the round ends the simulation substate starts
-//   void roundend();
-
-// private:
-//   std::array<Turn, 2> turns;
-//   int currentturn;
-// };
 class ItemBox : public UI::NamedBox {
 public:
   ItemBox(std::string label, sf::RectangleShape frame, Resources::Holder &h, Item *i) : NamedBox(label, frame, h), item(i) {}
@@ -69,7 +43,6 @@ public:
 
   std::function<void()> create_simulation;
   void next_player();
-  // Player *getcurrentplayer();
 
 private:
   GameMode mode;
@@ -78,19 +51,22 @@ private:
   std::vector<Item> allitems;
   std::vector<Player*> players;
   Player *currentplayer;
+  // need this variable, because after a round ends the whole main loops runs,
+  // and only after does the simulation state begin
+  bool was_round_end = false;
   //std::vector<Round *> rounds;
   std::shared_ptr<Map> map;
   // selection
   Champion *selectedchamp;
   // UI
-  std::vector<ItemBox *> itemslist;
+  int time_left = 60;
+  std::vector<ItemBox *> items_boxes;
   std::vector<GameButton*> buttons;
-  std::vector<GameButton*> gamemovebuttons;
+  std::vector<GameButton*> gamemove_buttons;
   std::vector<UI::NamedBox*> labels;
-  std::vector<UI::NamedBox*> statlabels;
-  // Todo: make this into a class
+  std::vector<UI::NamedBox*> stat_labels;
   // timer
   sf::Text timer;
-  sf::Clock elapsedtime;
+  sf::Clock elapsed_time;
 };
 #endif

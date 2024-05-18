@@ -25,13 +25,13 @@ GameState::GameState(StateManager &state_manager, std::vector<Champion*> p1champ
   buttons.push_back(new GameButton(h, "End my turn", [state = this]() { state->end_turn(); },{80,40}));
   buttons.push_back(new GameButton(h, "back", [&state_manager]() { state_manager.pop_state(); },{80,windowsize.y-50}));
 
-  gamemovebuttons.push_back(new GameButton(h, "move", [state = this]() { state->onclick_gamemove(); }));
-  gamemovebuttons.push_back(new GameButton(h, "attack", [state = this]() { state->onclick_attack(); }));
-  gamemovebuttons.push_back(new GameButton(h, "ward", [state = this]() { state->onclick_ward(); }));
-  gamemovebuttons.push_back(new GameButton(h, "base", [state = this]() { state->onclick_base(); }));
+  gamemove_buttons.push_back(new GameButton(h, "move", [state = this]() { state->onclick_gamemove(); }));
+  gamemove_buttons.push_back(new GameButton(h, "attack", [state = this]() { state->onclick_attack(); }));
+  gamemove_buttons.push_back(new GameButton(h, "ward", [state = this]() { state->onclick_ward(); }));
+  gamemove_buttons.push_back(new GameButton(h, "base", [state = this]() { state->onclick_base(); }));
 
   UI::Grid grid{{windowsize.x/4, 100}, {5, 5},{0,1}};
-  std::vector<UI::GridElement *> els(gamemovebuttons.begin(), gamemovebuttons.end());
+  std::vector<UI::GridElement *> els(gamemove_buttons.begin(), gamemove_buttons.end());
   grid.setelements(els);
   grid.setelementspos();
 
@@ -47,17 +47,17 @@ GameState::GameState(StateManager &state_manager, std::vector<Champion*> p1champ
   baseshape.setOutlineColor({200, 15, 45});
   for (size_t i = 0; i < allitems.size(); i++) {
     std::string itemstats = allitems[i].getname() + "\ndmg: " + std::to_string(allitems[i].getbonusdmg()) + "\nhp: " + std::to_string(allitems[i].getbonushp()) + "\ngold: " + std::to_string(allitems[i].get_gold_value());
-    itemslist.push_back(new ItemBox{itemstats, baseshape, h, &allitems[i]});
-    itemslist[i]->setcharsize(11);
-    itemslist[i]->setlabelcolor(sf::Color::Black);
+    items_boxes.push_back(new ItemBox{itemstats, baseshape, h, &allitems[i]});
+    items_boxes[i]->setcharsize(11);
+    items_boxes[i]->setlabelcolor(sf::Color::Black);
   }
   UI::Grid itemsgrid{{windowsize.x - baseshape.getSize().x, 60}, {5, 5}, {0, 1}};
-  std::vector<UI::GridElement *> itemels(itemslist.begin(), itemslist.end());
+  std::vector<UI::GridElement *> itemels(items_boxes.begin(), items_boxes.end());
   itemsgrid.setelements(itemels);
   itemsgrid.setelementspos();
 
   // set timer
-  elapsedtime.restart();
+  elapsed_time.restart();
   timer.setPosition({250, 10});
   timer.setFont(h.get(Resources::Type::FONT));
   timer.setCharacterSize(18);
@@ -88,18 +88,19 @@ GameState::GameState(StateManager &state_manager, std::vector<Champion*> p1champ
 
   players.push_back(player_1);
   players.push_back(player_2);
-  std::cout << "[[info]] initalized gamestate" << std::endl;
+  // update the vision
+  map->update_vision();
 }
 void GameState::next_player(){
   if(players.size() < 2)throw "Not enough players to play the game";
   if(currentplayer == players[0])currentplayer = players[1];
   else currentplayer = players[0];
+  map->update_vision_side(currentplayer->get_side());
 }
 // onclicks:
 void GameState::end_turn() {
   // ends the turn and starts the other players turn, or does the simulation
   // a simulation substate needs the map, and the entities on the map
-  // it also needs to know, who's able to see the moves
   if(currentplayer->did_start()){
     // the other player is next
     currentplayer->set_simulation(false);
@@ -110,14 +111,12 @@ void GameState::end_turn() {
     currentplayer->set_simulation(false);
     currentplayer->update_champ_positions(map);
     // round ends, simulation should start
-    std::cout << "round ends" << std::endl;
     create_simulation();
-    for(size_t i = 0; i < players.size(); i++){
-      players[i]->round_end(map);
-    }
-    next_player();
+    was_round_end = true;
   }
-  elapsedtime.restart();
+  // update the vision
+  map->update_vision_side(currentplayer->get_side());
+  map->update_vision();
 }
 void GameState::onclick_gamemove() {
   if(GameMove::basic_check(currentplayer,selectedchamp)){
@@ -154,29 +153,33 @@ void GameState::onclick_ward(){
 void GameState::show_cellinfo(sf::Vector2f index){
   sf::RectangleShape shape{{100,60}};
   shape.setFillColor(sf::Color::Black);
-  statlabels.clear();
-  UI::NamedBox *statlabel = new UI::NamedBox{"Cell:\nx: "+std::to_string((int)index.x+1) + "\ny: "+std::to_string((int)index.y+1),shape,h}; 
+  stat_labels.clear();
+  UI::NamedBox *statlabel = new UI::NamedBox{
+      "Cell:\nx: "+std::to_string((int)index.x+1) +
+          "\ny: "+std::to_string((int)index.y+1),shape,h};
   statlabel->setcharsize(12);
   statlabel->set_position({70,200});
-  statlabels.push_back(statlabel);
+  stat_labels.push_back(statlabel);
 }
 void GameState::show_stats(std::vector<std::string> &statsentity){
   sf::Vector2f startpos{70,300};
-  sf::RectangleShape shape{{100,60}};
+  sf::RectangleShape shape{{100,20}};
   shape.setFillColor(sf::Color::Black);
   for(size_t i = 0; i < statsentity.size(); i++){
     UI::NamedBox *statlabel = new UI::NamedBox{statsentity[i],shape,h};
     statlabel->set_position(startpos);
-    float marginy = 20;
+    float marginy = 5;
     startpos.y += shape.getSize().y + marginy;
     statlabel->setcharsize(12);
-    statlabels.push_back(statlabel);
+    stat_labels.push_back(statlabel);
   }
 }
 bool GameState::is_gamemove_finisher(Cell *clickedcell){
-  return selectedchamp && currentplayer->ishischamp(selectedchamp) && !selectedchamp->is_gamemove_complete() && clickedcell->is_selected();
+  return selectedchamp
+         && currentplayer->ishischamp(selectedchamp)
+         && !selectedchamp->is_gamemove_complete()
+         && clickedcell->is_selected();
 }
-//void Round::roundend(){}
 void GameState::handle_events(sf::Event &e) {
   if (e.type == sf::Event::Closed) {
     state_manager.exit();
@@ -187,13 +190,13 @@ void GameState::handle_events(sf::Event &e) {
         return;
       }
     }
-    for (GameButton *b : gamemovebuttons) {
+    for (GameButton *b : gamemove_buttons) {
       if (b->contains(e.mouseButton.x, e.mouseButton.y)) {
         b->onclick();
         return;
       }
     }
-    for (ItemBox *b : itemslist) {
+    for (ItemBox *b : items_boxes) {
       if (b->contains(e.mouseButton.x, e.mouseButton.y)) {
         // Todo: make itemboxes item a private member
         onclick_item(b->item);
@@ -227,16 +230,28 @@ void GameState::handle_events(sf::Event &e) {
 void GameState::update() {
   // update time elapsed
   std::string s = "Time left: ";
-  int timeleft = 60;
-  s += std::to_string(timeleft - (int)elapsedtime.getElapsedTime().asSeconds());
+  s += std::to_string(time_left - (int)elapsed_time.getElapsedTime().asSeconds());
   timer.setString(s);
-  if (static_cast<int>(elapsedtime.getElapsedTime().asSeconds()) == timeleft) {
-    elapsedtime.restart();
+  if (static_cast<int>(elapsed_time.getElapsedTime().asSeconds()) == time_left) {
+    elapsed_time.restart();
     end_turn();
   }
-  // check round end
+  // check if round should end, if the current players champs can't move anymore
   if(currentplayer->check_round_end()){
     end_turn();
+  }
+  // if in the last main cycle we encountered a round end
+  if(was_round_end){
+    was_round_end = false;
+    next_player();
+    for(auto & player : players){
+      player->round_end(map);
+    }
+    elapsed_time.restart();
+  }
+  // check game end
+  if(map->did_game_end()){
+    state_manager.pop_state();
   }
 }
 void GameState::draw(sf::RenderWindow& window) {
@@ -245,16 +260,16 @@ void GameState::draw(sf::RenderWindow& window) {
   for (auto & button : buttons) {
     button->draw_to_window(window);
   }
-  for (auto & gamemovebutton : gamemovebuttons) {
+  for (auto & gamemovebutton : gamemove_buttons) {
     gamemovebutton->draw_to_window(window);
   }
   for(auto & label : labels){
     label->draw(window);
   }
-  for(auto & statlabel : statlabels){
+  for(auto & statlabel : stat_labels){
     statlabel->draw(window);
   }
-  for(auto & i : itemslist){
+  for(auto & i : items_boxes){
     i->draw(window);
   }
   map->draw(window);
@@ -264,14 +279,19 @@ GameState::~GameState(){
   for(auto & player : players){
     delete player;
   }
-  // this is buggy yet
-  // for(size_t i = 0; i < labels.size(); i++){
-  //   delete labels[i];
-  // }
   for(auto & button : buttons){
     delete button;
   }
-  for(auto & gamemovebutton : gamemovebuttons){
+  for(auto & gamemovebutton : gamemove_buttons){
     delete gamemovebutton;
+  }
+  for(auto & label : stat_labels){
+    delete label;
+  }
+  for(auto & label : labels){
+    delete label;
+  }
+  for(auto & item : items_boxes){
+    delete item;
   }
 }

@@ -45,7 +45,7 @@ else()
          -fno-omit-frame-pointer)
     endif()
 endif()
-target_link_options(lolmacrogame PRIVATE -fsanitize=address)
 target_compile_options(lolmacrogame PRIVATE -fsanitize=address -Wall -Wextra -Wpedantic -Wconversion -Werror) #  -g -O0
+target_link_options(lolmacrogame PRIVATE -fsanitize=address)
 
 install(TARGETS lolmacrogame)

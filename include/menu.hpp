@@ -16,7 +16,7 @@ namespace Menu {
 class MenuState : public State {
 public:
   MenuState(StateManager &state_manager) : State(state_manager){}
-
+  virtual ~MenuState();
   virtual void handle_events(sf::Event &event);
   virtual void update();
   virtual void draw(sf::RenderWindow& window);

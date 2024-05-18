@@ -26,14 +26,15 @@ public:
   // resets its hp to full
   //virtual void spawn() = 0;
   //virtual void die() = 0;
-  virtual double get_base_dmg()const{return damage;}
-  virtual double get_base_hp()const{return hp;}
-  virtual double get_total_dmg()const{return total_damage;}
-  virtual double get_total_hp()const{return total_hp;}
-  virtual int get_xp_given()const{return xp_given;}
-  virtual int get_gold_given()const{return gold_given;}
-  virtual void set_side(Side side_){side = side_;}
-  virtual Side get_side()const {return side;}
+  double get_base_dmg()const{return damage;}
+  double get_base_hp()const{return hp;}
+  double get_total_dmg()const{return total_damage;}
+  double get_total_hp()const{return total_hp;}
+  int get_xp_given()const{return xp_given;}
+  int get_gold_given()const{return gold_given;}
+  void set_side(Side side_){side = side_;}
+  Side get_side()const {return side;}
+  void set_xp_given(int xp_given_){xp_given = xp_given_;}
   virtual std::vector<std::string> getstats();
   bool isAlive() const {return respawn_timer == 0;}
   virtual bool should_focus()const{return false;}
@@ -55,14 +56,14 @@ public:
   virtual bool can_fight_back()const{return false;}
 protected:
   std::string name;
-  double maxhp; // the maximum hp this entity could have
-  double hp;
-  double damage;
-  double total_hp;
-  double total_damage;
+  double maxhp = 10; // the maximum hp this entity could have
+  double hp = 10;
+  double damage = 10;
+  double total_hp = 10;
+  double total_damage = 10;
   int respawn_counter; // the amount of seconds needed to respawn
   int respawn_timer; // the amount of seconds needed to respawn
-  int xp_given;  // the xp given to the other entity, if this one gets slain by them
+  int xp_given = 10;  // the xp given to the other entity, if this one gets slain by them
   int gold_given;  // the gold given to the other entity, if this one gets slain by them
   Cell *cell;       // pointer to the cell this entity occupies
   Side side; // the side on which the entity is on, either blue or red
@@ -135,44 +136,41 @@ public:
   void do_move(std::shared_ptr<Map> map);
   void set_simulation(bool sim){simulation = sim;}
   void round_end();
+  void add_xp(int xp);
   virtual bool can_fight_back()const{return true;}
   void place_ward(std::shared_ptr<Map> map, Cell *c);
+  void refill_hp(){hp = maxhp;}
 
 private:
   sf::Vector2f gamemove_index(size_t offset)const;
-  inline bool enough_gold(int gold){return this->gold >= gold;} // returns true, if the champion has more or the same gold given in the arguments
+  inline bool enough_gold(int gold_){return gold >= gold_;} // returns true, if the champion has more or the same gold given in the arguments
   inline bool isinventory_full(){return items.size() == 6;}    // checks if the champions inventory is full
   inline bool in_base(){return true;}             // checks if the current cell is the base cell for this champion
-  int cs;
-  int gold;
-  int hp_per_level;  // the amount of hp given per level up
-  int dmg_per_level; // the amount of dmg given per level up
+  int cs = 0;
+  int gold = 0;
+  int hp_per_level = 0;  // the amount of hp given per level up
+  int dmg_per_level = 0; // the amount of dmg given per level up
   std::vector<Item *> items;
-  int level; // the current level of the champion
-  int max_level;
-  double level_xp_increase; // the amount of xp which is added to xp_cutoff at every levelup
-  int xp;        // the current amount of xp
-  int xp_cutoff; // the amount of xp needed to level up
+  int level = 1; // the current level of the champion
+  int max_level = 18;
+  int level_xp_increase = 10; // the amount of xp which is added to xp_cutoff at every levelup
+  int xp = 0;        // the current amount of xp
+  int xp_cutoff = 100; // the amount of xp needed to level up
   std::vector<Ward *> wards;
-  size_t wards_max;      // default is 2
+  size_t wards_max = 2;      // default is 2
 
-  int movepoints;
+  int movepoints = 0;
   sf::Text icon;
   std::vector<GameMove *> gamemoves; // stores the added gamemoves in a turn
   GameMove *current_gamemove;
-  int simulation_points_counter;
-  bool simulation;
+  int simulation_points_counter = 1;
+  bool simulation = false;
 };
 
 class Tower : public Structure {
 public:
   Tower();
-  // selects its target, from targetable classes, these are champions, and minions (monsters cannot reach)
-  // prioritizes minions in its range, and attacks them, instead of champions
-  void selection();
-
-protected:
-  int range; // the amount of cells it can damage to in an area
+  void attack(std::shared_ptr<Map> &map);
 };
 class Nexus : public Structure {
   public:
@@ -234,7 +232,7 @@ public:
   void setfont(Resources::Holder& h);
   bool is_gamemove_active();
   void setgamemoveactive(bool b);
-  void domoves(std::shared_ptr<Map> &map);
+  void domoves(std::shared_ptr<Map> map);
   bool ishischamp(Champion *c);
   void showmoveoptions(const std::shared_ptr<Map>, Champion *c);
   void draw_champs(sf::RenderWindow &window);
@@ -246,18 +244,19 @@ public:
   void set_simulation(bool sim);
   void update_champ_positions(std::shared_ptr<Map> map);
   void set_side(Side s){side = s;}
+  Side get_side()const{return side;}
   Champion *getselectedchamp(sf::Vector2f index);
   sf::Vector2f get_spawn_point()const{return spawnpoint;}
 
 private:
   std::vector<Champion*> champs;
+  // minions
+  std::vector<MinionWave*> minion_waves;
   Side side;
   bool gamemoveactive;
   bool starter;
   sf::Vector2f spawnpoint;
   // save global buffs here, so the minions know, if there's nashor buff
-  // minions
-  std::vector<MinionWave*> minion_waves;
   int minion_timer;
   int minion_timer_mark;
   bool is_simulation;

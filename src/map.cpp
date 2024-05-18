@@ -207,6 +207,12 @@ Map::~Map() {
     }
   }
 }
+Cell::~Cell(){
+  for(size_t i = 0; i < entities.size(); i++){
+    // Todo: only delete the appropriate entities
+    if(!entities[i]->can_fight_back())delete entities[i];
+  }
+}
 bool Cell::should_update_vision_around(Side current_side){
   for(size_t i = 0; i < entities.size(); i++){
     if(entities[i]->get_side() == current_side){
@@ -215,16 +221,48 @@ bool Cell::should_update_vision_around(Side current_side){
   }
   return false;
 }
-void Map::update_vision(Side current_side){
+void Map::update_vision(){
   // first reset every cells shapes opacity to default
+  for(size_t i = 0; i < size.x; i++){
+    for(size_t j = 0; j < size.y; j++){
+      cells[i][j]->set_vision(false);
+    }
+  }
   for (size_t i = 0; i < size.x; i++) {
     for (size_t j = 0; j < size.y; j++) {
-      bool should_update = cells[i][j]->should_update_vision_around(current_side);
+      bool should_update = cells[i][j]->should_update_vision_around(vision_side);
       if(should_update){
-        // Todo: get nearby cells, and set their shapes opacity
+        sf::Vector2f pos = {static_cast<float>(i),static_cast<float>(j)};
+        std::vector<Cell *> nearby_cells = getnearbycells(pos);
+        for(Cell* cell: nearby_cells){
+          cell->set_vision(true);
+        }
       }
     }
   }
+}
+Entity *Cell::get_attackable_entity(Side side_){
+  for(size_t i = 0; i < entities.size(); i++){
+    if(entities[i]->get_side() != side_)return entities[i];
+  }
+  return nullptr;
+}
+void Map::check_game_end(){
+  for(Entity *nexus: nexuses){
+    if(!nexus->isAlive()){
+      game_end = true;
+    }
+  }
+}
+void Cell::set_vision(bool has_vision){
+  sf::Color shape_color = shape.getFillColor();
+  if(has_vision){
+    shape_color.a = 255;
+  }
+  else{
+    shape_color.a = 50;
+  }
+  shape.setFillColor(shape_color);
 }
 void Cell::addentity(Entity *entity) {
   entities.push_back(entity);
@@ -301,5 +339,7 @@ void Map::move(Entity *entity, sf::Vector2f from, sf::Vector2f to){
   posindex to_index = toposindex(to);
   cells[from_index.i][from_index.j]->remove_entity(entity);
   cells[to_index.i][to_index.j]->addentity(entity);
+  // update the vision
+  update_vision();
   //entity->update_shape_pos(position);
 }

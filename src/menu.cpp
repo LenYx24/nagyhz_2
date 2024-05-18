@@ -2,9 +2,7 @@
 
 namespace Menu {
 MainState::MainState(StateManager &state_manager, sf::RenderWindow &window) : MenuState(state_manager) {
-  std::cout << "loading font" << std::endl;
   resources_holder.load(Resources::Type::FONT, "./resources/fonts/Roboto.ttf");
-  std::cout << "loaded font" << std::endl;
 
   std::function<void()> onclick_start = [&window, &state_manager](){state_manager.push_state(std::make_unique<ModeSelectionState>(state_manager,window));};
   buttons.push_back(new MenuButton{resources_holder, "Start", onclick_start});
@@ -38,8 +36,13 @@ void MenuState::update() {}
 void MenuState::draw(sf::RenderWindow& window) {
   sf::Color background_color = sf::Color(220, 225, 222);
   window.clear(background_color);
-  for (size_t i = 0; i < buttons.size(); i++) {
-    buttons[i]->draw_to_window(window);
+  for (auto & button : buttons) {
+    button->draw_to_window(window);
+  }
+}
+MenuState::~MenuState(){
+  for(auto & button : buttons){
+    delete button;
   }
 }
 ModeSelectionState::ModeSelectionState(StateManager &s, sf::RenderWindow& window) : MenuState(s) {

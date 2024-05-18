@@ -9,10 +9,10 @@
 class SimulationState : public State {
   public:
   SimulationState(std::vector<Player *> &players, std::shared_ptr<Map> map, sf::RenderWindow& window, GameMode mode, StateManager &state_manager);
-  ~SimulationState() {}
-  virtual void handle_events(sf::Event &e);
-  virtual void update();
-  virtual void draw(sf::RenderWindow& window);
+  ~SimulationState() override;
+  void handle_events(sf::Event &e) override;
+  void update() override;
+  void draw(sf::RenderWindow& window) override;
 
 protected:
   Resources::Holder h;
@@ -20,7 +20,6 @@ protected:
   std::shared_ptr<Map> map;
   //std::vector<UI::Button> buttons;
   sf::Clock elapsed_time;
-  sf::Time oneturn_time; // the amount of time the current turn that was done is shown
   UI::NamedBox *title;
   GameMode mode;
   int round_count;

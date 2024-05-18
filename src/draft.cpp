@@ -9,7 +9,7 @@ void DraftState::lockin(StateManager &s, sf::RenderWindow& window, const Setting
     turns[turn_counter++].doturn(selectedchamp);
     std::vector<ChampBox*>::iterator it = champlist.begin();
     for(;it != champlist.end();it++){
-      if((*it)->champ->getname() == selectedchamp->getname()){
+      if((*it)->get_champ()->getname() == selectedchamp->getname()){
         champlist.erase(it);
         break;
       }
@@ -96,7 +96,7 @@ DraftState::DraftState(StateManager &state_manager, const Settings settings, sf:
 
   // temporarily here, so i dont have to do the draft phase while debugging
    for(size_t i = 0; i < 20; i++){
-    this->turns[turn_counter++].doturn(champlist[i]->champ);
+    this->turns[turn_counter++].doturn(champlist[i]->get_champ());
   }
   // this should be change state, but then the champions should be moved
   state_manager.push_state(std::make_unique<GameState>(state_manager,columns[0].champs,columns[1].champs,settings, window));
@@ -106,9 +106,15 @@ void DraftTurn::doturn(Champion *c) {
   champs.push_back(c);
 }
 DraftState::~DraftState() {
-  // for(size_t i = 0; i < champlist.size(); i++){
-  //   delete champlist[i];
-  // }
+  for (auto & champ : allchamps)
+    delete champ;
+  for(auto button: buttons){
+    delete button;
+  }
+  for(auto champ: champlist){
+    delete champ;
+  }
+  delete emptychamp;
 }
 void DraftState::handle_events(sf::Event &e) {
   if (e.type == sf::Event::Closed) {
@@ -117,7 +123,7 @@ void DraftState::handle_events(sf::Event &e) {
     std::cout << "[[INFO]] mouse clicked" << std::endl;
     for (auto & i : champlist) {
         if (i->contains(e.mouseButton.x, e.mouseButton.y)) {
-          selectedchamp = i->champ;
+          selectedchamp = i->get_champ();
         }
     }
     for (UI::Button *b : buttons) {
@@ -161,7 +167,7 @@ void DraftState::draw(sf::RenderWindow& window) {
     columns[i].draw_to_window(window);
   }
   for (size_t i = 0; i < champlist.size(); i++) {
-    if (selectedchamp == champlist[i]->champ) {
+    if (selectedchamp == champlist[i]->get_champ()) {
       champlist[i]->setlabelcolor({100, 100, 100});
     }
     champlist[i]->draw(window);

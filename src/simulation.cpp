@@ -36,11 +36,16 @@ void SimulationState::update(){
         for(auto & player : players){
             player->domoves(map);
         }
+        // Todo: check game end
+        map->check_game_end();
         if(round_counter == round_count){
             state_manager.pop_state();
         }
         round_counter++;
     }
+}
+SimulationState::~SimulationState(){
+  delete title;
 }
 void SimulationState::draw(sf::RenderWindow& window){
     sf::Color background_color = sf::Color(220, 225, 222);

@@ -46,6 +46,8 @@ public:
 class ChampBox : public UI::NamedBox {
 public:
   ChampBox(std::string label, sf::RectangleShape frame, Resources::Holder &h, Champion *c) : NamedBox(label, frame, h), champ(c) {}
+  Champion *get_champ()const{return champ;}
+private:
   Champion *champ;
 };
 class DraftState : public State {

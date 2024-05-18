@@ -109,8 +109,10 @@ void Champion::round_end(){
   movepoints = 3;
   // Todo: dont forget to free it first
   gamemoves.clear();
-  this->current_gamemove = nullptr;
-  this->simulation_points_counter = 0;
+  current_gamemove = nullptr;
+  simulation_points_counter = 1;
+  // passive gold generation
+  gold+=2;
 }
 void Champion::update_total_dmg(){
   double total_dmg_ = get_base_dmg();
@@ -141,11 +143,11 @@ void Champion::draw(sf::RenderWindow &window){
   window.draw(icon);
 }
 Minion::Minion(){
-  set_color(sf::Color{150,65,90});
+  set_color(sf::Color{100,165,90});
   this->set_name("minion");
   this->hp = 30;
   this->damage = 30;
-  this->shape.setSize({20,20});
+  this->shape.setSize({10,10});
 }
 void Champion::setname(std::string name_){name=std::move(name_);}
 void Player::spawn_champs(const std::shared_ptr<Map> &map){
@@ -154,7 +156,7 @@ void Player::spawn_champs(const std::shared_ptr<Map> &map){
     champ->setcell(map->getcell(spawnpoint));
   }
 }
-void Player::domoves(std::shared_ptr<Map> &map){
+void Player::domoves(std::shared_ptr<Map> map){
   for(auto & champ : champs){
     champ->do_move(map);
   }
@@ -185,32 +187,39 @@ std::vector<std::string> Entity::getstats(){
   std::vector<std::string> stats;
   stats.push_back("name: "+name);
   stats.push_back("hp: "+to_ui_int_format(hp));
+  stats.push_back("maxhp: "+to_ui_int_format(maxhp));
   stats.push_back("dmg: "+to_ui_int_format(damage));
   return stats;
 }
 std::vector<std::string> Champion::getstats(){
   std::vector<std::string> stats = Entity::getstats();
   stats.push_back("movepoints: "+std::to_string(movepoints));
+  stats.push_back("items: ");
+  for(auto & item : items){
+    stats.push_back(item->getname());
+  }
   return stats;
 }
 Tower::Tower(){
   name = "tower";
-  maxhp = 300;
-  hp = 300;
-  damage = 30;
+  maxhp = 100;
+  hp = 100;
+  damage = 10;
+  xp_given = 40;
   shape.setFillColor(sf::Color{230,10,90});
 }
 Camp::Camp(){
   name = "camp";
-  maxhp = 200;
-  hp = 200;
-  damage = 50;
+  maxhp = 100;
+  hp = 100;
+  damage = 15;
+  set_xp_given(30);
   shape.setFillColor(sf::Color{130,100,230});
 }
 Nexus::Nexus(){
   name = "nexus";
-  maxhp = 500;
-  hp = 500;
+  maxhp = 300;
+  hp = 300;
   damage = 0;
   shape.setFillColor(sf::Color{100,50,88});
 }
@@ -235,8 +244,8 @@ void Player::setgamemoveactive(bool b){
 }
 
 Champion::~Champion(){
-  for(size_t i = 0; i < gamemoves.size(); i++){
-    delete gamemoves[i];
+  for(auto & gamemove : gamemoves){
+    delete gamemove;
   }
 }
 
@@ -251,6 +260,26 @@ void Champion::finish_gamemove(Cell *cell){
     current_gamemove->finish(cell);
     movepoints-= current_gamemove->get_movepoints();
   }
+}
+void Tower::attack(std::shared_ptr<Map> &map){
+  // checks if there are nearby enemies, and attacks them
+  std::vector<Cell *> nearby_cells = map->getnearbycells(cell->getindex());
+  // first check if there are focusable entities to attack
+  bool try_attack_focusables = false;
+  for(size_t j = 0; j < 2; j++){
+    for(size_t i = 0; i < nearby_cells.size(); i++){
+      Entity *target = nearby_cells[i]->get_attackable_entity(side);
+      if(target != nullptr && try_attack_focusables && target->should_focus()){
+        // do fight
+        target->remove_hp(damage);
+        remove_hp(target->get_total_dmg());
+        break;
+      }
+    }
+    // if not, then try to attack anything that is enemy
+    try_attack_focusables = true;
+  }
+
 }
 Drake::Drake(){
   set_name("drake");
@@ -287,21 +316,13 @@ Champion::Champion(){
   movepoints = 3;
   icon.setCharacterSize(10);
   icon.setFillColor(sf::Color::White);
-  simulation_points_counter = 1;
-  simulation = false;
-  gold = 0;
-  xp = 0;
-  xp_cutoff = 100;
-  xp_given = 20;
-  level = 0;
-  level_xp_increase = 3;
-  cs = 0;
-  max_level = 18;
 }
 void Champion::add_item(Item *item){
   if(items.size() < 6){
     items.push_back(item);
   }
+  update_total_dmg();
+  update_total_hp();
 }
 sf::Vector2f Champion::gamemove_index(size_t offset)const{
   if(!current_gamemove)throw "current game move is a nullptr";
@@ -394,7 +415,7 @@ void Champion::fight(Entity *other){
         if(!other->isAlive()) {
           if (other->gives_creep_score())
             cs++;
-          xp += other->get_xp_given();
+          add_xp(other->get_xp_given());
           gold += other->get_gold_given();
         }
       } 
@@ -411,4 +432,18 @@ void Champion::fight(Entity *other){
     other->remove_hp(total_dmg);
   }
   // Todo: check if enemy is in execute range, then calculate chance of escape for them
+}
+
+void Champion::add_xp(int xp_){
+  xp+=xp_;
+  if(xp >= xp_cutoff && level < max_level){
+    // then level up
+    xp = 0;
+    damage+=dmg_per_level;
+    hp+=hp_per_level;
+    level++;
+    xp_cutoff += level_xp_increase;
+    update_total_dmg();
+    update_total_hp();
+  }
 }
