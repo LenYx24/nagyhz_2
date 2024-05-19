@@ -8,7 +8,7 @@
 #include <vector>
 class SimulationState : public State {
   public:
-  SimulationState(std::vector<Player *> &players, std::shared_ptr<Map> map, sf::RenderWindow& window, GameMode mode, StateManager &state_manager);
+  SimulationState(std::vector<Player *> &players, std::shared_ptr<Map> &map, sf::RenderWindow& window, GameMode mode, StateManager &state_manager);
   ~SimulationState() override;
   void handle_events(sf::Event &e) override;
   void update() override;

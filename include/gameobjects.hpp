@@ -45,8 +45,8 @@ public:
   // the cell where the entity is at the start of the round
   inline Cell *get_real_cell(){return cell;}
   virtual // the cell which calculates in the gamemoves of the current cell
-  inline Cell *get_simulation_cell(){return cell;}
-  inline void set_cell(Cell *c){if(c != nullptr)cell=c;}
+  Cell *get_simulation_cell(){return cell;}
+  void set_cell(Cell *c){if(c != nullptr)cell=c;}
   virtual void update_shape_pos(sf::Vector2f pos);
   virtual bool gives_vision()const{return false;}
   // checks
@@ -88,9 +88,9 @@ class Buff : public Effect {
 };
 class Item : public Effect {
 public:
-  void readfromstring(std::string &line, const char delimiter=';');
+  void read_from_string(std::string &line, const char delimiter= ';');
   int get_gold_value()const{return gold_value;}
-  inline std::string getname()const{return name;}
+   std::string getname()const{return name;}
 private:
   int gold_value;
   std::string name;
@@ -118,16 +118,16 @@ public:
   void update_total_dmg(); // returns the total dmg that could be dealt by the entity with all the buffs and items
   void update_total_hp(); // returns the total hp that this entity has with all the buffs and items
   void add_item(Item *item);
-  std::vector<std::string> get_stats();
-  inline void set_icon(char c){icon.setString(c);}
+  std::vector<std::string> get_stats() override;
+   void set_icon(char c){icon.setString(c);}
   std::string get_name() const {return name;}
   void set_font(Resources::Holder &h);
-  void read_from_string(std::string &line, const char delimiter = ';');
-  virtual void draw(sf::RenderWindow &w);
+  void read_from_string(std::string &line, const char delimiter=';')override;
+  void draw(sf::RenderWindow &w)override;
   int getmovepoints()const{return movepoints;}
   void add_gamemove(GameMove *move){gamemoves.push_back(move); current_gamemove = gamemoves[gamemoves.size()-1];}
   bool is_gamemove_complete()const{if(gamemoves.empty())return true; else return current_gamemove->is_complete();}
-  Cell *get_simulation_cell();
+  Cell *get_simulation_cell() override;
   sf::Vector2f last_gamemove_index()const;
   sf::Vector2f current_gamemove_index()const;
   void finish_gamemove(Cell *cell);
@@ -144,9 +144,9 @@ public:
 
 private:
   sf::Vector2f gamemove_index(size_t offset)const;
-  inline bool enough_gold(int gold_){return gold >= gold_;} // returns true, if the champion has more or the same gold given in the arguments
-  inline bool isinventory_full(){return items.size() == 6;}    // checks if the champions inventory is full
-  inline bool in_base(){return true;}             // checks if the current cell is the base cell for this champion
+  bool enough_gold(int gold_){return gold >= gold_;} // returns true, if the champion has more or the same gold given in the arguments
+  bool isinventory_full(){return items.size() == 6;}    // checks if the champions inventory is full
+  bool in_base(){return true;}             // checks if the current cell is the base cell for this champion
   int cs = 0;
   int gold = 0;
   int hp_per_level = 0;  // the amount of hp given per level up
@@ -231,7 +231,7 @@ public:
   void setspawnpoint(sf::Vector2f point){spawnpoint = point;}
   void setchampicons(const std::string &icons);
   void setfont(Resources::Holder& h);
-  bool is_gamemove_active();
+  bool is_gamemove_active() const;
   void setgamemoveactive(bool b);
   void domoves(std::shared_ptr<Map> map);
   bool ishischamp(Champion *c);

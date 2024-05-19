@@ -19,11 +19,11 @@ class GameButton : public UI::Button {
 public:
 // Todo: static fgv, ami visszaad egy draftbutton stílusú gombot
   GameButton(
-      Resources::Holder &h, sf::String str, std::function<void()> onclick = []() { std::cout << "not impl" << std::endl; }, sf::Vector2f pos = {0,0});
+      Resources::Holder &h, const sf::String& str, std::function<void()> onclick = []() { std::cout << "not impl" << std::endl; }, sf::Vector2f pos = {0,0});
 };
 class GameState : public State {
 public:
-  GameState(StateManager &state_manager, std::vector<Champion*> p1champs,std::vector<Champion*> p2champs, const Settings settings, sf::RenderWindow& window);
+  GameState(StateManager &state_manager, std::vector<Champion*> p1champs,std::vector<Champion*> p2champs, Settings settings, sf::RenderWindow& window);
   ~GameState();
   void handle_events(sf::Event &e);
   void update();

@@ -1,22 +1,23 @@
 #include "../include/game.hpp"
 #include <exception>
-GameButton::GameButton(Resources::Holder &h, sf::String str, std::function<void()> onclick_, sf::Vector2f pos) : Button(str, onclick_) {
+GameButton::GameButton(Resources::Holder &h, const sf::String& str, std::function<void()> onclick_, sf::Vector2f pos) : Button(str, onclick_) {
   // menu button specific override settings
   shape.setSize({150, 70});
   text.setCharacterSize(14);
   text.setFont(h.get(Resources::Type::FONT));
+  text.setString(str);
   this->set_position(pos);
 }
-GameState::GameState(StateManager &state_manager, std::vector<Champion*> p1champs,std::vector<Champion*> p2champs, const Settings settings, sf::RenderWindow& window) : State(state_manager),map(std::make_unique<Map>(sf::Vector2f{500,20})) {
+GameState::GameState(StateManager &state_manager, std::vector<Champion*> p1champs,std::vector<Champion*> p2champs, Settings settings, sf::RenderWindow& window) : State(state_manager),map(std::make_unique<Map>(sf::Vector2f{500,20})) {
   // load items from the file and save them to the allitems variable
   iofile inp(settings.items_filepath);
   for (std::string line; std::getline(inp.getfile(), line);) {
     Item item;
-    item.readfromstring(line);
+    item.read_from_string(line);
     allitems.push_back(item);
   }
   // set gamemode
-  this->mode = mode;
+  this->mode = settings.mode;
   // load font
   h.load(Resources::Type::FONT, "./resources/fonts/Roboto.ttf");
   // create the UI components:
@@ -32,15 +33,15 @@ GameState::GameState(StateManager &state_manager, std::vector<Champion*> p1champ
 
   UI::Grid grid{{windowsize.x/4, 100}, {5, 5},{0,1}};
   std::vector<UI::GridElement *> els(gamemove_buttons.begin(), gamemove_buttons.end());
-  grid.setelements(els);
-  grid.setelementspos();
+  grid.set_elements(els);
+  grid.set_elements_pos();
 
   // create the items panel, and list all the items
   sf::RectangleShape itemshape{{100,40}};
   itemshape.setFillColor(sf::Color::Black);
   UI::NamedBox *itemslabel = new UI::NamedBox{"Items:",itemshape,h};
   itemslabel->set_position({windowsize.x - itemslabel->get_global_bounds().width,20});
-  itemslabel->setcharsize(12);
+  itemslabel->set_char_size(12);
   labels.push_back(itemslabel);
 
   sf::RectangleShape baseshape{{150, 60}};
@@ -48,13 +49,13 @@ GameState::GameState(StateManager &state_manager, std::vector<Champion*> p1champ
   for (size_t i = 0; i < allitems.size(); i++) {
     std::string itemstats = allitems[i].getname() + "\ndmg: " + std::to_string(allitems[i].getbonusdmg()) + "\nhp: " + std::to_string(allitems[i].getbonushp()) + "\ngold: " + std::to_string(allitems[i].get_gold_value());
     items_boxes.push_back(new ItemBox{itemstats, baseshape, h, &allitems[i]});
-    items_boxes[i]->setcharsize(11);
-    items_boxes[i]->setlabelcolor(sf::Color::Black);
+    items_boxes[i]->set_char_size(11);
+    items_boxes[i]->set_label_color(sf::Color::Black);
   }
   UI::Grid itemsgrid{{windowsize.x - baseshape.getSize().x, 60}, {5, 5}, {0, 1}};
   std::vector<UI::GridElement *> itemels(items_boxes.begin(), items_boxes.end());
-  itemsgrid.setelements(itemels);
-  itemsgrid.setelementspos();
+  itemsgrid.set_elements(itemels);
+  itemsgrid.set_elements_pos();
 
   // set timer
   elapsed_time.restart();
@@ -76,7 +77,9 @@ GameState::GameState(StateManager &state_manager, std::vector<Champion*> p1champ
   player_1->set_side(Side::BLUE);
   player_2->set_side(Side::RED);
   create_simulation = [state = this, &window](){
-    state->state_manager.push_state(std::make_unique<SimulationState>(state->players, state->map, window, state->mode,state->state_manager));
+    state->state_manager.push_state(std::make_unique<SimulationState>(
+        state->players, state->map, window, state->mode,state->state_manager)
+    );
   };
   
   // seed the random generator
@@ -153,11 +156,14 @@ void GameState::onclick_ward(){
 void GameState::show_cellinfo(sf::Vector2f index){
   sf::RectangleShape shape{{100,60}};
   shape.setFillColor(sf::Color::Black);
+  for(auto & label : stat_labels){
+    delete label;
+  }
   stat_labels.clear();
   UI::NamedBox *statlabel = new UI::NamedBox{
       "Cell:\nx: "+std::to_string((int)index.x+1) +
           "\ny: "+std::to_string((int)index.y+1),shape,h};
-  statlabel->setcharsize(12);
+  statlabel->set_char_size(12);
   statlabel->set_position({70,200});
   stat_labels.push_back(statlabel);
 }
@@ -165,12 +171,12 @@ void GameState::show_stats(std::vector<std::string> &statsentity){
   sf::Vector2f startpos{70,300};
   sf::RectangleShape shape{{100,20}};
   shape.setFillColor(sf::Color::Black);
-  for(size_t i = 0; i < statsentity.size(); i++){
-    UI::NamedBox *statlabel = new UI::NamedBox{statsentity[i],shape,h};
+  for(const auto & i : statsentity){
+    UI::NamedBox *statlabel = new UI::NamedBox{i,shape,h};
     statlabel->set_position(startpos);
-    float marginy = 5;
-    startpos.y += shape.getSize().y + marginy;
-    statlabel->setcharsize(12);
+    float margin_y = 5;
+    startpos.y += shape.getSize().y + margin_y;
+    statlabel->set_char_size(12);
     stat_labels.push_back(statlabel);
   }
 }
@@ -229,6 +235,16 @@ void GameState::handle_events(sf::Event &e) {
   }
 }
 void GameState::update() {
+  // if in the last main cycle we encountered a round end
+  // this needs to be at the start of update, because we set round_end in here last cycle
+  if(was_round_end){
+    was_round_end = false;
+    next_player();
+    for(auto & player : players){
+      player->round_end(map);
+    }
+    elapsed_time.restart();
+  }
   // update time elapsed
   std::string s = "Time left: ";
   s += std::to_string(time_left - (int)elapsed_time.getElapsedTime().asSeconds());
@@ -241,15 +257,7 @@ void GameState::update() {
   if(currentplayer->check_round_end()){
     end_turn();
   }
-  // if in the last main cycle we encountered a round end
-  if(was_round_end){
-    was_round_end = false;
-    next_player();
-    for(auto & player : players){
-      player->round_end(map);
-    }
-    elapsed_time.restart();
-  }
+
   // check game end
   if(map->did_game_end()){
     state_manager.pop_state();
@@ -292,8 +300,8 @@ GameState::~GameState(){
   for(auto & item : items_boxes){
     delete item;
   }
-  for(size_t i = 0; i < players.size(); i++){
-    players[i]->despawn_champs(map);
-    delete players[i];
+  for(auto & player : players){
+    player->despawn_champs(map);
+    delete player;
   }
 }

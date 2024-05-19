@@ -26,14 +26,14 @@ public:
   Button(
       sf::String text, std::function<void()> onclick = []() { std::cout << "onclick not implemented yet" << std::endl;},
       sf::Vector2f pos = {0, 0});
-  void set_text(sf::String text);
+  void set_text(const sf::String& text);
   void set_position(sf::Vector2f pos) override;
   void update_text_position();
   void draw_to_window(sf::RenderWindow &window);
-  bool contains(int x, int y)const;
+  bool contains(int x, int y)const override;
 
-  virtual void draw(sf::RenderWindow& window);
-  inline sf::Vector2f get_size() {
+  void draw(sf::RenderWindow& window) override;
+  inline sf::Vector2f get_size() override{
     return shape.getSize();
   }
   inline sf::FloatRect get_global_bounds() const {return shape.getGlobalBounds();}
@@ -45,11 +45,11 @@ protected:
 };
 class TextBox : public GridElement {
 public:
-  TextBox(std::string label,Resources::Holder &holder, sf::Vector2f pos = {0, 0});
-  virtual void draw(sf::RenderWindow& window);
-  virtual void set_position(sf::Vector2f pos){shape.setPosition(pos);}
-  virtual sf::Vector2f get_size(){return shape.getSize();}
-  bool contains(int x, int y)const;
+  TextBox(const std::string& label,Resources::Holder &holder, sf::Vector2f pos = {0, 0}, const std::string& text_default="");
+  void draw(sf::RenderWindow& window) override;
+  void set_position(sf::Vector2f pos)override{shape.setPosition(pos);}
+  virtual sf::Vector2f get_size()override{return shape.getSize();}
+  bool contains(int x, int y)const override;
   inline sf::FloatRect get_global_bounds() const {
     return shape.getGlobalBounds();
   }
@@ -62,45 +62,44 @@ private:
   sf::RectangleShape shape;
   sf::Text label;
   bool is_selected = false;
-  int limit;
 };
 class Grid {
 public:
-  Grid(sf::Vector2f startpos, sf::Vector2f margin, sf::Vector2f direction = {1, 0});
-  void setelements(std::vector<GridElement *> elements);
-  void setelementspos();
-  bool contains(int x, int y)const;
+  Grid(sf::Vector2f start_pos, sf::Vector2f margin_, sf::Vector2f direction_ = {1, 0});
+  void set_elements(std::vector<GridElement *> elements_);
+  void set_elements_pos();
+  [[nodiscard]] bool contains(int x, int y)const;
   void draw();
-  inline sf::FloatRect get_global_bounds() const {
+  [[nodiscard]] inline sf::FloatRect get_global_bounds() const {
     sf::FloatRect f{};
-    f.top = _startpos.y;
-    f.left = _startpos.x;
-    f.width = static_cast<float>(_elements.size())*(_margin.x+_direction.x);
-    f.height = static_cast<float>(_elements.size())*(_margin.y+_direction.y);
+    f.top = start_pos.y;
+    f.left = start_pos.x;
+    f.width = static_cast<float>(elements.size())*(margin.x+ direction.x);
+    f.height = static_cast<float>(elements.size())*(margin.y+ direction.y);
     return f;
   }
 private:
-  std::vector<GridElement *> _elements;
-  sf::Vector2f _startpos;
-  sf::Vector2f _margin;
-  sf::Vector2f _direction;
+  std::vector<GridElement *> elements;
+  sf::Vector2f start_pos;
+  sf::Vector2f margin;
+  sf::Vector2f direction;
 };
 class NamedBox : public GridElement {
 public:
   NamedBox(Resources::Holder &h) {label.setFont(h.get(Resources::Type::FONT));}
-  NamedBox(std::string label, sf::RectangleShape frame, Resources::Holder &h);
+  NamedBox(const std::string& label, sf::RectangleShape frame, Resources::Holder &h);
   void setlabel(std::string l);
   void setframe(sf::RectangleShape);
-  void set_position(sf::Vector2f pos);
-  void setcharsize(int size);
-  void setlabelcolor(const sf::Color &c);
+  void set_position(sf::Vector2f pos) override;
+  void set_char_size(int size);
+  void set_label_color(const sf::Color &c);
   inline sf::FloatRect get_global_bounds() const {
     return frame.getGlobalBounds();
   }
   std::string getlabel() const {
     return label.getString();
   }
-  bool contains(int x, int y)const;
+  bool contains(int x, int y)const override;
   sf::Vector2f get_size();
   void draw(sf::RenderWindow& window);
 

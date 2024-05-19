@@ -61,9 +61,9 @@ Map::Map(sf::Vector2f pos) {
   for (size_t i = 0; i < size.x; i++) {
     std::string line;
     std::getline(file, line);
-    int lineindex = 0;
+    size_t line_index = 0;
     for (size_t j = 0; j < size.y; j++) {
-      switch (line[lineindex]) {
+      switch (line[line_index]) {
       case 'o': {
         cells[i][j] = new Ground{};
         break;
@@ -80,33 +80,33 @@ Map::Map(sf::Vector2f pos) {
         cells[i][j] = new Bush{};
         break;
       }
-      // the blue side turret
-      case 't': {
-        cells[i][j] = new Ground{};
-        Tower *tower = new Tower;
-        tower->set_side(Side::BLUE);
-        cells[i][j]->addentity(tower);
-        break;
-      }
       // the red side turret
-      case 'z': {
+      case 't': {
         cells[i][j] = new Ground{};
         Tower *tower = new Tower;
         tower->set_side(Side::RED);
         cells[i][j]->addentity(tower);
         break;
       }
+      // the blue side turret
+      case 'z': {
+        cells[i][j] = new Ground{};
+        Tower *tower = new Tower;
+        tower->set_side(Side::BLUE);
+        cells[i][j]->addentity(tower);
+        break;
+      }
       case 'n': {
         cells[i][j] = new Ground{};
         Nexus *nexus = new Nexus;
-        nexus->set_side(Side::BLUE);
+        nexus->set_side(Side::RED);
         cells[i][j]->addentity(nexus);
         break;
       }
       case 'm': {
         cells[i][j] = new Ground{};
         Nexus *nexus = new Nexus;
-        nexus->set_side(Side::RED);
+        nexus->set_side(Side::BLUE);
         cells[i][j]->addentity(nexus);
         break;
       }
@@ -157,7 +157,7 @@ Map::Map(sf::Vector2f pos) {
         break;
       }
       default: {
-        std::cout << "err: wrong symbol: " << line[lineindex] << std::endl;
+        std::cout << "err: wrong symbol: " << line[line_index] << std::endl;
         cells[i][j] = nullptr;
         break;
       }
@@ -166,7 +166,7 @@ Map::Map(sf::Vector2f pos) {
         cells[i][j]->setpos(sf::Vector2f{(float)i, (float)j});
         cells[i][j]->updateshape(pos, cellsize);
       }
-      lineindex += 2; // skip semicolons
+      line_index += 2; // skip semicolons
     }
   }
   file.close();
@@ -208,7 +208,8 @@ Map::~Map() {
   std::cout << "deleting map" << std::endl;
   for (size_t i = 0; i < size.x; i++) {
     for (size_t j = 0; j < size.y; j++) {
-      delete cells[i][j];
+      if(cells[i][j] != nullptr)
+        delete cells[i][j];
     }
   }
 }
@@ -216,7 +217,7 @@ Cell::~Cell(){
   std::cout << "deleting cells: " << this->indicies.x << ":" << this->indicies.y << std::endl;
   for(auto & entity : entities){
     // Todo: only delete the appropriate entities
-    if(!entity->can_fight_back())delete entity;
+    if(!entity->can_fight_back() && entity != nullptr)delete entity; // check
   }
 }
 bool Cell::should_update_vision_around(Side current_side){

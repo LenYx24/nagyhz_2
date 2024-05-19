@@ -38,7 +38,7 @@ void Champion::read_from_string(std::string &line, const char delimiter) {
   hp_per_level = std::stoi(tokens[4]);
   cell = nullptr;
 }
-void Item::readfromstring(std::string &line, const char delimiter) {
+void Item::read_from_string(std::string &line, const char delimiter) {
   // Todo: read item datas
   std::vector<std::string> tokens = splitString(line, delimiter);
   if(tokens.size() < 4){
@@ -99,10 +99,9 @@ void Player::round_end(std::shared_ptr<Map> map){
 }
 void Champion::round_end(){
   movepoints = 3;
-  // Todo: dont forget to free it first
-  gamemoves.clear();
-  current_gamemove = nullptr;
-  simulation_points_counter = 1;
+  //gamemoves.clear();
+  //current_gamemove = nullptr;
+  //simulation_points_counter = 1;
   // passive gold generation
   gold+=2;
 }
@@ -223,11 +222,12 @@ bool Player::ishischamp(Champion *c){
 }
 Champion *Player::getselectedchamp(sf::Vector2f index){
   for(int i = static_cast<int>(champs.size())-1; i >=0; i--){
-    if(champs[i]->get_simulation_cell()->getindex() == index)return champs[i];
+    size_t current_index = static_cast<size_t>(i);
+    if(champs[current_index]->get_simulation_cell()->getindex() == index)return champs[current_index];
   }
   return nullptr;
 }
-bool Player::is_gamemove_active(){
+bool Player::is_gamemove_active() const{
   return gamemoveactive;
 }
 void Player::setgamemoveactive(bool b){
@@ -348,8 +348,9 @@ sf::Vector2f Champion::gamemove_index(size_t offset)const{
   if(!current_gamemove)throw "current game move is a nullptr";
   int last_index = static_cast<int>(gamemoves.size()) - 1;
   for(int i = last_index - static_cast<int>(offset); i >= 0; i--){
-    if(gamemoves[i]->position_cell() != nullptr){
-      return gamemoves[i]->position_cell()->getindex();
+    size_t index = static_cast<size_t>(i);
+    if(gamemoves[index]->position_cell() != nullptr){
+      return gamemoves[index]->position_cell()->getindex();
     }
   }
   return cell->getindex();
@@ -390,9 +391,10 @@ void MinionWave::round_end(){
   }
 }
 void Champion::do_move(std::shared_ptr<Map> map){
-  if(gamemoves.size() > 0){
+  if(!gamemoves.empty()){
     if(gamemoves[0]->get_movepoints() == simulation_points_counter){
       gamemoves[0]->do_move(this,map);
+      delete gamemoves[0];
       gamemoves.erase(gamemoves.begin());
       simulation_points_counter = 1;
     }else{

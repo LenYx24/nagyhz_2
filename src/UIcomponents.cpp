@@ -31,14 +31,14 @@ bool TextBox::contains(int x, int y)const{
 bool NamedBox::contains(int x, int y)const{
   return get_global_bounds().contains(static_cast<float>(x), static_cast<float>(y));
 }
-TextBox::TextBox(std::string label_, Resources::Holder &holder, sf::Vector2f pos){
+TextBox::TextBox(const std::string& label_, Resources::Holder &holder, sf::Vector2f pos, const std::string& text_default){
   shape.setFillColor(sf::Color::White);
   shape.setSize({200,50});
   shape.setOutlineColor({sf::Color::Black});
   shape.setOutlineThickness(3);
   shape.setPosition(pos);
 
-  text.setString("");
+  text.setString(text_default);
   text.setCharacterSize(15);
   text.setFillColor(sf::Color{100,100,50});
   text.setFont(holder.get(Resources::Type::FONT));
@@ -61,7 +61,7 @@ void TextBox::remove_char(){
   str.pop_back();
   text.setString(str);
 }
-void Button::set_text(sf::String str) {
+void Button::set_text(const sf::String& str) {
   text.setString(str);
 }
 void Button::set_position(sf::Vector2f pos) {
@@ -81,16 +81,16 @@ void Button::draw_to_window(sf::RenderWindow &w) {
   update_text_position();
   w.draw(text);
 }
-NamedBox::NamedBox(std::string label, sf::RectangleShape frame, Resources::Holder &h) {
+NamedBox::NamedBox(const std::string& label, sf::RectangleShape frame, Resources::Holder &h) {
   this->label.setString(label);
   this->label.setFont(h.get(Resources::Type::FONT));
-  this->frame = frame;
+  this->frame = std::move(frame);
 }
 
-void NamedBox::setcharsize(int size) {
+void NamedBox::set_char_size(int size) {
   label.setCharacterSize(size);
 }
-void NamedBox::setlabelcolor(const sf::Color &c) {
+void NamedBox::set_label_color(const sf::Color &c) {
   label.setFillColor(c);
 }
 void NamedBox::setlabel(std::string l){
@@ -111,16 +111,16 @@ void NamedBox::draw(sf::RenderWindow& w) {
   w.draw(label);
 }
 
-void Grid::setelementspos() {
-  sf::Vector2f pos = _startpos;
-  for (size_t i = 0; i < _elements.size(); i++) {
-    _elements[i]->set_position(pos);
-    pos.x += (_elements[i]->get_size().x + _margin.x) * _direction.x;
-    pos.y += (_elements[i]->get_size().y + _margin.y) * _direction.y;
+void Grid::set_elements_pos() {
+  sf::Vector2f pos = start_pos;
+  for (auto & element : elements) {
+    element->set_position(pos);
+    pos.x += (element->get_size().x + margin.x) * direction.x;
+    pos.y += (element->get_size().y + margin.y) * direction.y;
   }
 }
 
-void Grid::setelements(std::vector<GridElement *> elements) {
-  _elements = elements;
+void Grid::set_elements(std::vector<GridElement *> elements_) {
+  elements = std::move(elements_);
 }
-Grid::Grid(sf::Vector2f startpos, sf::Vector2f margin, sf::Vector2f direction) : _startpos(startpos), _margin(margin), _direction(direction) {}
+Grid::Grid(sf::Vector2f start_pos, sf::Vector2f margin_, sf::Vector2f direction_) : start_pos(start_pos), margin(margin_), direction(direction_) {}

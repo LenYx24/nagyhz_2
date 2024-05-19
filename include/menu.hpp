@@ -15,24 +15,25 @@ namespace Menu {
 
 class MenuState : public State {
 public:
-  MenuState(StateManager &state_manager) : State(state_manager){}
-  virtual ~MenuState();
-  virtual void handle_events(sf::Event &event);
-  virtual void update();
-  virtual void draw(sf::RenderWindow& window);
+  explicit MenuState(StateManager &state_manager) : State(state_manager),setting("examples/champ.txt","examples/items.txt",GameMode::TWOPLAYER){}
+  ~MenuState() override;
+  void handle_events(sf::Event &event) override;
+  void update() override;
+  void draw(sf::RenderWindow& window) override;
 
 protected:
   std::vector<UI::Button *> buttons;
   Resources::Holder resources_holder;
+  Settings setting;
 };
 class MainState : public MenuState {
 public:
   MainState(StateManager &s, sf::RenderWindow& window);
-  ~MainState();
-  void handle_events(sf::Event &event);
-  void draw(sf::RenderWindow& window);
+  ~MainState() override;
+  void handle_events(sf::Event &event) override;
+  void draw(sf::RenderWindow& window) override;
 private:
-  std::vector<UI::TextBox *> textboxes;
+  std::vector<UI::TextBox *> text_boxes;
 };
 class ModeSelectionState : public MenuState {
 public:
@@ -42,8 +43,9 @@ public:
 class MenuButton : public UI::Button {
 public:
   MenuButton(
-      Resources::Holder &h, sf::String str, std::function<void()> onclick = []() { std::cout << "not impl" << std::endl; });
+      Resources::Holder &h, const sf::String& str, std::function<void()> onclick = []() { std::cout << "not impl" << std::endl; });
 };
 
 } // namespace Menu
-#endif // !MENU
+#endif
+// !MENU

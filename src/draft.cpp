@@ -1,9 +1,11 @@
+#include <utility>
+
 #include "../include/draft.hpp"
 void onclick_back(StateManager &s) {
   s.pop_state();
 }
 
-void DraftState::lockin(StateManager &s, sf::RenderWindow& window, const Settings settings) {
+void DraftState::lockin(StateManager &s, sf::RenderWindow& window, Settings settings) {
   if (selectedchamp != nullptr) {
     elapsedtime.restart();
     turns[turn_counter++].doturn(selectedchamp);
@@ -30,17 +32,17 @@ void DraftState::lockin(StateManager &s, sf::RenderWindow& window, const Setting
     state_manager.change_state(std::make_unique<GameState>(s,p1champs,p2champs,settings, window));
   }
 }
-void DraftState::dontban() {
+void DraftState::dont_ban() {
   elapsedtime.restart();
   if(turns[turn_counter].isbanphase())
     turns[turn_counter++].doturn(emptychamp);
 }
-DraftButton::DraftButton(Resources::Holder &h, sf::String str, std::function<void()> onclick_) : Button(str, onclick_) {
+DraftButton::DraftButton(Resources::Holder &h, const sf::String& str, std::function<void()> onclick_) : Button(str, std::move(onclick_)) {
   shape.setSize({150, 70});
   text.setCharacterSize(15);
   text.setFont(h.get(Resources::Type::FONT));
 }
-DraftState::DraftState(StateManager &state_manager, const Settings settings, sf::RenderWindow& window) : State(state_manager) {
+DraftState::DraftState(StateManager &state_manager, const Settings& settings, sf::RenderWindow& window) : State(state_manager) {
   iofile inp("examples/champions.txt");
   for (std::string line; std::getline(inp.getfile(), line);) {
     Champion *c = new Champion;
@@ -58,27 +60,28 @@ DraftState::DraftState(StateManager &state_manager, const Settings settings, sf:
 
   h.load(Resources::Type::FONT, "./resources/fonts/Roboto.ttf");
   buttons.push_back(new DraftButton(h, "Lock in", [state = this, &window, settings]() { state->lockin(state->state_manager,window,settings); }));
-  buttons.push_back(new DraftButton(h, "Don't ban", [state = this]() { state->dontban(); }));
+  buttons.push_back(new DraftButton(h, "Don't ban", [state = this]() { state->dont_ban(); }));
   buttons.push_back(new DraftButton(h, "back", [&state_manager](){ onclick_back(state_manager);}));
   sf::Vector2f buttonsize = buttons[0]->get_size();
   float margin = 5;
   UI::Grid grid{{windowsize.x/2 -buttonsize.x*static_cast<float>(buttons.size())/2, windowsize.y-buttonsize.y -margin}, {margin, margin}};
   std::vector<UI::GridElement *> els(buttons.begin(), buttons.end());
-  grid.setelements(els);
-  grid.setelementspos();
+  grid.set_elements(els);
+  grid.set_elements_pos();
+
   // creating named boxes
 
   sf::RectangleShape baseshape{{150, 30}};
   baseshape.setOutlineColor({33, 35, 45});
   for (size_t i = 0; i < allchamps.size(); i++) {
     champlist.push_back(new ChampBox{allchamps[i]->get_name(), baseshape, h, allchamps[i]});
-    champlist[i]->setcharsize(11);
-    champlist[i]->setlabelcolor(sf::Color::Black);
+    champlist[i]->set_char_size(11);
+    champlist[i]->set_label_color(sf::Color::Black);
   }
   UI::Grid champgrid{{windowsize.x/2 - baseshape.getSize().x, 10}, {margin, margin}, {0, 1}};
   std::vector<UI::GridElement *> champels(champlist.begin(), champlist.end());
-  champgrid.setelements(champels);
-  champgrid.setelementspos();
+  champgrid.set_elements(champels);
+  champgrid.set_elements_pos();
 
   float col_gap = 7;
   sf::Vector2f team_col_gap_size = {150,40};
@@ -90,6 +93,8 @@ DraftState::DraftState(StateManager &state_manager, const Settings settings, sf:
     columns.push_back(c);
     columns[i].setpos();
   }
+
+  //initializing turns
   DraftTurn p1{columns[0].champs};
   DraftTurn p2{columns[1].champs};
   DraftTurn p1ban{columns[2].champs,true};
@@ -108,7 +113,7 @@ DraftState::DraftState(StateManager &state_manager, const Settings settings, sf:
     this->turns[turn_counter++].doturn(champlist[i]->get_champ());
   }
   // this should be change state, but then the champions should be moved
-  state_manager.push_state(std::make_unique<GameState>(state_manager,columns[0].champs,columns[1].champs,settings, window));
+  //state_manager.push_state(std::make_unique<GameState>(state_manager,columns[0].champs,columns[1].champs,settings, window));
 }
 
 void DraftTurn::doturn(Champion *c) {
@@ -160,7 +165,7 @@ void DraftState::update() {
     elapsedtime.restart();
   }
   for (size_t i = 0; i < champlist.size(); i++) {
-    champlist[i]->setlabelcolor(sf::Color::Black);
+    champlist[i]->set_label_color(sf::Color::Black);
   }
   if(champlist.size() == 0){
     state_manager.pop_state();
@@ -177,7 +182,7 @@ void DraftState::draw(sf::RenderWindow& window) {
   }
   for (size_t i = 0; i < champlist.size(); i++) {
     if (selectedchamp == champlist[i]->get_champ()) {
-      champlist[i]->setlabelcolor({100, 100, 100});
+      champlist[i]->set_label_color({100, 100, 100});
     }
     champlist[i]->draw(window);
   }
@@ -201,7 +206,7 @@ TeamCol::TeamCol(Resources::Holder &h, sf::Vector2f startpos,sf::Vector2f size, 
   this->margin = margin;
   for (size_t i = 0; i < 5; i++) {
     elements.push_back(DraftNamedBox{h, "",size});
-    elements[i].setcharsize(12);
+    elements[i].set_char_size(12);
   }
 }
 

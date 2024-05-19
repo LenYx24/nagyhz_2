@@ -40,7 +40,7 @@ class DraftButton : public UI::Button {
 public:
 // Todo: static fgv, ami visszaad egy draftbutton stílusú gombot
   DraftButton(
-      Resources::Holder &h, sf::String str, std::function<void()> onclick = []() { std::cout << "not impl" << std::endl; });
+      Resources::Holder &h, const sf::String& str, std::function<void()> onclick = []() { std::cout << "not impl" << std::endl; });
 };
 
 class ChampBox : public UI::NamedBox {
@@ -52,14 +52,14 @@ private:
 };
 class DraftState : public State {
 public:
-  DraftState(StateManager &state_manager, const Settings s, sf::RenderWindow& window);
+  DraftState(StateManager &state_manager, const Settings& s, sf::RenderWindow& window);
   ~DraftState();
   void handle_events(sf::Event &e);
   void update();
   void draw(sf::RenderWindow& window);
 
-  void lockin(StateManager& s, sf::RenderWindow& window, const Settings settings);
-  void dontban();
+  void lockin(StateManager& s, sf::RenderWindow& window, Settings settings);
+  void dont_ban();
 
 protected:
   Resources::Holder h;

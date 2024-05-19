@@ -2,10 +2,10 @@
 
 #include "../include/simulation.hpp"
 
-SimulationState::SimulationState(std::vector<Player *> &players, std::shared_ptr<Map> map, sf::RenderWindow& window, GameMode mode, StateManager& state_manager):State(state_manager),players(players){
+SimulationState::SimulationState(std::vector<Player *> &players, std::shared_ptr<Map> &map, sf::RenderWindow& window, GameMode mode, StateManager& state_manager):State(state_manager),players(players){
   // set gamemode
   this->mode = mode;
-  this->map = std::move(map);
+  this->map = map;
   // load font
   h.load(Resources::Type::FONT, "./resources/fonts/Roboto.ttf");
   // create the UI components:
@@ -17,8 +17,6 @@ SimulationState::SimulationState(std::vector<Player *> &players, std::shared_ptr
   timer.setPosition({250, 10});
   timer.setFont(h.get(Resources::Type::FONT));
   timer.setCharacterSize(18);
-  // reset vision
-  map->reset_cell_selections();
 };
 void SimulationState::handle_events(sf::Event &e){
     if (e.type == sf::Event::Closed) {
@@ -44,14 +42,15 @@ void SimulationState::update(){
         }
         round_counter++;
     }
+    // reset vision
+    map->reset_cell_selections();
 }
 SimulationState::~SimulationState(){
   delete title;
   // no gamemoves should be on any champion
-  //for(Player *player: players){
-    //player->clear_gamemoves();
-    std::cout << "clearing gamemoves" << std::endl;
-  //}
+  for(Player *player: players){
+    player->clear_gamemoves();
+  }
 }
 void SimulationState::draw(sf::RenderWindow& window){
     sf::Color background_color = sf::Color(220, 225, 222);
