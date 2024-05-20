@@ -1,0 +1,254 @@
+\doxysection{gameobjects.\+hpp}
+\hypertarget{gameobjects_8hpp_source}{}\label{gameobjects_8hpp_source}\index{include/gameobjects.hpp@{include/gameobjects.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ GAMEOBJECTS\_HPP}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ GAMEOBJECTS\_HPP}}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ "{}gamemoves.hpp"{}}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}ioparser.hpp"{}}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ "{}map.hpp"{}}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ "{}resources.hpp"{}}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ <SFML/Graphics.hpp>}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ <iostream>}}
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ <sstream>}}
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#include\ <memory>}}
+\DoxyCodeLine{00011\ \textcolor{preprocessor}{\#include\ <utility>}}
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\#include\ <format>}}
+\DoxyCodeLine{00013\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classCell}{Cell}};}
+\DoxyCodeLine{00014\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classMap}{Map}};}
+\DoxyCodeLine{00018\ \textcolor{keyword}{enum\ class}\ Side\ \{\ BLUE,\ RED\ \};}
+\DoxyCodeLine{00022\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classEntity}{Entity}}\ \{}
+\DoxyCodeLine{00023\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00027\ \ \ \textcolor{keyword}{virtual}\ \mbox{\hyperlink{classEntity_ac479d009ddde62dfb378ca0a70d81307}{\string~Entity}}()=\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00032\ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{classEntity_aef46b1aea52385237628d0a0fa155396}{Entity}}(std::string\ name\ =\ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{00037\ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classEntity_a1309341dd268af435449b5031ff0a06d}{draw}}(sf::RenderWindow\ \&window);}
+\DoxyCodeLine{00042\ \ \ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{classEntity_a840ac840f4b2fc787ac73be45df8dde7}{get\_base\_dmg}}()\textcolor{keyword}{const}\{\textcolor{keywordflow}{return}\ damage;\}}
+\DoxyCodeLine{00046\ \ \ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{classEntity_a51413bb4837d45c905c537bbc3b57f90}{get\_base\_hp}}()\textcolor{keyword}{const}\{\textcolor{keywordflow}{return}\ hp;\}}
+\DoxyCodeLine{00050\ \ \ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{classEntity_a70b5f51128029aeeed5d952388fef994}{get\_total\_dmg}}()\textcolor{keyword}{const}\{\textcolor{keywordflow}{return}\ total\_damage;\}}
+\DoxyCodeLine{00054\ \ \ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{classEntity_a33cbef480e431dfaeae0290d9c9ce392}{get\_total\_hp}}()\textcolor{keyword}{const}\{\textcolor{keywordflow}{return}\ total\_hp;\}}
+\DoxyCodeLine{00058\ \ \ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{classEntity_ac162777dcb268492364fd3662e62932e}{get\_xp\_given}}()\textcolor{keyword}{const}\{\textcolor{keywordflow}{return}\ xp\_given;\}}
+\DoxyCodeLine{00062\ \ \ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{classEntity_a62d092e37c3e2d7c9e5c7aa68125084d}{get\_gold\_given}}()\textcolor{keyword}{const}\{\textcolor{keywordflow}{return}\ gold\_given;\}}
+\DoxyCodeLine{00066\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classEntity_a4fc1c58e0cde7a74b68d7c0897492d09}{set\_side}}(Side\ side\_)\{side\ =\ side\_;\}}
+\DoxyCodeLine{00070\ \ \ Side\ \mbox{\hyperlink{classEntity_a0e76e4cb502d0b67ad5782d1effc01b0}{get\_side}}()\textcolor{keyword}{const\ }\{\textcolor{keywordflow}{return}\ side;\}}
+\DoxyCodeLine{00074\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classEntity_a016985c6781b3dcabf9656f0addcaa38}{set\_xp\_given}}(\textcolor{keywordtype}{int}\ xp\_given\_)\{xp\_given\ =\ xp\_given\_;\}}
+\DoxyCodeLine{00078\ \ \ \textcolor{keyword}{virtual}\ std::vector<std::string>\ \mbox{\hyperlink{classEntity_a1529ff8252af5440d930bd871826d0ee}{get\_stats}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00082\ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classEntity_abadcf5fb781cafa3a9779091e210b96f}{isAlive}}()\textcolor{keyword}{\ const\ }\{\textcolor{keywordflow}{return}\ alive;\}}
+\DoxyCodeLine{00086\ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classEntity_a6474bf6e6350afb2a86356bda803f5df}{should\_focus}}()\textcolor{keyword}{const}\{\textcolor{keywordflow}{return}\ \textcolor{keyword}{false};\}}
+\DoxyCodeLine{00090\ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classEntity_aa300a959f036dcdbc83bae3ed7a6c592}{gives\_creep\_score}}()\textcolor{keyword}{const\ }\{\textcolor{keywordflow}{return}\ \textcolor{keyword}{false};\}}
+\DoxyCodeLine{00095\ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classEntity_a9f35766485f7ef8eb9e296bcf31c5b4f}{remove\_hp}}(\textcolor{keywordtype}{double}\ dmg)\{\textcolor{keywordflow}{if}(\mbox{\hyperlink{classEntity_a33cbef480e431dfaeae0290d9c9ce392}{get\_total\_hp}}()-\/dmg\ >\ 0)hp-\/=dmg;\ \mbox{\hyperlink{classEntity_a4a8f6d1d3b11b7e6d85079a05ca4c9bf}{check\_death}}();\}}
+\DoxyCodeLine{00099\ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classEntity_a4a8f6d1d3b11b7e6d85079a05ca4c9bf}{check\_death}}()\{\textcolor{keywordflow}{if}(total\_hp\ <=\ 0)\{respawn\_counter\ =\ respawn\_timer;\}\}}
+\DoxyCodeLine{00103\ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classEntity_add9cdf12963b02d01b44c1f274d1a0d4}{clicked}}(\textcolor{keywordtype}{int}\ x,\ \textcolor{keywordtype}{int}\ y);}
+\DoxyCodeLine{00107\ \ \ \mbox{\hyperlink{classCell}{Cell}}\ *\mbox{\hyperlink{classEntity_a7de96a0f5000751264f27e5696954f33}{get\_real\_cell}}()\{\textcolor{keywordflow}{return}\ cell;\}}
+\DoxyCodeLine{00111\ \ \ \textcolor{keyword}{virtual}\ \mbox{\hyperlink{classCell}{Cell}}\ *\mbox{\hyperlink{classEntity_a64ed6f86b55e8c2039a0089cacdc9367}{get\_simulation\_cell}}()\{\textcolor{keywordflow}{return}\ cell;\}}
+\DoxyCodeLine{00115\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classEntity_a9e5468253e6a29f43f3c0ae04120c6a3}{set\_cell}}(\mbox{\hyperlink{classCell}{Cell}}\ *c)\{\textcolor{keywordflow}{if}(c\ !=\ \textcolor{keyword}{nullptr})cell=c;\}}
+\DoxyCodeLine{00119\ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classEntity_adeb0b3d5961956aaf3e7fb7bd5c1b2fe}{update\_shape\_pos}}(sf::Vector2f\ pos);}
+\DoxyCodeLine{00123\ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classEntity_a1d3994e373a94139594e817b8a48d988}{gives\_vision}}()\textcolor{keyword}{const}\{\textcolor{keywordflow}{return}\ \textcolor{keyword}{false};\}}
+\DoxyCodeLine{00129\ \ \ std::string\ \mbox{\hyperlink{classEntity_a999e644523050021ec39ee743022c919}{to\_ui\_int\_format}}(\textcolor{keywordtype}{double}\ num)\textcolor{keyword}{const};}
+\DoxyCodeLine{00134\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classEntity_aa2d45bbcb8e9aa1fe7d4630a969ed565}{set\_color}}(sf::Color\ color\_)\{shape.setFillColor(color\_);\}}
+\DoxyCodeLine{00139\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classEntity_a8edadc9e3494534f4706cb547154a87b}{set\_name}}(std::string\ name\_)\{name\ =\ std::move(name\_);\}}
+\DoxyCodeLine{00143\ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classEntity_a04e6efaac1fdc7f380707b949c52566b}{can\_fight\_back}}()\textcolor{keyword}{const}\{\textcolor{keywordflow}{return}\ \textcolor{keyword}{false};\}}
+\DoxyCodeLine{00144\ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00145\ \ \ std::string\ name;}
+\DoxyCodeLine{00146\ }
+\DoxyCodeLine{00147\ \ \ \textcolor{keywordtype}{bool}\ alive\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00148\ }
+\DoxyCodeLine{00149\ \ \ \textcolor{keywordtype}{double}\ max\_hp\ =\ 10;\ \textcolor{comment}{//\ the\ maximum\ hp\ this\ entity\ could\ have}}
+\DoxyCodeLine{00150\ \ \ \textcolor{keywordtype}{double}\ hp\ =\ 10;}
+\DoxyCodeLine{00151\ \ \ \textcolor{keywordtype}{double}\ damage\ =\ 10;}
+\DoxyCodeLine{00152\ \ \ \textcolor{keywordtype}{double}\ total\_hp\ =\ 10;}
+\DoxyCodeLine{00153\ \ \ \textcolor{keywordtype}{double}\ total\_damage\ =\ 10;}
+\DoxyCodeLine{00154\ }
+\DoxyCodeLine{00155\ \ \ \textcolor{keywordtype}{int}\ respawn\_counter\ =\ 0;\ \textcolor{comment}{//\ the\ amount\ of\ seconds\ needed\ to\ respawn}}
+\DoxyCodeLine{00156\ \ \ \textcolor{keywordtype}{int}\ respawn\_timer\ =\ 5;\ \textcolor{comment}{//\ the\ amount\ of\ seconds\ needed\ to\ respawn}}
+\DoxyCodeLine{00157\ \ \ \textcolor{keywordtype}{int}\ xp\_given\ =\ 10;\ \ \textcolor{comment}{//\ the\ xp\ given\ to\ the\ other\ entity,\ if\ this\ one\ gets\ slain\ by\ them}}
+\DoxyCodeLine{00158\ \ \ \textcolor{keywordtype}{int}\ gold\_given\ =\ 30;\ \ \textcolor{comment}{//\ the\ gold\ given\ to\ the\ other\ entity,\ if\ this\ one\ gets\ slain\ by\ them}}
+\DoxyCodeLine{00159\ }
+\DoxyCodeLine{00160\ \ \ \mbox{\hyperlink{classCell}{Cell}}\ *cell\ =\ \textcolor{keyword}{nullptr};\ \ \ \ \ \ \ \textcolor{comment}{//\ pointer\ to\ the\ cell\ this\ entity\ occupies}}
+\DoxyCodeLine{00161\ \ \ Side\ side\ =\ Side::BLUE;\ \textcolor{comment}{//\ the\ side\ on\ which\ the\ entity\ is\ on,\ either\ blue\ or\ red}}
+\DoxyCodeLine{00162\ }
+\DoxyCodeLine{00163\ \ \ sf::Color\ color;}
+\DoxyCodeLine{00164\ \ \ sf::RectangleShape\ shape;}
+\DoxyCodeLine{00165\ \};}
+\DoxyCodeLine{00166\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classEffect}{Effect}}\ \{}
+\DoxyCodeLine{00167\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00171\ \ \ \mbox{\hyperlink{classEffect_a4dae74244f59936a49847da9217b4126}{Effect}}():\ bonus\_dmg(0),\ bonus\_hp(0)\{\}}
+\DoxyCodeLine{00177\ \ \ \mbox{\hyperlink{classEffect_a738a7911b1469f93bb88e4377d0f95c4}{Effect}}(\textcolor{keywordtype}{int}\ dmg,\ \textcolor{keywordtype}{int}\ hp):\ bonus\_dmg(dmg),\ bonus\_hp(hp)\{\}}
+\DoxyCodeLine{00181\ \ \ [[nodiscard]]\ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{classEffect_ac6d083b0f35cacd7317010a18e14a512}{get\_bonus\_dmg}}()\textcolor{keyword}{const}\{\textcolor{keywordflow}{return}\ bonus\_dmg;\}}
+\DoxyCodeLine{00185\ \ \ [[nodiscard]]\ \textcolor{keywordtype}{double}\ \mbox{\hyperlink{classEffect_ae03a935470ddd9f4296b1b477668bbeb}{get\_bonus\_hp}}()\textcolor{keyword}{const}\{\textcolor{keywordflow}{return}\ bonus\_hp;\}}
+\DoxyCodeLine{00189\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classEffect_a3d9cb32c965eb044cd22fe2786d3e6e2}{set\_bonus\_dmg}}(\textcolor{keywordtype}{double}\ bonus\_dmg\_)\{bonus\_dmg\ =\ bonus\_dmg\_;\}}
+\DoxyCodeLine{00193\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classEffect_a0d20dc64323969074fdd5c6481f7a111}{set\_bonus\_hp}}(\textcolor{keywordtype}{double}\ bonus\_hp\_)\{bonus\_hp\ =\ bonus\_hp\_;\}}
+\DoxyCodeLine{00194\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00195\ \ \ \textcolor{keywordtype}{double}\ bonus\_dmg;}
+\DoxyCodeLine{00196\ \ \ \textcolor{keywordtype}{double}\ bonus\_hp;}
+\DoxyCodeLine{00197\ \};}
+\DoxyCodeLine{00202\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classItem}{Item}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{classEffect}{Effect}}\ \{}
+\DoxyCodeLine{00203\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00208\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classItem_a6d200329d7638bad6832e0f60253b866}{read\_from\_string}}(std::string\ \&line,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ delimiter=\ \textcolor{charliteral}{';'});}
+\DoxyCodeLine{00212\ \ \ [[nodiscard]]\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{classItem_ac71b954513d60efefbec54e691249cb1}{get\_gold\_value}}()\textcolor{keyword}{const}\{\textcolor{keywordflow}{return}\ gold\_value;\}}
+\DoxyCodeLine{00216\ \ \ \ [[nodiscard]]\ std::string\ \mbox{\hyperlink{classItem_aae45c99ff922e116a656167206fd96f9}{get\_name}}()\textcolor{keyword}{const}\{\textcolor{keywordflow}{return}\ name;\}}
+\DoxyCodeLine{00217\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00218\ \ \ \textcolor{keywordtype}{int}\ gold\_value;}
+\DoxyCodeLine{00219\ \ \ std::string\ name;}
+\DoxyCodeLine{00220\ \};}
+\DoxyCodeLine{00224\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classStructure}{Structure}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{classEntity}{Entity}}\ \{}
+\DoxyCodeLine{00228\ \ \ \textcolor{keywordtype}{bool}\ gives\_vision()\textcolor{keyword}{const\ override}\{\textcolor{keywordflow}{return}\ \textcolor{keyword}{true};\}}
+\DoxyCodeLine{00229\ \};}
+\DoxyCodeLine{00234\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classWard}{Ward}}:\ \textcolor{keyword}{public}\ \mbox{\hyperlink{classStructure}{Structure}}\{}
+\DoxyCodeLine{00235\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00240\ \ \ \mbox{\hyperlink{classWard_af41985d7a4ac7ccd8dfa3b9cd9e5d477}{Ward}}():cooldown(5)\{\mbox{\hyperlink{classEntity_aa2d45bbcb8e9aa1fe7d4630a969ed565}{set\_color}}(sf::Color\{25,25,25\});\}}
+\DoxyCodeLine{00241\ \ \ \textcolor{keywordtype}{void}\ do\_move();}
+\DoxyCodeLine{00242\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00243\ \ \ \textcolor{keywordtype}{int}\ cooldown;\ \textcolor{comment}{//\ the\ amount\ of\ rounds\ needed\ for\ the\ ward\ to\ disappear}}
+\DoxyCodeLine{00244\ \};}
+\DoxyCodeLine{00248\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classChampion}{Champion}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{classEntity}{Entity}},\ \textcolor{keyword}{public}\ \mbox{\hyperlink{classIreadstring}{Ireadstring}}\ \{}
+\DoxyCodeLine{00249\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00253\ \ \ \mbox{\hyperlink{classChampion_ae95b91cab1878f14d2692507b27963dd}{Champion}}();}
+\DoxyCodeLine{00257\ \ \ \mbox{\hyperlink{classChampion_a2d9eeda2595746679db5b324b3b43180}{\string~Champion}}()\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00263\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classChampion_ac4fe968b7c845a9d3c1d5d89da557a27}{fight}}(\mbox{\hyperlink{classEntity}{Entity}}\ *other);}
+\DoxyCodeLine{00267\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classChampion_a16d4b7b613b2bf2526c9e401cb878720}{update\_total\_dmg}}();}
+\DoxyCodeLine{00271\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classChampion_af2c07cae0fd0a9c511fdb6a51394f167}{update\_total\_hp}}();}
+\DoxyCodeLine{00276\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classChampion_a6ac349e4335ed3d261d7e74008bce08b}{add\_item}}(\mbox{\hyperlink{classItem}{Item}}\ *item);}
+\DoxyCodeLine{00280\ \ \ std::vector<std::string>\ \mbox{\hyperlink{classChampion_adcf36b2f41753c18a470213715fdd055}{get\_stats}}()\textcolor{keyword}{const\ override};}
+\DoxyCodeLine{00285\ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classChampion_a1090431d8de8708141e1199ec7fb40ac}{set\_icon}}(\textcolor{keywordtype}{char}\ c)\{icon.setString(c);\}}
+\DoxyCodeLine{00289\ \ \ std::string\ \mbox{\hyperlink{classChampion_a021e7e21015cfdeef0755f0d038b4280}{get\_name}}()\textcolor{keyword}{\ const\ }\{\textcolor{keywordflow}{return}\ name;\}}
+\DoxyCodeLine{00294\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classChampion_a87d7500564b6cd7b56b7cd2a4030c8b9}{set\_font}}(\mbox{\hyperlink{classResources_1_1Holder}{Resources::Holder}}\ \&holder);}
+\DoxyCodeLine{00300\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classChampion_ad490098c9d9e62f86261a2fc08f8859b}{read\_from\_string}}(std::string\ \&line,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ delimiter=\textcolor{charliteral}{';'})\textcolor{keyword}{override};}
+\DoxyCodeLine{00305\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classChampion_ad754cc0fbc9fdfc2bdd89e9100523767}{draw}}(sf::RenderWindow\ \&window)\textcolor{keyword}{override};}
+\DoxyCodeLine{00309\ \ \ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{classChampion_a60ce29fe413a770d38a041810ae27640}{getmovepoints}}()\textcolor{keyword}{const}\{\textcolor{keywordflow}{return}\ movepoints;\}}
+\DoxyCodeLine{00314\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classChampion_a4f768a5aa3b1765626965d6d2d24e50b}{add\_gamemove}}(\mbox{\hyperlink{classGameMove}{GameMove}}\ *move)\{gamemoves.push\_back(move);\ current\_gamemove\ =\ gamemoves[gamemoves.size()-\/1];\}}
+\DoxyCodeLine{00319\ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classChampion_a9b11b7fd8c0e974ce12ef9f80474142e}{is\_gamemove\_complete}}()\textcolor{keyword}{const}\{\textcolor{keywordflow}{if}(gamemoves.empty())\textcolor{keywordflow}{return}\ \textcolor{keyword}{true};\ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{return}\ current\_gamemove-\/>\mbox{\hyperlink{classGameMove_a6eab8a153bb1de18f9e5f0cf86aeafff}{is\_complete}}();\}}
+\DoxyCodeLine{00323\ \ \ \mbox{\hyperlink{classCell}{Cell}}\ *\mbox{\hyperlink{classChampion_a8461e4ea9b3c15039be285fcc86ad85c}{get\_simulation\_cell}}()\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00327\ \ \ sf::Vector2f\ \mbox{\hyperlink{classChampion_a4abdecf6bd8cbad74aa40ca0ad74d9dc}{last\_gamemove\_index}}()\textcolor{keyword}{const};}
+\DoxyCodeLine{00331\ \ \ sf::Vector2f\ \mbox{\hyperlink{classChampion_a5f6d986f0e527cd93f3777866a2b45d7}{current\_gamemove\_index}}()\textcolor{keyword}{const};}
+\DoxyCodeLine{00336\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classChampion_a2a4654a1edfc1ddec4106feea262682b}{finish\_gamemove}}(\mbox{\hyperlink{classCell}{Cell}}\ *cell);}
+\DoxyCodeLine{00341\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classChampion_a8c868876a6841622f9c03bcdad8a7165}{update\_shape\_pos}}(sf::Vector2f\ pos)\textcolor{keyword}{override};}
+\DoxyCodeLine{00346\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classChampion_a0f08582b7e2012f515e3aa243eb2863d}{do\_move}}(std::shared\_ptr<Map>\ map);}
+\DoxyCodeLine{00351\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classChampion_aa6073675d4ed3dcd90e0c72f95ad1072}{set\_simulation}}(\textcolor{keywordtype}{bool}\ sim)\{simulation\ =\ sim;\}}
+\DoxyCodeLine{00356\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classChampion_ab90eb82853f0937ebaeac538bad8850f}{round\_end}}();}
+\DoxyCodeLine{00360\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classChampion_a0f841125a865af12e4739cb7b9f1578d}{add\_xp}}(\textcolor{keywordtype}{int}\ xp);}
+\DoxyCodeLine{00365\ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classChampion_ae043cbd133b8e0dff246e7c11c325f86}{can\_fight\_back}}()\textcolor{keyword}{const\ override}\{\textcolor{keywordflow}{return}\ \textcolor{keyword}{true};\}}
+\DoxyCodeLine{00371\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classChampion_a5db286abb8f51a9b1b428a08710811af}{place\_ward}}(std::shared\_ptr<Map>\ map,\ \mbox{\hyperlink{classCell}{Cell}}\ *c);}
+\DoxyCodeLine{00375\ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classChampion_af6ffdf1580fe701a1381e151c9f9d1ed}{gives\_vision}}()\textcolor{keyword}{const\ override}\{\textcolor{keywordflow}{return}\ \textcolor{keyword}{true};\}}
+\DoxyCodeLine{00379\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classChampion_ae6231368016b42f0b755afaf237f3e2b}{refill\_hp}}()\{hp\ =\ max\_hp;\}}
+\DoxyCodeLine{00383\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classChampion_abfb3b07c40188401bbe037c359137415}{clear\_gamemoves}}();}
+\DoxyCodeLine{00384\ }
+\DoxyCodeLine{00385\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00386\ \ \ sf::Vector2f\ gamemove\_index(\textcolor{keywordtype}{size\_t}\ offset)\textcolor{keyword}{const};}
+\DoxyCodeLine{00387\ \ \ \textcolor{keywordtype}{int}\ cs\ =\ 0;}
+\DoxyCodeLine{00388\ \ \ \textcolor{keywordtype}{int}\ gold\ =\ 0;}
+\DoxyCodeLine{00389\ \ \ \textcolor{keywordtype}{int}\ hp\_per\_level\ =\ 0;\ \ \textcolor{comment}{//\ the\ amount\ of\ hp\ given\ per\ level\ up}}
+\DoxyCodeLine{00390\ \ \ \textcolor{keywordtype}{int}\ dmg\_per\_level\ =\ 0;\ \textcolor{comment}{//\ the\ amount\ of\ dmg\ given\ per\ level\ up}}
+\DoxyCodeLine{00391\ \ \ \textcolor{keywordtype}{int}\ level\ =\ 1;\ \textcolor{comment}{//\ the\ current\ level\ of\ the\ champion}}
+\DoxyCodeLine{00392\ \ \ \textcolor{keywordtype}{int}\ max\_level\ =\ 18;}
+\DoxyCodeLine{00393\ \ \ \textcolor{keywordtype}{int}\ level\_xp\_increase\ =\ 10;\ \textcolor{comment}{//\ the\ amount\ of\ xp\ which\ is\ added\ to\ xp\_cutoff\ at\ every\ levelup}}
+\DoxyCodeLine{00394\ \ \ \textcolor{keywordtype}{int}\ xp\ =\ 0;\ \ \ \ \ \ \ \ \textcolor{comment}{//\ the\ current\ amount\ of\ xp}}
+\DoxyCodeLine{00395\ \ \ \textcolor{keywordtype}{int}\ xp\_cutoff\ =\ 100;\ \textcolor{comment}{//\ the\ amount\ of\ xp\ needed\ to\ level\ up}}
+\DoxyCodeLine{00396\ }
+\DoxyCodeLine{00397\ \ \ \textcolor{keywordtype}{int}\ movepoints\ =\ 0;}
+\DoxyCodeLine{00398\ }
+\DoxyCodeLine{00399\ \ \ std::vector<Ward\ *>\ wards;}
+\DoxyCodeLine{00400\ \ \ \textcolor{keywordtype}{size\_t}\ wards\_max\ =\ 2;\ \ \ \ \ \ \textcolor{comment}{//\ default\ is\ 2}}
+\DoxyCodeLine{00401\ \ \ std::vector<Item\ *>\ items;}
+\DoxyCodeLine{00402\ }
+\DoxyCodeLine{00403\ \ \ sf::Text\ icon;}
+\DoxyCodeLine{00404\ \ \ std::vector<GameMove\ *>\ gamemoves;\ \textcolor{comment}{//\ stores\ the\ added\ gamemoves\ in\ a\ turn}}
+\DoxyCodeLine{00405\ \ \ \mbox{\hyperlink{classGameMove}{GameMove}}\ *current\_gamemove;}
+\DoxyCodeLine{00406\ \ \ \textcolor{keywordtype}{int}\ simulation\_points\_counter\ =\ 1;}
+\DoxyCodeLine{00407\ \ \ \textcolor{keywordtype}{bool}\ simulation\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00408\ \};}
+\DoxyCodeLine{00412\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classTower}{Tower}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{classStructure}{Structure}}\ \{}
+\DoxyCodeLine{00413\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00417\ \ \ \mbox{\hyperlink{classTower_a1b785dc1e9fb979a10620ca183b5761d}{Tower}}();}
+\DoxyCodeLine{00422\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classTower_a1d2746d26f5c57ced1fd8c1ebee68c8c}{attack}}(std::shared\_ptr<Map>\ \&map);}
+\DoxyCodeLine{00423\ \};}
+\DoxyCodeLine{00428\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classNexus}{Nexus}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{classStructure}{Structure}}\ \{}
+\DoxyCodeLine{00429\ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00433\ \ \ \mbox{\hyperlink{classNexus_ac5fc62b0c5490ab80a4ee70f5562b2b5}{Nexus}}();}
+\DoxyCodeLine{00434\ \};}
+\DoxyCodeLine{00435\ }
+\DoxyCodeLine{00441\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classMonster}{Monster}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{classEntity}{Entity}}\ \{}
+\DoxyCodeLine{00442\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00443\ \ \ \textcolor{keywordtype}{int}\ xp\_given;\ \textcolor{comment}{//\ the\ amount\ of\ xp\ given\ to\ the\ champion\ by\ slaying\ them}}
+\DoxyCodeLine{00444\ \ \ \textcolor{keywordtype}{int}\ gold\_given;\ \textcolor{comment}{//\ the\ amount\ of\ gold\ given\ to\ the\ champion\ by\ slaying\ them}}
+\DoxyCodeLine{00445\ \};}
+\DoxyCodeLine{00451\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classCamp}{Camp}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{classMonster}{Monster}}\ \{}
+\DoxyCodeLine{00452\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00456\ \ \ \mbox{\hyperlink{classCamp_a70cbe67b24fe8cfcf34885aea04319e2}{Camp}}();}
+\DoxyCodeLine{00461\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classCamp_a22f3cbe0e043c4c019523deb1646469d}{setEffect}}(\mbox{\hyperlink{classEffect}{Effect}}\ e)\{effect\ =\ e;\}}
+\DoxyCodeLine{00462\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00463\ \ \ \mbox{\hyperlink{classEffect}{Effect}}\ effect;}
+\DoxyCodeLine{00464\ \};}
+\DoxyCodeLine{00469\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classDrake}{Drake}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{classCamp}{Camp}}\{}
+\DoxyCodeLine{00470\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00474\ \ \ \mbox{\hyperlink{classDrake_aae62bc4b5b31085b5b5df0cdc7833aee}{Drake}}();}
+\DoxyCodeLine{00478\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classDrake_a2d5819d1b5b66e9435633a5e9eb58d7b}{decide\_which\_type}}();}
+\DoxyCodeLine{00479\ \};}
+\DoxyCodeLine{00484\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classMinion}{Minion}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{classMonster}{Monster}}\ \{}
+\DoxyCodeLine{00485\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00491\ \ \ \mbox{\hyperlink{classMinion_a1a0aae7a91ac49b065c1a74c111b2605}{Minion}}(Side\ side\_,\ std::vector<sf::Vector2f>\ directions\_);}
+\DoxyCodeLine{00495\ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classMinion_a1f0338de7be733cdd98f164824385159}{gives\_vision}}()\textcolor{keyword}{const\ override}\{\textcolor{keywordflow}{return}\ \textcolor{keyword}{false};\}}
+\DoxyCodeLine{00501\ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classMinion_a5912aec0023eb1bbac8e09bcd84e6e60}{should\_focus}}()\textcolor{keyword}{const\ override}\{\textcolor{keywordflow}{return}\ \textcolor{keyword}{true};\}}
+\DoxyCodeLine{00505\ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classMinion_a22e1a32626c92a4888e252c040a44e9c}{gives\_creep\_score}}()\textcolor{keyword}{const\ override}\{\textcolor{keywordflow}{return}\ \textcolor{keyword}{true};\}}
+\DoxyCodeLine{00511\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMinion_afdeb3c7d4769b701ee35c325ffe8155d}{do\_move}}(\textcolor{keyword}{const}\ std::shared\_ptr<Map>\ \&map);}
+\DoxyCodeLine{00515\ \ \ sf::Vector2f\ \mbox{\hyperlink{classMinion_aecfb2ce9a83016ae50b9ce5f047bbd0d}{get\_next\_direction\_pos\_index}}();}
+\DoxyCodeLine{00516\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00517\ \ \ std::vector<sf::Vector2f>\ directions;}
+\DoxyCodeLine{00518\ \};}
+\DoxyCodeLine{00522\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classMinionWave}{MinionWave}}\{}
+\DoxyCodeLine{00523\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00527\ \ \ \mbox{\hyperlink{classMinionWave_a54ffdff8702be16a0bba136fc4b6042d}{MinionWave}}():minion\_wave\_size(3)\{\}}
+\DoxyCodeLine{00535\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMinionWave_af74325a77c052e1cef0ee0894f9283a0}{spawn}}(sf::Vector2f\ startpoint,std::vector<sf::Vector2f>\ directions\_,\ std::shared\_ptr<Map>\ map,\ Side\ side\_);}
+\DoxyCodeLine{00539\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMinionWave_aac2256cb9b7afbd110b8af557f0bf9a5}{round\_end}}();}
+\DoxyCodeLine{00544\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMinionWave_a35b1759f57f13dfd3b458c28d1210903}{do\_move}}(\textcolor{keyword}{const}\ std::shared\_ptr<Map>\ \&map);}
+\DoxyCodeLine{00545\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00546\ \ \ std::vector<Minion\ *>\ minions;}
+\DoxyCodeLine{00547\ \ \ std::vector<sf::Vector2f>\ directions;}
+\DoxyCodeLine{00548\ \ \ sf::Vector2f\ current\_direction;}
+\DoxyCodeLine{00549\ \ \ \textcolor{keywordtype}{size\_t}\ minion\_wave\_size;}
+\DoxyCodeLine{00550\ \};}
+\DoxyCodeLine{00554\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classPlayer}{Player}}\ \{}
+\DoxyCodeLine{00555\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00560\ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{classPlayer_aaf69620f01bbd778213ca5f61f181f62}{Player}}(std::vector<Champion*>\ champs);}
+\DoxyCodeLine{00564\ \ \ \mbox{\hyperlink{classPlayer_a749d2c00e1fe0f5c2746f7505a58c062}{\string~Player}}();}
+\DoxyCodeLine{00569\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classPlayer_a11fc50b1eaa4302643dac7748f37995a}{spawn\_champs}}(\textcolor{keyword}{const}\ std::shared\_ptr<Map>\ \&map);}
+\DoxyCodeLine{00574\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classPlayer_af96ea79ff05972e2c12a2075aa243231}{set\_spawn\_point}}(sf::Vector2f\ point)\{spawnpoint\ =\ point;\}}
+\DoxyCodeLine{00579\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classPlayer_a9d536a80544ce21429d75aa2610aa23e}{set\_champ\_icons}}(\textcolor{keyword}{const}\ std::string\ \&icons);}
+\DoxyCodeLine{00584\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classPlayer_afe56af1b6a9301f2e625d21254df7646}{set\_font}}(\mbox{\hyperlink{classResources_1_1Holder}{Resources::Holder}}\&\ holder);}
+\DoxyCodeLine{00588\ \ \ [[nodiscard]]\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classPlayer_aa2c84e65f36a4d3860fdf211e262ac17}{is\_gamemove\_active}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00593\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classPlayer_af662a84f06749b074579d6fa2aa517d5}{set\_gamemove\_active}}(\textcolor{keywordtype}{bool}\ active);}
+\DoxyCodeLine{00598\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classPlayer_a985095be2648a4f0064bddb93024dfa1}{do\_moves}}(std::shared\_ptr<Map>\ map);}
+\DoxyCodeLine{00603\ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classPlayer_a08fe440dadddd7d58a4bad90e819fd58}{is\_his\_champ}}(\mbox{\hyperlink{classChampion}{Champion}}\ *c);}
+\DoxyCodeLine{00609\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classPlayer_a4ef35f8c08868b2424818744a619daff}{show\_move\_options}}(\textcolor{keyword}{const}\ std::shared\_ptr<Map>,\ \mbox{\hyperlink{classChampion}{Champion}}\ *champ);}
+\DoxyCodeLine{00614\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classPlayer_a85a2e1a760f8e2798cb50e5612e9b851}{draw\_champs}}(sf::RenderWindow\ \&window);}
+\DoxyCodeLine{00618\ \ \ [[nodiscard]]\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classPlayer_a67b90801665ff984bb7516c60efe3c6d}{did\_start}}()\textcolor{keyword}{const}\{\textcolor{keywordflow}{return}\ starter;\}}
+\DoxyCodeLine{00623\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classPlayer_a4c65d4d0ba277a0ee1c6a37267ac76ec}{set\_starter}}(\textcolor{keywordtype}{bool}\ starter\_)\{starter\ =\ starter\_;\}}
+\DoxyCodeLine{00628\ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classPlayer_a627fac96001c75663f215cf0ce40a2f4}{check\_round\_end}}();}
+\DoxyCodeLine{00633\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classPlayer_a11f8862ef62714162d36ff612ce729c4}{spawn\_minions}}(\textcolor{keyword}{const}\ std::shared\_ptr<Map>\&\ map);}
+\DoxyCodeLine{00638\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classPlayer_ac1cbb4eccd3572ae87ae5f145a2bde4e}{round\_end}}(std::shared\_ptr<Map>\ map);}
+\DoxyCodeLine{00643\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classPlayer_a5b1d675cddc3c723719768209f09f3b2}{set\_simulation}}(\textcolor{keywordtype}{bool}\ sim);}
+\DoxyCodeLine{00648\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classPlayer_a79e362232a1ad445b39e6479fe4c2884}{update\_champ\_positions}}(std::shared\_ptr<Map>\ map);}
+\DoxyCodeLine{00653\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classPlayer_a0c55318caa717091a8395c13c0c53e40}{set\_side}}(Side\ side);}
+\DoxyCodeLine{00657\ \ \ [[nodiscard]]\ Side\ \mbox{\hyperlink{classPlayer_a13a7b3d4b35a1ef98eb62492c7b64f94}{get\_side}}()\textcolor{keyword}{const}\{\textcolor{keywordflow}{return}\ side;\}}
+\DoxyCodeLine{00661\ \ \ \mbox{\hyperlink{classChampion}{Champion}}\ *\mbox{\hyperlink{classPlayer_acbf91900e7f5c3786588df04b5eead3e}{get\_selected\_champs}}(sf::Vector2f\ index);}
+\DoxyCodeLine{00665\ \ \ sf::Vector2f\ \mbox{\hyperlink{classPlayer_a8c06926781b0cdd5c545ea550a21fbf3}{get\_spawn\_point}}()\textcolor{keyword}{const}\{\textcolor{keywordflow}{return}\ spawnpoint;\}}
+\DoxyCodeLine{00669\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classPlayer_a2b34b061a75c6542badb056b427e0637}{clear\_gamemoves}}();}
+\DoxyCodeLine{00674\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classPlayer_a419bbfc26300be02bbfb52518c4fa868}{despawn\_champs}}(std::shared\_ptr<Map>\ \&map);}
+\DoxyCodeLine{00675\ }
+\DoxyCodeLine{00676\ }
+\DoxyCodeLine{00677\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00678\ \ \ std::vector<Champion*>\ champs;}
+\DoxyCodeLine{00679\ \ \ std::vector<MinionWave*>\ minion\_waves;}
+\DoxyCodeLine{00680\ }
+\DoxyCodeLine{00681\ \ \ Side\ side;}
+\DoxyCodeLine{00682\ \ \ sf::Vector2f\ spawnpoint;}
+\DoxyCodeLine{00683\ }
+\DoxyCodeLine{00684\ \ \ \textcolor{comment}{//\ save\ global\ buffs\ here,\ so\ the\ minions\ know,\ if\ there's\ nashor\ buff}}
+\DoxyCodeLine{00685\ \ \ \textcolor{keywordtype}{int}\ minion\_timer;}
+\DoxyCodeLine{00686\ \ \ \textcolor{keywordtype}{int}\ minion\_timer\_mark;}
+\DoxyCodeLine{00687\ \ \ \textcolor{keywordtype}{bool}\ is\_simulation;}
+\DoxyCodeLine{00688\ \ \ \textcolor{keywordtype}{bool}\ gamemoveactive;}
+\DoxyCodeLine{00689\ \ \ \textcolor{keywordtype}{bool}\ starter;}
+\DoxyCodeLine{00690\ \};}
+\DoxyCodeLine{00691\ \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

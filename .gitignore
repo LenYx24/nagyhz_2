@@ -6,7 +6,7 @@ cmake-build-debug/*
 build/*
 docs/*
 out/*
-test/build_test/*
+test/bin/*
 .cache
 .idea
 .vs

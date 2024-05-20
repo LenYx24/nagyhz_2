@@ -12,21 +12,6 @@ add_executable(lolmacrogametest)
 
 target_sources(lolmacrogametest
     PRIVATE
-    # INCLUDES
-    ../include/simulation.hpp
-    ../include/draft.hpp
-    ../include/game.hpp
-    ../include/gamemoves.hpp
-    ../include/gameobjects.hpp
-    ../include/map.hpp
-    ../include/settings.hpp
-    ../include/ioparser.hpp
-    ../include/gameobjects.hpp
-    ../include/resources.hpp
-    ../include/statemanagement.hpp
-    ../include/UIcomponents.hpp
-    ../include/menu.hpp
-
     # SRC FILES
     ../src/simulation.cpp
     ../src/draft.cpp
@@ -34,9 +19,7 @@ target_sources(lolmacrogametest
     ../src/gamemoves.cpp
     ../src/gameobjects.cpp
     ../src/map.cpp
-    ../src/settings.cpp
     ../src/ioparser.cpp
-    ../src/gameobjects.cpp
     ../src/resources.cpp
     ../src/statemanagement.cpp
     ../src/UIcomponents.cpp

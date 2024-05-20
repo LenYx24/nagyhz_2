@@ -1,0 +1,3 @@
+/home/leny/dev/uni/sem_2/nagyhz_2/test/bin/_deps/sfml-subbuild/CMakeFiles/sfml-populate.dir
+/home/leny/dev/uni/sem_2/nagyhz_2/test/bin/_deps/sfml-subbuild/CMakeFiles/edit_cache.dir
+/home/leny/dev/uni/sem_2/nagyhz_2/test/bin/_deps/sfml-subbuild/CMakeFiles/rebuild_cache.dir

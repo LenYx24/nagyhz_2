@@ -13,7 +13,7 @@ namespace UI {
 
 class GridElement {
 public:
-  virtual ~GridElement() {}
+  virtual ~GridElement() = default;
   virtual void draw(sf::RenderWindow& window) = 0;
   virtual void set_position(sf::Vector2f pos) = 0;
   virtual bool contains(int x, int y)const=0;
@@ -57,6 +57,7 @@ public:
   bool get_is_selected()const{return is_selected;}
   void add_char(char c);
   void remove_char();
+  std::string get_text()const{return text.getString();}
 private:
   sf::Text text;
   sf::RectangleShape shape;

@@ -1,0 +1,101 @@
+\doxysection{UI\+::Named\+Box Class Reference}
+\hypertarget{classUI_1_1NamedBox}{}\label{classUI_1_1NamedBox}\index{UI::NamedBox@{UI::NamedBox}}
+Inheritance diagram for UI\+::Named\+Box\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{classUI_1_1NamedBox}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classUI_1_1NamedBox_aaf0af5612c450f52af7652e9a4ed26b8}\label{classUI_1_1NamedBox_aaf0af5612c450f52af7652e9a4ed26b8} 
+{\bfseries Named\+Box} (\mbox{\hyperlink{classResources_1_1Holder}{Resources\+::\+Holder}} \&h)
+\item 
+\Hypertarget{classUI_1_1NamedBox_a79fe1f57dd5304d9b862c26818381b12}\label{classUI_1_1NamedBox_a79fe1f57dd5304d9b862c26818381b12} 
+{\bfseries Named\+Box} (const std\+::string \&label, sf\+::\+Rectangle\+Shape frame, \mbox{\hyperlink{classResources_1_1Holder}{Resources\+::\+Holder}} \&h)
+\item 
+\Hypertarget{classUI_1_1NamedBox_abf5445c02a4cc11987add795ae502958}\label{classUI_1_1NamedBox_abf5445c02a4cc11987add795ae502958} 
+void {\bfseries setlabel} (std\+::string l)
+\item 
+\Hypertarget{classUI_1_1NamedBox_a065b5caa1889c2e3298cd5ce783652e9}\label{classUI_1_1NamedBox_a065b5caa1889c2e3298cd5ce783652e9} 
+void {\bfseries setframe} (sf\+::\+Rectangle\+Shape)
+\item 
+void \mbox{\hyperlink{classUI_1_1NamedBox_a8bb70981a9ece799ba2f9d5fd2b9285f}{set\+\_\+position}} (sf\+::\+Vector2f pos) override
+\item 
+\Hypertarget{classUI_1_1NamedBox_acfdb1d6f3cac45f760f15cc435f416b9}\label{classUI_1_1NamedBox_acfdb1d6f3cac45f760f15cc435f416b9} 
+void {\bfseries set\+\_\+char\+\_\+size} (int size)
+\item 
+\Hypertarget{classUI_1_1NamedBox_a7018a409fb8c6fcae22117a5ae31ace8}\label{classUI_1_1NamedBox_a7018a409fb8c6fcae22117a5ae31ace8} 
+void {\bfseries set\+\_\+label\+\_\+color} (const sf\+::\+Color \&c)
+\item 
+\Hypertarget{classUI_1_1NamedBox_aeb65c009bd1e39e2be23d18e57c97a7a}\label{classUI_1_1NamedBox_aeb65c009bd1e39e2be23d18e57c97a7a} 
+sf\+::\+Float\+Rect {\bfseries get\+\_\+global\+\_\+bounds} () const
+\item 
+\Hypertarget{classUI_1_1NamedBox_a72322defc7b690f67c6e4d78936b0e0e}\label{classUI_1_1NamedBox_a72322defc7b690f67c6e4d78936b0e0e} 
+std\+::string {\bfseries getlabel} () const
+\item 
+bool \mbox{\hyperlink{classUI_1_1NamedBox_a035c3c3f5aacc27fcfac6a7439bb6e8e}{contains}} (int x, int y) const override
+\item 
+sf\+::\+Vector2f \mbox{\hyperlink{classUI_1_1NamedBox_abd2626ef9e65fd6231a3af2811f3e04b}{get\+\_\+size}} ()
+\item 
+void \mbox{\hyperlink{classUI_1_1NamedBox_a06c9cb45622e7e3cf88e68a93c526a10}{draw}} (sf\+::\+Render\+Window \&window)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classUI_1_1NamedBox_a67db5472dde027bce4e76977e8f1e910}\label{classUI_1_1NamedBox_a67db5472dde027bce4e76977e8f1e910} 
+sf\+::\+Rectangle\+Shape {\bfseries frame}
+\item 
+\Hypertarget{classUI_1_1NamedBox_a8a273b734724551cb192dd90be037330}\label{classUI_1_1NamedBox_a8a273b734724551cb192dd90be037330} 
+sf\+::\+Text {\bfseries label}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classUI_1_1NamedBox_a035c3c3f5aacc27fcfac6a7439bb6e8e}\label{classUI_1_1NamedBox_a035c3c3f5aacc27fcfac6a7439bb6e8e} 
+\index{UI::NamedBox@{UI::NamedBox}!contains@{contains}}
+\index{contains@{contains}!UI::NamedBox@{UI::NamedBox}}
+\doxysubsubsection{\texorpdfstring{contains()}{contains()}}
+{\footnotesize\ttfamily bool Named\+Box\+::contains (\begin{DoxyParamCaption}\item[{int}]{x,  }\item[{int}]{y }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{classUI_1_1GridElement}{UI\+::\+Grid\+Element}}.
+
+\Hypertarget{classUI_1_1NamedBox_a06c9cb45622e7e3cf88e68a93c526a10}\label{classUI_1_1NamedBox_a06c9cb45622e7e3cf88e68a93c526a10} 
+\index{UI::NamedBox@{UI::NamedBox}!draw@{draw}}
+\index{draw@{draw}!UI::NamedBox@{UI::NamedBox}}
+\doxysubsubsection{\texorpdfstring{draw()}{draw()}}
+{\footnotesize\ttfamily void Named\+Box\+::draw (\begin{DoxyParamCaption}\item[{sf\+::\+Render\+Window \&}]{window }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{classUI_1_1GridElement}{UI\+::\+Grid\+Element}}.
+
+\Hypertarget{classUI_1_1NamedBox_abd2626ef9e65fd6231a3af2811f3e04b}\label{classUI_1_1NamedBox_abd2626ef9e65fd6231a3af2811f3e04b} 
+\index{UI::NamedBox@{UI::NamedBox}!get\_size@{get\_size}}
+\index{get\_size@{get\_size}!UI::NamedBox@{UI::NamedBox}}
+\doxysubsubsection{\texorpdfstring{get\_size()}{get\_size()}}
+{\footnotesize\ttfamily sf\+::\+Vector2f Named\+Box\+::get\+\_\+size (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{classUI_1_1GridElement}{UI\+::\+Grid\+Element}}.
+
+\Hypertarget{classUI_1_1NamedBox_a8bb70981a9ece799ba2f9d5fd2b9285f}\label{classUI_1_1NamedBox_a8bb70981a9ece799ba2f9d5fd2b9285f} 
+\index{UI::NamedBox@{UI::NamedBox}!set\_position@{set\_position}}
+\index{set\_position@{set\_position}!UI::NamedBox@{UI::NamedBox}}
+\doxysubsubsection{\texorpdfstring{set\_position()}{set\_position()}}
+{\footnotesize\ttfamily void Named\+Box\+::set\+\_\+position (\begin{DoxyParamCaption}\item[{sf\+::\+Vector2f}]{pos }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{classUI_1_1GridElement}{UI\+::\+Grid\+Element}}.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+include/UIcomponents.\+hpp\item 
+src/UIcomponents.\+cpp\end{DoxyCompactItemize}

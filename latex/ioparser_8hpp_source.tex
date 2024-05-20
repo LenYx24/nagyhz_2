@@ -1,0 +1,32 @@
+\doxysection{ioparser.\+hpp}
+\hypertarget{ioparser_8hpp_source}{}\label{ioparser_8hpp_source}\index{include/ioparser.hpp@{include/ioparser.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ IOPARSER\_HPP}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ IOPARSER\_HPP}}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ <fstream>}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ <iostream>}}
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00006\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classIreadstring}{Ireadstring}}\ \{}
+\DoxyCodeLine{00007\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00008\ \ \ \textcolor{keyword}{virtual}\ \mbox{\hyperlink{classIreadstring}{\string~Ireadstring}}();}
+\DoxyCodeLine{00009\ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ read\_from\_string(std::string\ \&line,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ delimiter\ =\ \textcolor{charliteral}{';'})\ =\ 0;}
+\DoxyCodeLine{00010\ \};}
+\DoxyCodeLine{00011\ \textcolor{comment}{//\ this\ interface\ should\ be\ inherited\ by\ classes\ that\ need\ to\ put\ out\ their\ data/results}}
+\DoxyCodeLine{00012\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classIwritestring}{Iwritestring}}\ \{}
+\DoxyCodeLine{00013\ \ \ \textcolor{keyword}{virtual}\ std::string\ writetostring(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ delimiter\ =\ \textcolor{charliteral}{';'})\ =\ 0;}
+\DoxyCodeLine{00014\ \};}
+\DoxyCodeLine{00015\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classiofile}{iofile}}\ \{}
+\DoxyCodeLine{00016\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00017\ \ \ \mbox{\hyperlink{classiofile}{iofile}}(std::string\ path);}
+\DoxyCodeLine{00018\ \ \ \mbox{\hyperlink{classiofile}{\string~iofile}}();}
+\DoxyCodeLine{00019\ \ \ std::ifstream\ \&getfile()\ \{}
+\DoxyCodeLine{00020\ \ \ \ \ \textcolor{keywordflow}{return}\ file;}
+\DoxyCodeLine{00021\ \ \ \}}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00024\ \ \ std::ifstream\ file;}
+\DoxyCodeLine{00025\ \};}
+\DoxyCodeLine{00026\ \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

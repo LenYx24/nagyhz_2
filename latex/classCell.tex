@@ -1,0 +1,299 @@
+\doxysection{Cell Class Reference}
+\hypertarget{classCell}{}\label{classCell}\index{Cell@{Cell}}
+
+
+the base class for a cell on the map  
+
+
+
+
+{\ttfamily \#include $<$map.\+hpp$>$}
+
+Inheritance diagram for Cell\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{classCell}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classCell_a394510643e8664cf12b5efaf5cb99f71}\label{classCell_a394510643e8664cf12b5efaf5cb99f71} 
+{\bfseries Cell} ()
+\begin{DoxyCompactList}\small\item\em cell constructor \end{DoxyCompactList}\item 
+\Hypertarget{classCell_a9fa559f7a28e2b4336c6879ca09304d8}\label{classCell_a9fa559f7a28e2b4336c6879ca09304d8} 
+virtual {\bfseries \texorpdfstring{$\sim$}{\string~}\+Cell} ()
+\begin{DoxyCompactList}\small\item\em deletes the owned entities from the map \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{classCell_a1c1d1049c7f42c429cd0ab2e283b91aa}{should\+\_\+update\+\_\+vision\+\_\+around}} (Side side\+\_\+)
+\begin{DoxyCompactList}\small\item\em updates the vision of the cell, should be called after every move and round ends \end{DoxyCompactList}\item 
+\Hypertarget{classCell_ab7f57d498322058353968c062c50db65}\label{classCell_ab7f57d498322058353968c062c50db65} 
+virtual bool {\bfseries can\+\_\+buy\+\_\+items} () const
+\begin{DoxyCompactList}\small\item\em returns true if entities can buy items on this cell \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{classCell_a2585861f5ae7b78daf31d08f3518455f}{set\+\_\+shop}} (bool shop\+\_\+)
+\begin{DoxyCompactList}\small\item\em set\textquotesingle{}s this cell property to a shop cell \end{DoxyCompactList}\item 
+\Hypertarget{classCell_a5cf7f509e91c5c4dcebd252fd6f49f1a}\label{classCell_a5cf7f509e91c5c4dcebd252fd6f49f1a} 
+virtual void {\bfseries set\+\_\+selected} ()
+\begin{DoxyCompactList}\small\item\em sets the current cell as selected \end{DoxyCompactList}\item 
+\Hypertarget{classCell_abada755f062603f6b8d0881b64172827}\label{classCell_abada755f062603f6b8d0881b64172827} 
+virtual bool {\bfseries is\+\_\+selected} () const
+\begin{DoxyCompactList}\small\item\em returns true if the current cell is selected \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{classCell_a6f463fa9b9b1781f730a76dab102b054}{can\+\_\+move\+\_\+here}} () const
+\begin{DoxyCompactList}\small\item\em true if entities are able to move here \end{DoxyCompactList}\item 
+\Hypertarget{classCell_a5a109095f5efcf54ceeda3b1f932464c}\label{classCell_a5a109095f5efcf54ceeda3b1f932464c} 
+virtual bool {\bfseries can\+\_\+ward\+\_\+here} () const
+\begin{DoxyCompactList}\small\item\em true if champions are able to put wards on this spot \end{DoxyCompactList}\item 
+\Hypertarget{classCell_ae938a719ef7ccf194e7e47e545c0af7e}\label{classCell_ae938a719ef7ccf194e7e47e545c0af7e} 
+virtual bool {\bfseries can\+\_\+attack\+\_\+entity} () const
+\begin{DoxyCompactList}\small\item\em returns if there are entities to attack on this cell \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{classCell_ace52acce42f79804cf029500059c5b7d}{add\+\_\+entity}} (\mbox{\hyperlink{classEntity}{Entity}} \texorpdfstring{$\ast$}{*}entity)
+\begin{DoxyCompactList}\small\item\em adds an entity to its entity list \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{classCell_ab698124e35a36f137bceb940032ad37c}{remove\+\_\+entity}} (\mbox{\hyperlink{classEntity}{Entity}} \texorpdfstring{$\ast$}{*}entity)
+\begin{DoxyCompactList}\small\item\em removes the entity from the entity list \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classCell_a98eea2b7c7d463be35a13e6bcdc17e35}{set\+\_\+color}} (sf\+::\+Color color)
+\begin{DoxyCompactList}\small\item\em sets the cell\textquotesingle{}s color \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{classCell_a12bbcb75a82637ebb745f14f7931f326}{contains}} (const int x, const int y)
+\begin{DoxyCompactList}\small\item\em checks if the given coordinates are inside the cell \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classEntity}{Entity}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{classCell_ad5c2d61fb833768a05a47a84347e559c}{get\+\_\+entity\+\_\+clicked}} (const int x, const int y)
+\begin{DoxyCompactList}\small\item\em get\textquotesingle{}s the entity clicked by the given coordinates \end{DoxyCompactList}\item 
+\Hypertarget{classCell_a2a837ca110ca3db315e966f47bd0dd3e}\label{classCell_a2a837ca110ca3db315e966f47bd0dd3e} 
+virtual void {\bfseries set\+\_\+highlighted} ()
+\begin{DoxyCompactList}\small\item\em sets the current cell to a highlighted color, to indicate it\textquotesingle{}s clickable \end{DoxyCompactList}\item 
+\Hypertarget{classCell_a103c3bb0e9daaecba1efd0193ed26b28}\label{classCell_a103c3bb0e9daaecba1efd0193ed26b28} 
+virtual void {\bfseries reset\+\_\+color} ()
+\begin{DoxyCompactList}\small\item\em resets the cells color to its default one \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{classCell_a37b09fbf8cb0efb021382356a6272870}{set\+\_\+vision}} (bool has\+\_\+vision)
+\begin{DoxyCompactList}\small\item\em sets the property vision to the given argument \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classCell_a6ec40de8f0efd55091ce2e7c708e0429}{set\+\_\+position}} (sf\+::\+Vector2f pos)
+\begin{DoxyCompactList}\small\item\em sets the current cells position \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{classCell_ad054dd2dc7324adc35d86feeba5b1723}{draw}} (sf\+::\+Render\+Window \&window)
+\begin{DoxyCompactList}\small\item\em draws the cell and its entities to the screen \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{classCell_a2b65077128c119166d1fe937ccb51536}{update\+\_\+shape}} (sf\+::\+Vector2f map\+\_\+position, sf\+::\+Vector2f cell\+\_\+size, float margin=2)
+\begin{DoxyCompactList}\small\item\em updates the shapes properties \end{DoxyCompactList}\item 
+\Hypertarget{classCell_ac1285fee9d5f3e20ace1338bc308dbb1}\label{classCell_ac1285fee9d5f3e20ace1338bc308dbb1} 
+sf\+::\+Vector2f {\bfseries get\+\_\+index} () const
+\begin{DoxyCompactList}\small\item\em gets the current index, this is where the cell is on the map \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classCell_a10c9318f17ed0237c808ff60162fc3b6}{update\+\_\+entities\+\_\+shape}} (sf\+::\+Vector2f mappos)
+\begin{DoxyCompactList}\small\item\em updates the entities positions on the given map position \end{DoxyCompactList}\item 
+\Hypertarget{classCell_a9d9daa2610738082dc19002904fffa53}\label{classCell_a9d9daa2610738082dc19002904fffa53} 
+\mbox{\hyperlink{classEntity}{Entity}} \texorpdfstring{$\ast$}{*} {\bfseries get\+\_\+first\+\_\+entity} ()
+\begin{DoxyCompactList}\small\item\em gets the first entity on the cell \end{DoxyCompactList}\item 
+\Hypertarget{classCell_aab14dd312caafaccc4398a2c9562e657}\label{classCell_aab14dd312caafaccc4398a2c9562e657} 
+\mbox{\hyperlink{classEntity}{Entity}} \texorpdfstring{$\ast$}{*} {\bfseries get\+\_\+attackable\+\_\+entity} (Side side\+\_\+)
+\begin{DoxyCompactList}\small\item\em gets an entity that is attackable and is on the other side than given in params @params side\+\_\+ the side which the entity asking is on, so it gives an entity of the opposing team \end{DoxyCompactList}\item 
+\Hypertarget{classCell_a321a4a26457fa7bf599ec7ac4dfc09b2}\label{classCell_a321a4a26457fa7bf599ec7ac4dfc09b2} 
+void {\bfseries unselect} ()
+\begin{DoxyCompactList}\small\item\em unselects the current cell \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+the base class for a cell on the map 
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classCell_ace52acce42f79804cf029500059c5b7d}\label{classCell_ace52acce42f79804cf029500059c5b7d} 
+\index{Cell@{Cell}!add\_entity@{add\_entity}}
+\index{add\_entity@{add\_entity}!Cell@{Cell}}
+\doxysubsubsection{\texorpdfstring{add\_entity()}{add\_entity()}}
+{\footnotesize\ttfamily void Cell\+::add\+\_\+entity (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classEntity}{Entity}} \texorpdfstring{$\ast$}{*}}]{entity }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+adds an entity to its entity list 
+
+
+\begin{DoxyParams}{Parameters}
+{\em entity} & the entity to add \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classCell_a6f463fa9b9b1781f730a76dab102b054}\label{classCell_a6f463fa9b9b1781f730a76dab102b054} 
+\index{Cell@{Cell}!can\_move\_here@{can\_move\_here}}
+\index{can\_move\_here@{can\_move\_here}!Cell@{Cell}}
+\doxysubsubsection{\texorpdfstring{can\_move\_here()}{can\_move\_here()}}
+{\footnotesize\ttfamily virtual bool Cell\+::can\+\_\+move\+\_\+here (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+true if entities are able to move here 
+
+
+
+Reimplemented in \mbox{\hyperlink{classWall_ae6c225b8a0bbc70858410e1dd397ac6b}{Wall}}.
+
+\Hypertarget{classCell_a12bbcb75a82637ebb745f14f7931f326}\label{classCell_a12bbcb75a82637ebb745f14f7931f326} 
+\index{Cell@{Cell}!contains@{contains}}
+\index{contains@{contains}!Cell@{Cell}}
+\doxysubsubsection{\texorpdfstring{contains()}{contains()}}
+{\footnotesize\ttfamily bool Cell\+::contains (\begin{DoxyParamCaption}\item[{const int}]{x,  }\item[{const int}]{y }\end{DoxyParamCaption})}
+
+
+
+checks if the given coordinates are inside the cell 
+
+
+\begin{DoxyParams}{Parameters}
+{\em x} & coordinate \\
+\hline
+{\em y} & coordinate \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classCell_ad054dd2dc7324adc35d86feeba5b1723}\label{classCell_ad054dd2dc7324adc35d86feeba5b1723} 
+\index{Cell@{Cell}!draw@{draw}}
+\index{draw@{draw}!Cell@{Cell}}
+\doxysubsubsection{\texorpdfstring{draw()}{draw()}}
+{\footnotesize\ttfamily void Cell\+::draw (\begin{DoxyParamCaption}\item[{sf\+::\+Render\+Window \&}]{window }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+draws the cell and its entities to the screen 
+
+
+\begin{DoxyParams}{Parameters}
+{\em window} & window to draw to \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classCell_ad5c2d61fb833768a05a47a84347e559c}\label{classCell_ad5c2d61fb833768a05a47a84347e559c} 
+\index{Cell@{Cell}!get\_entity\_clicked@{get\_entity\_clicked}}
+\index{get\_entity\_clicked@{get\_entity\_clicked}!Cell@{Cell}}
+\doxysubsubsection{\texorpdfstring{get\_entity\_clicked()}{get\_entity\_clicked()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{classEntity}{Entity}} \texorpdfstring{$\ast$}{*} Cell\+::get\+\_\+entity\+\_\+clicked (\begin{DoxyParamCaption}\item[{const int}]{x,  }\item[{const int}]{y }\end{DoxyParamCaption})}
+
+
+
+get\textquotesingle{}s the entity clicked by the given coordinates 
+
+
+\begin{DoxyParams}{Parameters}
+{\em x} & coordinate \\
+\hline
+{\em y} & coordinate \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classCell_ab698124e35a36f137bceb940032ad37c}\label{classCell_ab698124e35a36f137bceb940032ad37c} 
+\index{Cell@{Cell}!remove\_entity@{remove\_entity}}
+\index{remove\_entity@{remove\_entity}!Cell@{Cell}}
+\doxysubsubsection{\texorpdfstring{remove\_entity()}{remove\_entity()}}
+{\footnotesize\ttfamily void Cell\+::remove\+\_\+entity (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classEntity}{Entity}} \texorpdfstring{$\ast$}{*}}]{entity }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+removes the entity from the entity list 
+
+
+\begin{DoxyParams}{Parameters}
+{\em entity} & the entity to remove \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classCell_a98eea2b7c7d463be35a13e6bcdc17e35}\label{classCell_a98eea2b7c7d463be35a13e6bcdc17e35} 
+\index{Cell@{Cell}!set\_color@{set\_color}}
+\index{set\_color@{set\_color}!Cell@{Cell}}
+\doxysubsubsection{\texorpdfstring{set\_color()}{set\_color()}}
+{\footnotesize\ttfamily void Cell\+::set\+\_\+color (\begin{DoxyParamCaption}\item[{sf\+::\+Color}]{color }\end{DoxyParamCaption})}
+
+
+
+sets the cell\textquotesingle{}s color 
+
+
+\begin{DoxyParams}{Parameters}
+{\em color} & the color to set it to \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classCell_a6ec40de8f0efd55091ce2e7c708e0429}\label{classCell_a6ec40de8f0efd55091ce2e7c708e0429} 
+\index{Cell@{Cell}!set\_position@{set\_position}}
+\index{set\_position@{set\_position}!Cell@{Cell}}
+\doxysubsubsection{\texorpdfstring{set\_position()}{set\_position()}}
+{\footnotesize\ttfamily void Cell\+::set\+\_\+position (\begin{DoxyParamCaption}\item[{sf\+::\+Vector2f}]{pos }\end{DoxyParamCaption})}
+
+
+
+sets the current cells position 
+
+
+\begin{DoxyParams}{Parameters}
+{\em pos} & the position to change to \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classCell_a2585861f5ae7b78daf31d08f3518455f}\label{classCell_a2585861f5ae7b78daf31d08f3518455f} 
+\index{Cell@{Cell}!set\_shop@{set\_shop}}
+\index{set\_shop@{set\_shop}!Cell@{Cell}}
+\doxysubsubsection{\texorpdfstring{set\_shop()}{set\_shop()}}
+{\footnotesize\ttfamily virtual void Cell\+::set\+\_\+shop (\begin{DoxyParamCaption}\item[{bool}]{shop\+\_\+ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+set\textquotesingle{}s this cell property to a shop cell 
+
+
+\begin{DoxyParams}{Parameters}
+{\em shop} & true if this is a cell where entities can shop \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classCell_a37b09fbf8cb0efb021382356a6272870}\label{classCell_a37b09fbf8cb0efb021382356a6272870} 
+\index{Cell@{Cell}!set\_vision@{set\_vision}}
+\index{set\_vision@{set\_vision}!Cell@{Cell}}
+\doxysubsubsection{\texorpdfstring{set\_vision()}{set\_vision()}}
+{\footnotesize\ttfamily void Cell\+::set\+\_\+vision (\begin{DoxyParamCaption}\item[{bool}]{has\+\_\+vision }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+sets the property vision to the given argument 
+
+
+\begin{DoxyParams}{Parameters}
+{\em vision} & true if this cell has vision \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classCell_a1c1d1049c7f42c429cd0ab2e283b91aa}\label{classCell_a1c1d1049c7f42c429cd0ab2e283b91aa} 
+\index{Cell@{Cell}!should\_update\_vision\_around@{should\_update\_vision\_around}}
+\index{should\_update\_vision\_around@{should\_update\_vision\_around}!Cell@{Cell}}
+\doxysubsubsection{\texorpdfstring{should\_update\_vision\_around()}{should\_update\_vision\_around()}}
+{\footnotesize\ttfamily bool Cell\+::should\+\_\+update\+\_\+vision\+\_\+around (\begin{DoxyParamCaption}\item[{Side}]{side\+\_\+ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+updates the vision of the cell, should be called after every move and round ends 
+
+
+\begin{DoxyParams}{Parameters}
+{\em side\+\_\+} & which side should have vision \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classCell_a10c9318f17ed0237c808ff60162fc3b6}\label{classCell_a10c9318f17ed0237c808ff60162fc3b6} 
+\index{Cell@{Cell}!update\_entities\_shape@{update\_entities\_shape}}
+\index{update\_entities\_shape@{update\_entities\_shape}!Cell@{Cell}}
+\doxysubsubsection{\texorpdfstring{update\_entities\_shape()}{update\_entities\_shape()}}
+{\footnotesize\ttfamily void Cell\+::update\+\_\+entities\+\_\+shape (\begin{DoxyParamCaption}\item[{sf\+::\+Vector2f}]{mappos }\end{DoxyParamCaption})}
+
+
+
+updates the entities positions on the given map position 
+
+
+\begin{DoxyParams}{Parameters}
+{\em mappos} & where it should put the shapes \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classCell_a2b65077128c119166d1fe937ccb51536}\label{classCell_a2b65077128c119166d1fe937ccb51536} 
+\index{Cell@{Cell}!update\_shape@{update\_shape}}
+\index{update\_shape@{update\_shape}!Cell@{Cell}}
+\doxysubsubsection{\texorpdfstring{update\_shape()}{update\_shape()}}
+{\footnotesize\ttfamily void Cell\+::update\+\_\+shape (\begin{DoxyParamCaption}\item[{sf\+::\+Vector2f}]{map\+\_\+position,  }\item[{sf\+::\+Vector2f}]{cell\+\_\+size,  }\item[{float}]{margin = {\ttfamily 2} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+updates the shapes properties 
+
+
+\begin{DoxyParams}{Parameters}
+{\em map\+\_\+position} & the map position where this shape should be \\
+\hline
+{\em cell\+\_\+size} & the size of this cell \\
+\hline
+{\em margin} & the margin to leave between it\textquotesingle{}s neighbours \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+include/map.\+hpp\item 
+src/map.\+cpp\end{DoxyCompactItemize}

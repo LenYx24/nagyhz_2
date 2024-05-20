@@ -1,0 +1,123 @@
+\doxysection{Nexus Class Reference}
+\hypertarget{classNexus}{}\label{classNexus}\index{Nexus@{Nexus}}
+
+
+the class for the nexus, which doesn\textquotesingle{}t do damage to entities, but if it dies, the game is over and the team who destroyed it wins  
+
+
+
+
+{\ttfamily \#include $<$gameobjects.\+hpp$>$}
+
+Inheritance diagram for Nexus\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{classNexus}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classNexus_ac5fc62b0c5490ab80a4ee70f5562b2b5}\label{classNexus_ac5fc62b0c5490ab80a4ee70f5562b2b5} 
+{\bfseries Nexus} ()
+\begin{DoxyCompactList}\small\item\em set\textquotesingle{}s up the nexuses attributes (hp,dmg) \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{classEntity}{Entity}}}
+\begin{DoxyCompactItemize}
+\item 
+virtual {\bfseries \texorpdfstring{$\sim$}{\string~}\+Entity} ()=default
+\begin{DoxyCompactList}\small\item\em entity\textquotesingle{}s default destructor \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classEntity_aef46b1aea52385237628d0a0fa155396}{Entity}} (std\+::string name="{}"{})
+\begin{DoxyCompactList}\small\item\em entity\textquotesingle{}s constructor \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{classEntity_a1309341dd268af435449b5031ff0a06d}{draw}} (sf\+::\+Render\+Window \&window)
+\begin{DoxyCompactList}\small\item\em the method that draws the entity to the window \end{DoxyCompactList}\item 
+double {\bfseries get\+\_\+base\+\_\+dmg} () const
+\begin{DoxyCompactList}\small\item\em returns the base damage of the champion, without any buffs/items only leveling up changes the base value \end{DoxyCompactList}\item 
+double {\bfseries get\+\_\+base\+\_\+hp} () const
+\begin{DoxyCompactList}\small\item\em returns the base hp, works the same way as get\+\_\+base\+\_\+dmg \end{DoxyCompactList}\item 
+double {\bfseries get\+\_\+total\+\_\+dmg} () const
+\begin{DoxyCompactList}\small\item\em returns the total damage, by adding buffs/items to the base dmg \end{DoxyCompactList}\item 
+double {\bfseries get\+\_\+total\+\_\+hp} () const
+\begin{DoxyCompactList}\small\item\em returns total hp, by adding buffs/items to the base dmg \end{DoxyCompactList}\item 
+int {\bfseries get\+\_\+xp\+\_\+given} () const
+\begin{DoxyCompactList}\small\item\em returns the amount of experience given to the entity that kills this entity \end{DoxyCompactList}\item 
+int {\bfseries get\+\_\+gold\+\_\+given} () const
+\begin{DoxyCompactList}\small\item\em returns the amount of gold given to the entity that kills this entity \end{DoxyCompactList}\item 
+void {\bfseries set\+\_\+side} (Side side\+\_\+)
+\begin{DoxyCompactList}\small\item\em set\textquotesingle{}s which team(side) is the entity on \end{DoxyCompactList}\item 
+Side {\bfseries get\+\_\+side} () const
+\begin{DoxyCompactList}\small\item\em gets the current team the entity is on \end{DoxyCompactList}\item 
+void {\bfseries set\+\_\+xp\+\_\+given} (int xp\+\_\+given\+\_\+)
+\begin{DoxyCompactList}\small\item\em set\textquotesingle{}s the amount of xp this entity could give \end{DoxyCompactList}\item 
+virtual std\+::vector$<$ std\+::string $>$ \mbox{\hyperlink{classEntity_a1529ff8252af5440d930bd871826d0ee}{get\+\_\+stats}} () const
+\begin{DoxyCompactList}\small\item\em gets this entity\textquotesingle{}s statistics that could describe it \end{DoxyCompactList}\item 
+bool {\bfseries is\+Alive} () const
+\begin{DoxyCompactList}\small\item\em checks if the entity is alive currently \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{classEntity_a6474bf6e6350afb2a86356bda803f5df}{should\+\_\+focus}} () const
+\begin{DoxyCompactList}\small\item\em returns true, if this entity should be focused by other entities when trying to pick a fight \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{classEntity_aa300a959f036dcdbc83bae3ed7a6c592}{gives\+\_\+creep\+\_\+score}} () const
+\begin{DoxyCompactList}\small\item\em checks if this entity increases the creep score of the other entity when killed \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{classEntity_a9f35766485f7ef8eb9e296bcf31c5b4f}{remove\+\_\+hp}} (double dmg)
+\begin{DoxyCompactList}\small\item\em removes the given damage from the entity\textquotesingle{}s total hp, and checks if the entity died by this damage \end{DoxyCompactList}\item 
+virtual void {\bfseries check\+\_\+death} ()
+\begin{DoxyCompactList}\small\item\em checks if the entity died \end{DoxyCompactList}\item 
+virtual bool {\bfseries clicked} (int x, int y)
+\begin{DoxyCompactList}\small\item\em checks if the entity\textquotesingle{}s shape was clicked on \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classCell}{Cell}} \texorpdfstring{$\ast$}{*} {\bfseries get\+\_\+real\+\_\+cell} ()
+\begin{DoxyCompactList}\small\item\em returns the cell on which the entity is at every start of the round \end{DoxyCompactList}\item 
+virtual \mbox{\hyperlink{classCell}{Cell}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{classEntity_a64ed6f86b55e8c2039a0089cacdc9367}{get\+\_\+simulation\+\_\+cell}} ()
+\begin{DoxyCompactList}\small\item\em returns the cell on which the entity advances to with gamemoves during a round \end{DoxyCompactList}\item 
+void {\bfseries set\+\_\+cell} (\mbox{\hyperlink{classCell}{Cell}} \texorpdfstring{$\ast$}{*}c)
+\begin{DoxyCompactList}\small\item\em set\textquotesingle{}s this entity\textquotesingle{}s cell, it should be a valid cell on the map \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{classEntity_adeb0b3d5961956aaf3e7fb7bd5c1b2fe}{update\+\_\+shape\+\_\+pos}} (sf\+::\+Vector2f pos)
+\begin{DoxyCompactList}\small\item\em update\textquotesingle{}s the shape\textquotesingle{}s position so it appears on it\textquotesingle{}s cell \end{DoxyCompactList}\item 
+std\+::string \mbox{\hyperlink{classEntity_a999e644523050021ec39ee743022c919}{to\+\_\+ui\+\_\+int\+\_\+format}} (double num) const
+\begin{DoxyCompactList}\small\item\em changes the given num to the format which should be used on the ui \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classEntity_aa2d45bbcb8e9aa1fe7d4630a969ed565}{set\+\_\+color}} (sf\+::\+Color color\+\_\+)
+\begin{DoxyCompactList}\small\item\em set\textquotesingle{}s this entity\textquotesingle{}s shape fillcolor to the given color \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classEntity_a8edadc9e3494534f4706cb547154a87b}{set\+\_\+name}} (std\+::string name\+\_\+)
+\begin{DoxyCompactList}\small\item\em set\textquotesingle{}s the entitiy\textquotesingle{}s name \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{classEntity_a04e6efaac1fdc7f380707b949c52566b}{can\+\_\+fight\+\_\+back}} () const
+\begin{DoxyCompactList}\small\item\em returns true, if this is an entity that can fight back \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{classEntity}{Entity}}}
+\begin{DoxyCompactItemize}
+\item 
+std\+::string {\bfseries name}
+\item 
+bool {\bfseries alive} = true
+\item 
+double {\bfseries max\+\_\+hp} = 10
+\item 
+double {\bfseries hp} = 10
+\item 
+double {\bfseries damage} = 10
+\item 
+double {\bfseries total\+\_\+hp} = 10
+\item 
+double {\bfseries total\+\_\+damage} = 10
+\item 
+int {\bfseries respawn\+\_\+counter} = 0
+\item 
+int {\bfseries respawn\+\_\+timer} = 5
+\item 
+int {\bfseries xp\+\_\+given} = 10
+\item 
+int {\bfseries gold\+\_\+given} = 30
+\item 
+\mbox{\hyperlink{classCell}{Cell}} \texorpdfstring{$\ast$}{*} {\bfseries cell} = nullptr
+\item 
+Side {\bfseries side} = Side\+::\+BLUE
+\item 
+sf\+::\+Color {\bfseries color}
+\item 
+sf\+::\+Rectangle\+Shape {\bfseries shape}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+the class for the nexus, which doesn\textquotesingle{}t do damage to entities, but if it dies, the game is over and the team who destroyed it wins 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+include/gameobjects.\+hpp\item 
+src/gameobjects.\+cpp\end{DoxyCompactItemize}

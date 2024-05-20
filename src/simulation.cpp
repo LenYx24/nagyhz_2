@@ -2,10 +2,15 @@
 
 #include "../include/simulation.hpp"
 
-SimulationState::SimulationState(std::vector<Player *> &players, std::shared_ptr<Map> &map, sf::RenderWindow& window, GameMode mode, StateManager& state_manager):State(state_manager),players(players){
-  // set gamemode
+SimulationState::SimulationState(
+    std::vector<Player *> &players,
+    std::shared_ptr<Map> &map,
+    sf::RenderWindow& window,
+    GameMode mode, StateManager& state_manager,
+    std::function<void()> callback_):State(state_manager),players(players){
   this->mode = mode;
   this->map = map;
+  this->callback = std::move(callback_);
   // load font
   h.load(Resources::Type::FONT, "./resources/fonts/Roboto.ttf");
   // create the UI components:
@@ -17,6 +22,9 @@ SimulationState::SimulationState(std::vector<Player *> &players, std::shared_ptr
   timer.setPosition({250, 10});
   timer.setFont(h.get(Resources::Type::FONT));
   timer.setCharacterSize(18);
+  // reset vision and selections, as they are not needed in simulation state
+  map->reset_cell_selections();
+  map->reset_cell_vision();
 };
 void SimulationState::handle_events(sf::Event &e){
     if (e.type == sf::Event::Closed) {
@@ -32,7 +40,7 @@ void SimulationState::update(){
         elapsed_time.restart();
         // do one turn
         for(auto & player : players){
-            player->domoves(map);
+          player->do_moves(map);
         }
         if(map->did_game_end()){
           state_manager.pop_state();
@@ -44,13 +52,15 @@ void SimulationState::update(){
     }
     // reset vision
     map->reset_cell_selections();
+    map->disable_vision();
 }
 SimulationState::~SimulationState(){
   delete title;
-  // no gamemoves should be on any champion
+  // no gamemoves should be on any champion, this is just to make sure all of them get deleted
   for(Player *player: players){
     player->clear_gamemoves();
   }
+  callback();
 }
 void SimulationState::draw(sf::RenderWindow& window){
     sf::Color background_color = sf::Color(220, 225, 222);

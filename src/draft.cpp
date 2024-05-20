@@ -19,15 +19,15 @@ void DraftState::lockin(StateManager &s, sf::RenderWindow& window, Settings sett
     selectedchamp = nullptr;
   }
   if(turn_counter == 20){
-    std::vector<Champion *> p1champs{columns[0].champs.size()};
-    std::vector<Champion *> p2champs{columns[1].champs.size()};
-    for(size_t i = 0; i < columns[0].champs.size(); i++){
+    std::vector<Champion *> p1champs{columns[0].champs_size()};
+    std::vector<Champion *> p2champs{columns[1].champs_size()};
+    for(size_t i = 0; i < columns[0].champs_size(); i++){
       p1champs[i] = new Champion;
-      *p1champs[i] = *columns[0].champs[i];
+      *p1champs[i] = *columns[0][i];
     }
-    for(size_t i = 0; i < columns[1].champs.size(); i++){
+    for(size_t i = 0; i < columns[1].champs_size(); i++){
       p2champs[i] = new Champion;
-      *p2champs[i] = *columns[1].champs[i];
+      *p2champs[i] = *columns[1][i];
     }
     state_manager.change_state(std::make_unique<GameState>(s,p1champs,p2champs,settings, window));
   }
@@ -50,7 +50,7 @@ DraftState::DraftState(StateManager &state_manager, const Settings& settings, sf
     allchamps.push_back(c);
   }
   if (allchamps.size() < 10) {
-    throw "Not enough champions listed in the file, you need at least 10 champions to play!";
+    throw std::runtime_error("Not enough champions listed in the file, you need at least 10 champions to play!");
   }
   // create the placeholder empty champ
   emptychamp = new Champion;
@@ -95,10 +95,10 @@ DraftState::DraftState(StateManager &state_manager, const Settings& settings, sf
   }
 
   //initializing turns
-  DraftTurn p1{columns[0].champs};
-  DraftTurn p2{columns[1].champs};
-  DraftTurn p1ban{columns[2].champs,true};
-  DraftTurn p2ban{columns[3].champs,true};
+  DraftTurn p1{columns[0].get_champs()};
+  DraftTurn p2{columns[1].get_champs()};
+  DraftTurn p1ban{columns[2].get_champs(),true};
+  DraftTurn p2ban{columns[3].get_champs(),true};
   this->turns = std::vector<DraftTurn>{p1ban, p2ban, p1ban, p2ban, p1ban, p2ban, p1, p2, p2, p1, p1, p2, p1ban, p2ban, p1ban, p2ban, p2, p1, p1, p2};
  
 
@@ -134,7 +134,6 @@ void DraftState::handle_events(sf::Event &e) {
   if (e.type == sf::Event::Closed) {
     state_manager.exit();
   } else if (e.type == sf::Event::MouseButtonPressed) {
-    std::cout << "[[INFO]] mouse clicked" << std::endl;
     for (auto & i : champlist) {
         if (i->contains(e.mouseButton.x, e.mouseButton.y)) {
           selectedchamp = i->get_champ();
@@ -205,7 +204,7 @@ TeamCol::TeamCol(Resources::Holder &h, sf::Vector2f startpos,sf::Vector2f size, 
   this->startpos = startpos;
   this->margin = margin;
   for (size_t i = 0; i < 5; i++) {
-    elements.push_back(DraftNamedBox{h, "",size});
+    elements.push_back(DraftNamedBox{h,size});
     elements[i].set_char_size(12);
   }
 }

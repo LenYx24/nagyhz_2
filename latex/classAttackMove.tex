@@ -1,0 +1,116 @@
+\doxysection{Attack\+Move Class Reference}
+\hypertarget{classAttackMove}{}\label{classAttackMove}\index{AttackMove@{AttackMove}}
+
+
+the class that implements the attack move  
+
+
+
+
+{\ttfamily \#include $<$gamemoves.\+hpp$>$}
+
+Inheritance diagram for Attack\+Move\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classAttackMove}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classAttackMove_a96627870ef48ff10cd694241a8f1bff6}\label{classAttackMove_a96627870ef48ff10cd694241a8f1bff6} 
+{\bfseries Attack\+Move} ()
+\begin{DoxyCompactList}\small\item\em default cnostructor, sets its movepoints \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classAttackMove_afdfac6044ccc373c87da09d78fbafb12}{onclick}} (std\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{classMap}{Map}} $>$ map, \mbox{\hyperlink{classPlayer}{Player}} \texorpdfstring{$\ast$}{*}currentplayer, \mbox{\hyperlink{classChampion}{Champion}} \texorpdfstring{$\ast$}{*}selected\+\_\+champ) override
+\begin{DoxyCompactList}\small\item\em if the gamemoves is clicked on, then the selected champion gains a new move \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classAttackMove_aac44aff6ec0f6049e310b1bc1d4fad4e}{do\+\_\+move}} (\mbox{\hyperlink{classChampion}{Champion}} \texorpdfstring{$\ast$}{*}champ, std\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{classMap}{Map}} $>$ map) override
+\begin{DoxyCompactList}\small\item\em does the move with the champ on the map \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{classGameMove}{Game\+Move}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries Game\+Move} ()
+\begin{DoxyCompactList}\small\item\em constructor that sets the gamemoves cell to a nullptr \end{DoxyCompactList}\item 
+virtual {\bfseries \texorpdfstring{$\sim$}{\string~}\+Game\+Move} ()=default
+\begin{DoxyCompactList}\small\item\em the default destructor, doenst need to free the cell, as its not his responsibility \end{DoxyCompactList}\item 
+bool {\bfseries is\+\_\+complete} ()
+\begin{DoxyCompactList}\small\item\em checks if the gamemove is complete, returns true if it is \end{DoxyCompactList}\item 
+virtual \mbox{\hyperlink{classCell}{Cell}} \texorpdfstring{$\ast$}{*} {\bfseries position\+\_\+cell} ()
+\begin{DoxyCompactList}\small\item\em gets the current position cell of the gamemove \end{DoxyCompactList}\item 
+virtual void {\bfseries finish} (\mbox{\hyperlink{classCell}{Cell}} \texorpdfstring{$\ast$}{*}cell\+\_\+)
+\begin{DoxyCompactList}\small\item\em finishes the gamemove, by giving it the cell to use \end{DoxyCompactList}\item 
+int {\bfseries get\+\_\+movepoints} () const
+\begin{DoxyCompactList}\small\item\em gets the movepoints this move consumes \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classGameMove_adfcf64bea3373a82ea63f8d7ebd37efd}{set\+\_\+movepoints}} (int points\+\_\+)
+\begin{DoxyCompactList}\small\item\em sets the movepoints this move consumes from a champion \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Static Public Member Functions inherited from \mbox{\hyperlink{classGameMove}{Game\+Move}}}
+\begin{DoxyCompactItemize}
+\item 
+static bool \mbox{\hyperlink{classGameMove_a268f7cd35f408d6fc62762248d542d0a}{check\+\_\+gamemove\+\_\+addable}} (\mbox{\hyperlink{classPlayer}{Player}} \texorpdfstring{$\ast$}{*}current\+\_\+player, \mbox{\hyperlink{classChampion}{Champion}} \texorpdfstring{$\ast$}{*}selected\+\_\+champ)
+\begin{DoxyCompactList}\small\item\em checks if the gamemove is addable or not to the selected champion \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{classGameMove}{Game\+Move}}}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classCell}{Cell}} \texorpdfstring{$\ast$}{*} {\bfseries cell}
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Protected Attributes inherited from \mbox{\hyperlink{classGameMove}{Game\+Move}}}
+\begin{DoxyCompactItemize}
+\item 
+static int {\bfseries points} = 1
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+the class that implements the attack move 
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classAttackMove_aac44aff6ec0f6049e310b1bc1d4fad4e}\label{classAttackMove_aac44aff6ec0f6049e310b1bc1d4fad4e} 
+\index{AttackMove@{AttackMove}!do\_move@{do\_move}}
+\index{do\_move@{do\_move}!AttackMove@{AttackMove}}
+\doxysubsubsection{\texorpdfstring{do\_move()}{do\_move()}}
+{\footnotesize\ttfamily void Attack\+Move\+::do\+\_\+move (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classChampion}{Champion}} \texorpdfstring{$\ast$}{*}}]{champ,  }\item[{std\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{classMap}{Map}} $>$}]{map }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+does the move with the champ on the map 
+
+
+\begin{DoxyParams}{Parameters}
+{\em champ} & the champ whose move it is \\
+\hline
+{\em map} & the map to do the moves on \\
+\hline
+\end{DoxyParams}
+
+
+Implements \mbox{\hyperlink{classGameMove_ab951ac98489ad58896fb11f2be3b134d}{Game\+Move}}.
+
+\Hypertarget{classAttackMove_afdfac6044ccc373c87da09d78fbafb12}\label{classAttackMove_afdfac6044ccc373c87da09d78fbafb12} 
+\index{AttackMove@{AttackMove}!onclick@{onclick}}
+\index{onclick@{onclick}!AttackMove@{AttackMove}}
+\doxysubsubsection{\texorpdfstring{onclick()}{onclick()}}
+{\footnotesize\ttfamily void Attack\+Move\+::onclick (\begin{DoxyParamCaption}\item[{std\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{classMap}{Map}} $>$}]{map,  }\item[{\mbox{\hyperlink{classPlayer}{Player}} \texorpdfstring{$\ast$}{*}}]{currentplayer,  }\item[{\mbox{\hyperlink{classChampion}{Champion}} \texorpdfstring{$\ast$}{*}}]{selected\+\_\+champ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+if the gamemoves is clicked on, then the selected champion gains a new move 
+
+
+\begin{DoxyParams}{Parameters}
+{\em map} & the map to move on \\
+\hline
+{\em currentplayer} & the currently active player \\
+\hline
+{\em selected\+\_\+champ} & the champ that is selected \\
+\hline
+\end{DoxyParams}
+
+
+Implements \mbox{\hyperlink{classGameMove_ad99397785bb23551f78559e2e21353f0}{Game\+Move}}.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+include/gamemoves.\+hpp\item 
+src/gamemoves.\+cpp\end{DoxyCompactItemize}

@@ -4,7 +4,11 @@ namespace Menu {
 MainState::MainState(StateManager &state_manager, sf::RenderWindow &window) : MenuState(state_manager) {
   resources_holder.load(Resources::Type::FONT, "./resources/fonts/Roboto.ttf");
 
-  std::function<void()> onclick_start = [&window, &state_manager](){state_manager.push_state(std::make_unique<ModeSelectionState>(state_manager,window));};
+  std::function<void()> onclick_start = [state=this,&window, &state_manager](){
+    state->setting.champs_filepath = state->text_boxes["champs"]->get_text();
+    state->setting.items_filepath = state->text_boxes["items"]->get_text();
+    state_manager.push_state(std::make_unique<ModeSelectionState>(state_manager,window));
+  };
   buttons.push_back(new MenuButton{resources_holder, "Start", onclick_start});
   buttons.push_back(new MenuButton{resources_holder, "Exit", [state=this](){state->state_manager.pop_state();}});
   sf::Vector2u window_size = window.getSize();
@@ -13,8 +17,8 @@ MainState::MainState(StateManager &state_manager, sf::RenderWindow &window) : Me
   grid.set_elements(els);
   grid.set_elements_pos();
   sf::Vector2f window_size_f = {static_cast<float>(window_size.x),static_cast<float>(window_size.y)};
-  text_boxes.push_back(new UI::TextBox{"champions file:",resources_holder,{window_size_f.x/2,300},setting.champs_filepath});
-  text_boxes.push_back(new UI::TextBox{"items file:",resources_holder,{window_size_f.x/2,360},setting.items_filepath});
+  text_boxes["champs"] = (new UI::TextBox{"champions file:",resources_holder,{window_size_f.x/2,300},setting.champs_filepath});
+  text_boxes["items"] = (new UI::TextBox{"items file:",resources_holder,{window_size_f.x/2,360},setting.items_filepath});
 }
 void MainState::handle_events(sf::Event &event){
   if (event.type == sf::Event::Closed) {
@@ -22,16 +26,16 @@ void MainState::handle_events(sf::Event &event){
   }
   else if (event.type == sf::Event::MouseButtonPressed) {
     bool clicked_inside_textbox = false;
-    for (UI::TextBox* t : text_boxes) {
-      if (t->contains(event.mouseButton.x,event.mouseButton.y)) {
+    for (auto t : text_boxes) {
+      if (t.second->contains(event.mouseButton.x,event.mouseButton.y)) {
         clicked_inside_textbox = true;
-        for (UI::TextBox* t1 : text_boxes) {t1->set_selected(false);}
-        t->set_selected(true);
+        for (auto t1 : text_boxes) {t1.second->set_selected(false);}
+        t.second->set_selected(true);
       }
     }
     // if the user clicked outside of the text_boxes, then unselected them
     if(!clicked_inside_textbox)
-      for(UI::TextBox* t : text_boxes) {t->set_selected(false);}
+      for(auto t: text_boxes) {t.second->set_selected(false);}
     for (UI::Button* b : buttons) {
       if (b->contains(event.mouseButton.x,event.mouseButton.y)) {
         b->onclick();
@@ -39,18 +43,18 @@ void MainState::handle_events(sf::Event &event){
     }
   }
   else if(event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::BackSpace){
-    for(UI::TextBox *textbox : text_boxes){
-      if(textbox->get_is_selected()){
-        textbox->remove_char();
+    for(auto textbox : text_boxes){
+      if(textbox.second->get_is_selected()){
+        textbox.second->remove_char();
         return;
       }
     }
   }
   else if(event.type == sf::Event::TextEntered && event.text.unicode != '\b'){
-    for(UI::TextBox *textbox : text_boxes){
-      if(textbox->get_is_selected()){
+    for(auto textbox : text_boxes){
+      if(textbox.second->get_is_selected()){
         char c = static_cast<char>(event.text.unicode);
-        textbox->add_char(c);
+        textbox.second->add_char(c);
       }
     }
   }
@@ -83,8 +87,8 @@ void MenuState::draw(sf::RenderWindow& window) {
 }
 void MainState::draw(sf::RenderWindow& window){
     MenuState::draw(window);
-    for(UI::TextBox *textbox : text_boxes){
-      textbox->draw(window);
+    for(auto textbox : text_boxes){
+      textbox.second->draw(window);
     }
 }
 MenuState::~MenuState(){
@@ -94,7 +98,7 @@ MenuState::~MenuState(){
 }
 MainState::~MainState(){
   for(auto & textbox : text_boxes){
-    delete textbox;
+    delete textbox.second;
   }
 }
 ModeSelectionState::ModeSelectionState(StateManager &s, sf::RenderWindow& window) : MenuState(s) {

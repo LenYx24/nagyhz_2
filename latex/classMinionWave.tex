@@ -1,0 +1,72 @@
+\doxysection{Minion\+Wave Class Reference}
+\hypertarget{classMinionWave}{}\label{classMinionWave}\index{MinionWave@{MinionWave}}
+
+
+holds a wave of minions, and commands them  
+
+
+
+
+{\ttfamily \#include $<$gameobjects.\+hpp$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classMinionWave_a54ffdff8702be16a0bba136fc4b6042d}\label{classMinionWave_a54ffdff8702be16a0bba136fc4b6042d} 
+{\bfseries Minion\+Wave} ()
+\begin{DoxyCompactList}\small\item\em initializes the size of minions in a minion wave \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classMinionWave_af74325a77c052e1cef0ee0894f9283a0}{spawn}} (sf\+::\+Vector2f startpoint, std\+::vector$<$ sf\+::\+Vector2f $>$ directions\+\_\+, std\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{classMap}{Map}} $>$ map, Side side\+\_\+)
+\begin{DoxyCompactList}\small\item\em spawns minions \end{DoxyCompactList}\item 
+\Hypertarget{classMinionWave_aac2256cb9b7afbd110b8af557f0bf9a5}\label{classMinionWave_aac2256cb9b7afbd110b8af557f0bf9a5} 
+void {\bfseries round\+\_\+end} ()
+\begin{DoxyCompactList}\small\item\em after the round ended, prepares for the next round \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classMinionWave_a35b1759f57f13dfd3b458c28d1210903}{do\+\_\+move}} (const std\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{classMap}{Map}} $>$ \&map)
+\begin{DoxyCompactList}\small\item\em does one move with the minions \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+holds a wave of minions, and commands them 
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classMinionWave_a35b1759f57f13dfd3b458c28d1210903}\label{classMinionWave_a35b1759f57f13dfd3b458c28d1210903} 
+\index{MinionWave@{MinionWave}!do\_move@{do\_move}}
+\index{do\_move@{do\_move}!MinionWave@{MinionWave}}
+\doxysubsubsection{\texorpdfstring{do\_move()}{do\_move()}}
+{\footnotesize\ttfamily void Minion\+Wave\+::do\+\_\+move (\begin{DoxyParamCaption}\item[{const std\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{classMap}{Map}} $>$ \&}]{map }\end{DoxyParamCaption})}
+
+
+
+does one move with the minions 
+
+
+\begin{DoxyParams}{Parameters}
+{\em map} & the map it moves on \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classMinionWave_af74325a77c052e1cef0ee0894f9283a0}\label{classMinionWave_af74325a77c052e1cef0ee0894f9283a0} 
+\index{MinionWave@{MinionWave}!spawn@{spawn}}
+\index{spawn@{spawn}!MinionWave@{MinionWave}}
+\doxysubsubsection{\texorpdfstring{spawn()}{spawn()}}
+{\footnotesize\ttfamily void Minion\+Wave\+::spawn (\begin{DoxyParamCaption}\item[{sf\+::\+Vector2f}]{startpoint,  }\item[{std\+::vector$<$ sf\+::\+Vector2f $>$}]{directions\+\_\+,  }\item[{std\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{classMap}{Map}} $>$}]{map,  }\item[{Side}]{side\+\_\+ }\end{DoxyParamCaption})}
+
+
+
+spawns minions 
+
+
+\begin{DoxyParams}{Parameters}
+{\em startpoint} & the point where the minions first appear \\
+\hline
+{\em directions\+\_\+} & the directions where the minions should try to move in \\
+\hline
+{\em map} & the map where they move \\
+\hline
+{\em side\+\_\+} & the side on which the minions are \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+include/gameobjects.\+hpp\item 
+src/gameobjects.\+cpp\end{DoxyCompactItemize}

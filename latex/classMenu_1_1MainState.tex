@@ -1,0 +1,78 @@
+\doxysection{Menu\+::Main\+State Class Reference}
+\hypertarget{classMenu_1_1MainState}{}\label{classMenu_1_1MainState}\index{Menu::MainState@{Menu::MainState}}
+Inheritance diagram for Menu\+::Main\+State\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{classMenu_1_1MainState}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classMenu_1_1MainState_aebd05522960ff21d9031ff8c80c1f753}\label{classMenu_1_1MainState_aebd05522960ff21d9031ff8c80c1f753} 
+{\bfseries Main\+State} (\mbox{\hyperlink{classStateManager}{State\+Manager}} \&s, sf\+::\+Render\+Window \&window)
+\item 
+void \mbox{\hyperlink{classMenu_1_1MainState_a2ae7506f4bcc3f2747a2ca69f23fbd88}{handle\+\_\+events}} (sf\+::\+Event \&event) override
+\item 
+void \mbox{\hyperlink{classMenu_1_1MainState_aa1be696b0152d7b6d280d5cc071c6edb}{draw}} (sf\+::\+Render\+Window \&window) override
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{classMenu_1_1MenuState}{Menu\+::\+Menu\+State}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries Menu\+State} (\mbox{\hyperlink{classStateManager}{State\+Manager}} \&state\+\_\+manager)
+\item 
+void \mbox{\hyperlink{classMenu_1_1MenuState_a5fca8c098a97a77fd654fead905745e3}{handle\+\_\+events}} (sf\+::\+Event \&event) override
+\item 
+void \mbox{\hyperlink{classMenu_1_1MenuState_a5bab90eb70a7b5262d627f6e6e9f113a}{update}} () override
+\item 
+void \mbox{\hyperlink{classMenu_1_1MenuState_aa68649eaefac3a51ce2b7636a949dc44}{draw}} (sf\+::\+Render\+Window \&window) override
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Protected Member Functions inherited from \mbox{\hyperlink{classState}{State}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries State} (\mbox{\hyperlink{classStateManager}{State\+Manager}} \&state\+\_\+manager)
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{classMenu_1_1MenuState}{Menu\+::\+Menu\+State}}}
+\begin{DoxyCompactItemize}
+\item 
+std\+::vector$<$ \mbox{\hyperlink{classUI_1_1Button}{UI\+::\+Button}} \texorpdfstring{$\ast$}{*} $>$ {\bfseries buttons}
+\item 
+\mbox{\hyperlink{classResources_1_1Holder}{Resources\+::\+Holder}} {\bfseries resources\+\_\+holder}
+\item 
+\mbox{\hyperlink{structSettings}{Settings}} {\bfseries setting}
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{classState}{State}}}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classStateManager}{State\+Manager}} \& {\bfseries state\+\_\+manager}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classMenu_1_1MainState_aa1be696b0152d7b6d280d5cc071c6edb}\label{classMenu_1_1MainState_aa1be696b0152d7b6d280d5cc071c6edb} 
+\index{Menu::MainState@{Menu::MainState}!draw@{draw}}
+\index{draw@{draw}!Menu::MainState@{Menu::MainState}}
+\doxysubsubsection{\texorpdfstring{draw()}{draw()}}
+{\footnotesize\ttfamily void Menu\+::\+Main\+State\+::draw (\begin{DoxyParamCaption}\item[{sf\+::\+Render\+Window \&}]{window }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{classState}{State}}.
+
+\Hypertarget{classMenu_1_1MainState_a2ae7506f4bcc3f2747a2ca69f23fbd88}\label{classMenu_1_1MainState_a2ae7506f4bcc3f2747a2ca69f23fbd88} 
+\index{Menu::MainState@{Menu::MainState}!handle\_events@{handle\_events}}
+\index{handle\_events@{handle\_events}!Menu::MainState@{Menu::MainState}}
+\doxysubsubsection{\texorpdfstring{handle\_events()}{handle\_events()}}
+{\footnotesize\ttfamily void Menu\+::\+Main\+State\+::handle\+\_\+events (\begin{DoxyParamCaption}\item[{sf\+::\+Event \&}]{event }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{classState}{State}}.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+include/menu.\+hpp\item 
+src/menu.\+cpp\end{DoxyCompactItemize}

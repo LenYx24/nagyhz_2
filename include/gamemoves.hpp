@@ -10,73 +10,102 @@ class Player;
 class Champion;
 class Map;
 class Entity;
+/**
+ * @brief abstract class that is the base for all gamemoves
+ */
 class GameMove {
 public:
+  /**
+    * @brief constructor that sets the gamemoves cell to a nullptr
+   */
   GameMove(): cell(nullptr) {}
-  virtual ~GameMove() {}
-  void setcell(Cell *cell) {
-    this->cell = cell;
+  /**
+    * @brief the default destructor, doenst need to free the cell, as its not his responsibility
+   */
+  virtual ~GameMove() = default;
+  /**
+    * @brief checks if the gamemove is complete, returns true if it is
+   */
+  bool is_complete() const{return cell != nullptr;}
+  /**
+    * @brief gets the current position cell of the gamemove
+   */
+  virtual Cell *position_cell() const{return cell;}
+  /**
+    * @brief finishes the gamemove, by giving it the cell to use
+   */
+  virtual void finish(Cell *cell_) {
+    cell = cell_;
   }
-  bool is_complete() {
-    return cell != nullptr;
-  }
-  virtual Cell *position_cell() {
-    return cell;
-  }
-  virtual void finish(Cell *cell) {
-    this->cell = cell;
-  }
+  /**
+    * @brief does the move with the champ on the map
+    * @param champ the champ whose move it is
+    * @param map the map to do the moves on
+   */
   virtual void do_move(Champion *champ, std::shared_ptr<Map> map)=0;
-  virtual void onclick(std::shared_ptr<Map> map, Player *currentplayer, Champion *selected_champ) = 0;
-  int get_movepoints() const {
-    return points;
-  }
-  void set_movepoints(int p) {
-    this->points = p;
-  }
-  static bool basic_check(Player *current_player, Champion *selected_champ);
+  /**
+    * @brief gets the movepoints this move consumes
+   */
+  int get_movepoints() const{return points;};
+  /**
+   * @brief set's the movepoints this move consumes
+   * @param points_ the new points
+   */
+   void set_movepoints(int points_){points = points_;}
+  /**
+    * @brief checks if the gamemove is addable or not to the selected champion
+    * @param current_player the currently selected player
+    * @param selected_champ the currently selected champion
+   */
+  bool check_gamemove_addable(Player *current_player, Champion *selected_champ)const;
+  /**
+   * @brief checks if this move changes entities position
+   * @return true if this gamemove changes the entities position
+   */
+  virtual bool changes_pos()const{return false;}
 
 protected:
-  static int points; // the amount of points needed to do the move
+  int points = 1; // the amount of points needed to do this move
   Cell *cell; // the cell to move to
 };
 
 class MoveCell : public GameMove {
 public:
-  // the amount of cells, and the ones chosen to move
-  virtual void onclick(std::shared_ptr<Map> map, Player *currentplayer, Champion *selected_champ);
-  void do_move(Champion *champ, std::shared_ptr<Map> map);
-
-private:
+  void do_move(Champion *champ, std::shared_ptr<Map> map)override;
+  [[nodiscard]] bool changes_pos()const override{return true;}
 };
-// this one could be a template class, or heterogen collection
+/**
+  * @brief the class that implements the attack move
+ */
 class AttackMove : public GameMove {
 public:
-  AttackMove() {
-    set_movepoints(3);
+  AttackMove(){
+    set_movepoints(2);
   }
-  virtual void onclick(std::shared_ptr<Map> map, Player *currentplayer, Champion *selected_champ);
-  AttackMove(int amount, std::vector<Entity *> entities);
-  void removehp();
-  void do_move(Champion *champ, std::shared_ptr<Map> map);
-
+  void do_move(Champion *champ, std::shared_ptr<Map> map) override;
 
 private:
-  Entity *attacked_entity;
+  Entity *attacked_entity = nullptr;
 };
-// removes the ward from the player, calls the appropriate function
+/**
+  * @brief the class that implements the ward placing mechanism
+ */
 class PlaceWard : public GameMove {
 public:
-  virtual void onclick(std::shared_ptr<Map> map, Player *current_player, Champion *selected_champ);
-  void do_move(Champion *champ, std::shared_ptr<Map> map);
+  PlaceWard(){
+    set_movepoints(2);
+  }
+  void do_move(Champion *champ, std::shared_ptr<Map> map) override;
 };
-// the champion cannot move, and if no one interrupts it, then it goes back to the base
+/**
+  * @brief the class that implements the teleport to the base gamemove
+ */
 class TeleportBase : public GameMove {
 public:
-  TeleportBase() {
+  TeleportBase(){
     set_movepoints(3);
   }
-  virtual void onclick(std::shared_ptr<Map> map, Player *current_player, Champion *selected_champ);
-  void do_move(Champion *champ, std::shared_ptr<Map> map);
+  [[nodiscard]] bool changes_pos()const override{return true;}
+  void do_move(Champion *champ, std::shared_ptr<Map> map)override;
 };
 #endif

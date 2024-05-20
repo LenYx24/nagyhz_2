@@ -1,0 +1,98 @@
+\doxysection{UI\+::Button Class Reference}
+\hypertarget{classUI_1_1Button}{}\label{classUI_1_1Button}\index{UI::Button@{UI::Button}}
+Inheritance diagram for UI\+::Button\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{classUI_1_1Button}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classUI_1_1Button_af7e2127d4113d2e361ae755e1c6d77df}\label{classUI_1_1Button_af7e2127d4113d2e361ae755e1c6d77df} 
+{\bfseries Button} (sf\+::\+String text, std\+::function$<$ void()$>$ onclick=\mbox{[}$\,$\mbox{]}() \{ std\+::cout$<$$<$ "{}onclick not implemented yet"{}$<$$<$ std\+::endl;\}, sf\+::\+Vector2f pos=\{0, 0\})
+\item 
+\Hypertarget{classUI_1_1Button_a562c6ae1ef6f4ba77c968fb6799c950a}\label{classUI_1_1Button_a562c6ae1ef6f4ba77c968fb6799c950a} 
+void {\bfseries set\+\_\+text} (const sf\+::\+String \&text)
+\item 
+void \mbox{\hyperlink{classUI_1_1Button_a261f558b651543f9c1792039ea4053c8}{set\+\_\+position}} (sf\+::\+Vector2f pos) override
+\item 
+\Hypertarget{classUI_1_1Button_aaeda0b43334f3b80f72e56b58be8d4c9}\label{classUI_1_1Button_aaeda0b43334f3b80f72e56b58be8d4c9} 
+void {\bfseries update\+\_\+text\+\_\+position} ()
+\item 
+\Hypertarget{classUI_1_1Button_acbca7c673df2965bcdbd055e64b0538e}\label{classUI_1_1Button_acbca7c673df2965bcdbd055e64b0538e} 
+void {\bfseries draw\+\_\+to\+\_\+window} (sf\+::\+Render\+Window \&window)
+\item 
+bool \mbox{\hyperlink{classUI_1_1Button_a7c61afef7fd76f392bdf26d3f7c2e4e7}{contains}} (int x, int y) const override
+\item 
+void \mbox{\hyperlink{classUI_1_1Button_a57937c3a08fac52fede0362b8ee6c39e}{draw}} (sf\+::\+Render\+Window \&window) override
+\item 
+sf\+::\+Vector2f \mbox{\hyperlink{classUI_1_1Button_ad71fc5457a6f42ed7d9afbd791371c9d}{get\+\_\+size}} () override
+\item 
+\Hypertarget{classUI_1_1Button_a82e21406fc243049d51b7a12efef8e75}\label{classUI_1_1Button_a82e21406fc243049d51b7a12efef8e75} 
+sf\+::\+Float\+Rect {\bfseries get\+\_\+global\+\_\+bounds} () const
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classUI_1_1Button_a05daf3ee01437c95943f354cc06a747d}\label{classUI_1_1Button_a05daf3ee01437c95943f354cc06a747d} 
+std\+::function$<$ void()$>$ {\bfseries onclick}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classUI_1_1Button_aa6579adf8a956fdeb34f65fe3c6c4ae4}\label{classUI_1_1Button_aa6579adf8a956fdeb34f65fe3c6c4ae4} 
+sf\+::\+Rectangle\+Shape {\bfseries shape}
+\item 
+\Hypertarget{classUI_1_1Button_a69da7914f9cb53976411a4dffd588d1a}\label{classUI_1_1Button_a69da7914f9cb53976411a4dffd588d1a} 
+sf\+::\+Text {\bfseries text}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classUI_1_1Button_a7c61afef7fd76f392bdf26d3f7c2e4e7}\label{classUI_1_1Button_a7c61afef7fd76f392bdf26d3f7c2e4e7} 
+\index{UI::Button@{UI::Button}!contains@{contains}}
+\index{contains@{contains}!UI::Button@{UI::Button}}
+\doxysubsubsection{\texorpdfstring{contains()}{contains()}}
+{\footnotesize\ttfamily bool Button\+::contains (\begin{DoxyParamCaption}\item[{int}]{x,  }\item[{int}]{y }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{classUI_1_1GridElement}{UI\+::\+Grid\+Element}}.
+
+\Hypertarget{classUI_1_1Button_a57937c3a08fac52fede0362b8ee6c39e}\label{classUI_1_1Button_a57937c3a08fac52fede0362b8ee6c39e} 
+\index{UI::Button@{UI::Button}!draw@{draw}}
+\index{draw@{draw}!UI::Button@{UI::Button}}
+\doxysubsubsection{\texorpdfstring{draw()}{draw()}}
+{\footnotesize\ttfamily void Button\+::draw (\begin{DoxyParamCaption}\item[{sf\+::\+Render\+Window \&}]{window }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{classUI_1_1GridElement}{UI\+::\+Grid\+Element}}.
+
+\Hypertarget{classUI_1_1Button_ad71fc5457a6f42ed7d9afbd791371c9d}\label{classUI_1_1Button_ad71fc5457a6f42ed7d9afbd791371c9d} 
+\index{UI::Button@{UI::Button}!get\_size@{get\_size}}
+\index{get\_size@{get\_size}!UI::Button@{UI::Button}}
+\doxysubsubsection{\texorpdfstring{get\_size()}{get\_size()}}
+{\footnotesize\ttfamily sf\+::\+Vector2f UI\+::\+Button\+::get\+\_\+size (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{classUI_1_1GridElement}{UI\+::\+Grid\+Element}}.
+
+\Hypertarget{classUI_1_1Button_a261f558b651543f9c1792039ea4053c8}\label{classUI_1_1Button_a261f558b651543f9c1792039ea4053c8} 
+\index{UI::Button@{UI::Button}!set\_position@{set\_position}}
+\index{set\_position@{set\_position}!UI::Button@{UI::Button}}
+\doxysubsubsection{\texorpdfstring{set\_position()}{set\_position()}}
+{\footnotesize\ttfamily void Button\+::set\+\_\+position (\begin{DoxyParamCaption}\item[{sf\+::\+Vector2f}]{pos }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{classUI_1_1GridElement}{UI\+::\+Grid\+Element}}.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+include/UIcomponents.\+hpp\item 
+src/UIcomponents.\+cpp\end{DoxyCompactItemize}

@@ -1,0 +1,72 @@
+\doxysection{gamemoves.\+hpp}
+\hypertarget{gamemoves_8hpp_source}{}\label{gamemoves_8hpp_source}\index{include/gamemoves.hpp@{include/gamemoves.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ GAMEMOVES\_HPP}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ GAMEMOVES\_HPP}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ <SFML/Graphics.hpp>}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ <memory>}}
+\DoxyCodeLine{00008\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classCell}{Cell}};}
+\DoxyCodeLine{00009\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classPlayer}{Player}};}
+\DoxyCodeLine{00010\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classChampion}{Champion}};}
+\DoxyCodeLine{00011\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classMap}{Map}};}
+\DoxyCodeLine{00012\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classEntity}{Entity}};}
+\DoxyCodeLine{00016\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classGameMove}{GameMove}}\ \{}
+\DoxyCodeLine{00017\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00021\ \ \ \mbox{\hyperlink{classGameMove_a8b33f137a8703b9e00ee105344252d9b}{GameMove}}():\ cell(nullptr)\ \{\}}
+\DoxyCodeLine{00025\ \ \ \textcolor{keyword}{virtual}\ \mbox{\hyperlink{classGameMove_aaa03f0ba46545a8004f59f0a7f898c8b}{\string~GameMove}}()\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00029\ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classGameMove_a6eab8a153bb1de18f9e5f0cf86aeafff}{is\_complete}}()\ \{}
+\DoxyCodeLine{00030\ \ \ \ \ \textcolor{keywordflow}{return}\ cell\ !=\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00031\ \ \ \}}
+\DoxyCodeLine{00035\ \ \ \textcolor{keyword}{virtual}\ \mbox{\hyperlink{classCell}{Cell}}\ *\mbox{\hyperlink{classGameMove_a9c23b94d0cc7fdced110de5de7222c24}{position\_cell}}()\ \{}
+\DoxyCodeLine{00036\ \ \ \ \ \textcolor{keywordflow}{return}\ cell;}
+\DoxyCodeLine{00037\ \ \ \}}
+\DoxyCodeLine{00041\ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classGameMove_a46c3c04e0164297875d14d2e938a4f5c}{finish}}(\mbox{\hyperlink{classCell}{Cell}}\ *cell\_)\ \{}
+\DoxyCodeLine{00042\ \ \ \ \ cell\ =\ cell\_;}
+\DoxyCodeLine{00043\ \ \ \}}
+\DoxyCodeLine{00049\ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classGameMove_ab951ac98489ad58896fb11f2be3b134d}{do\_move}}(\mbox{\hyperlink{classChampion}{Champion}}\ *champ,\ std::shared\_ptr<Map>\ map)=0;}
+\DoxyCodeLine{00056\ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classGameMove_ad99397785bb23551f78559e2e21353f0}{onclick}}(std::shared\_ptr<Map>\ map,\ \mbox{\hyperlink{classPlayer}{Player}}\ *currentplayer,\ \mbox{\hyperlink{classChampion}{Champion}}\ *selected\_champ)\ =\ 0;}
+\DoxyCodeLine{00060\ \ \ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{classGameMove_a4dab6e9ef8df4a157c51592a73b843bb}{get\_movepoints}}()\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00061\ \ \ \ \ \textcolor{keywordflow}{return}\ points;}
+\DoxyCodeLine{00062\ \ \ \}}
+\DoxyCodeLine{00067\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classGameMove_adfcf64bea3373a82ea63f8d7ebd37efd}{set\_movepoints}}(\textcolor{keywordtype}{int}\ points\_)\{points\ =\ points\_;\}}
+\DoxyCodeLine{00073\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classGameMove_a268f7cd35f408d6fc62762248d542d0a}{check\_gamemove\_addable}}(\mbox{\hyperlink{classPlayer}{Player}}\ *current\_player,\ \mbox{\hyperlink{classChampion}{Champion}}\ *selected\_champ);}
+\DoxyCodeLine{00074\ }
+\DoxyCodeLine{00075\ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00076\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{int}\ points;\ \textcolor{comment}{//\ the\ amount\ of\ points\ needed\ to\ do\ the\ move}}
+\DoxyCodeLine{00077\ \ \ \mbox{\hyperlink{classCell}{Cell}}\ *cell;\ \textcolor{comment}{//\ the\ cell\ to\ move\ to}}
+\DoxyCodeLine{00078\ \};}
+\DoxyCodeLine{00079\ }
+\DoxyCodeLine{00080\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classMoveCell}{MoveCell}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{classGameMove}{GameMove}}\ \{}
+\DoxyCodeLine{00081\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00082\ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMoveCell_a2e86a71ec9824ff9bd0129d5f00c9771}{onclick}}(std::shared\_ptr<Map>\ map,\ \mbox{\hyperlink{classPlayer}{Player}}\ *currentplayer,\ \mbox{\hyperlink{classChampion}{Champion}}\ *selected\_champ);}
+\DoxyCodeLine{00083\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classMoveCell_a7f15b091430e1d81e218f3bf91e15a2e}{do\_move}}(\mbox{\hyperlink{classChampion}{Champion}}\ *champ,\ std::shared\_ptr<Map>\ map);}
+\DoxyCodeLine{00084\ }
+\DoxyCodeLine{00085\ \};}
+\DoxyCodeLine{00089\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classAttackMove}{AttackMove}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{classGameMove}{GameMove}}\ \{}
+\DoxyCodeLine{00090\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00094\ \ \ \mbox{\hyperlink{classAttackMove_a96627870ef48ff10cd694241a8f1bff6}{AttackMove}}()\ \{}
+\DoxyCodeLine{00095\ \ \ \ \ \mbox{\hyperlink{classGameMove_adfcf64bea3373a82ea63f8d7ebd37efd}{set\_movepoints}}(3);}
+\DoxyCodeLine{00096\ \ \ \}}
+\DoxyCodeLine{00097\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classAttackMove_afdfac6044ccc373c87da09d78fbafb12}{onclick}}(std::shared\_ptr<Map>\ map,\ \mbox{\hyperlink{classPlayer}{Player}}\ *currentplayer,\ \mbox{\hyperlink{classChampion}{Champion}}\ *selected\_champ)\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00098\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classAttackMove_aac44aff6ec0f6049e310b1bc1d4fad4e}{do\_move}}(\mbox{\hyperlink{classChampion}{Champion}}\ *champ,\ std::shared\_ptr<Map>\ map)\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00099\ }
+\DoxyCodeLine{00100\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00101\ \ \ \mbox{\hyperlink{classEntity}{Entity}}\ *attacked\_entity;}
+\DoxyCodeLine{00102\ \};}
+\DoxyCodeLine{00106\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classPlaceWard}{PlaceWard}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{classGameMove}{GameMove}}\ \{}
+\DoxyCodeLine{00107\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00108\ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classPlaceWard_af2699a7b5de191b85126eb4efef3be51}{onclick}}(std::shared\_ptr<Map>\ map,\ \mbox{\hyperlink{classPlayer}{Player}}\ *current\_player,\ \mbox{\hyperlink{classChampion}{Champion}}\ *selected\_champ);}
+\DoxyCodeLine{00109\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classPlaceWard_aa267b5b313509dd56d94a6cfcd5270c4}{do\_move}}(\mbox{\hyperlink{classChampion}{Champion}}\ *champ,\ std::shared\_ptr<Map>\ map);}
+\DoxyCodeLine{00110\ \};}
+\DoxyCodeLine{00114\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classTeleportBase}{TeleportBase}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{classGameMove}{GameMove}}\ \{}
+\DoxyCodeLine{00115\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00119\ \ \ \mbox{\hyperlink{classTeleportBase_ab60ba2965c277d0287055cab8935106b}{TeleportBase}}()\ \{}
+\DoxyCodeLine{00120\ \ \ \ \ \mbox{\hyperlink{classGameMove_adfcf64bea3373a82ea63f8d7ebd37efd}{set\_movepoints}}(3);}
+\DoxyCodeLine{00121\ \ \ \}}
+\DoxyCodeLine{00122\ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classTeleportBase_aff9d626926ab9bf1be0f939e4225168b}{onclick}}(std::shared\_ptr<Map>\ map,\ \mbox{\hyperlink{classPlayer}{Player}}\ *current\_player,\ \mbox{\hyperlink{classChampion}{Champion}}\ *selected\_champ);}
+\DoxyCodeLine{00123\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classTeleportBase_a4912fb4e69e380323e3bdd69d73c63de}{do\_move}}(\mbox{\hyperlink{classChampion}{Champion}}\ *champ,\ std::shared\_ptr<Map>\ map);}
+\DoxyCodeLine{00124\ \};}
+\DoxyCodeLine{00125\ \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

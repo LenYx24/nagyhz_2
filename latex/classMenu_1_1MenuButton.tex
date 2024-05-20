@@ -1,0 +1,54 @@
+\doxysection{Menu\+::Menu\+Button Class Reference}
+\hypertarget{classMenu_1_1MenuButton}{}\label{classMenu_1_1MenuButton}\index{Menu::MenuButton@{Menu::MenuButton}}
+Inheritance diagram for Menu\+::Menu\+Button\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{classMenu_1_1MenuButton}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classMenu_1_1MenuButton_a2d717b9550252ba461857f9316361e50}\label{classMenu_1_1MenuButton_a2d717b9550252ba461857f9316361e50} 
+{\bfseries Menu\+Button} (\mbox{\hyperlink{classResources_1_1Holder}{Resources\+::\+Holder}} \&h, const sf\+::\+String \&str, std\+::function$<$ void()$>$ onclick=\mbox{[}$\,$\mbox{]}() \{ std\+::cout$<$$<$ "{}not impl"{}$<$$<$ std\+::endl;\})
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{classUI_1_1Button}{UI\+::\+Button}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries Button} (sf\+::\+String text, std\+::function$<$ void()$>$ onclick=\mbox{[}$\,$\mbox{]}() \{ std\+::cout$<$$<$ "{}onclick not implemented yet"{}$<$$<$ std\+::endl;\}, sf\+::\+Vector2f pos=\{0, 0\})
+\item 
+void {\bfseries set\+\_\+text} (const sf\+::\+String \&text)
+\item 
+void \mbox{\hyperlink{classUI_1_1Button_a261f558b651543f9c1792039ea4053c8}{set\+\_\+position}} (sf\+::\+Vector2f pos) override
+\item 
+void {\bfseries update\+\_\+text\+\_\+position} ()
+\item 
+void {\bfseries draw\+\_\+to\+\_\+window} (sf\+::\+Render\+Window \&window)
+\item 
+bool \mbox{\hyperlink{classUI_1_1Button_a7c61afef7fd76f392bdf26d3f7c2e4e7}{contains}} (int x, int y) const override
+\item 
+void \mbox{\hyperlink{classUI_1_1Button_a57937c3a08fac52fede0362b8ee6c39e}{draw}} (sf\+::\+Render\+Window \&window) override
+\item 
+sf\+::\+Vector2f \mbox{\hyperlink{classUI_1_1Button_ad71fc5457a6f42ed7d9afbd791371c9d}{get\+\_\+size}} () override
+\item 
+sf\+::\+Float\+Rect {\bfseries get\+\_\+global\+\_\+bounds} () const
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Public Attributes inherited from \mbox{\hyperlink{classUI_1_1Button}{UI\+::\+Button}}}
+\begin{DoxyCompactItemize}
+\item 
+std\+::function$<$ void()$>$ {\bfseries onclick}
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{classUI_1_1Button}{UI\+::\+Button}}}
+\begin{DoxyCompactItemize}
+\item 
+sf\+::\+Rectangle\+Shape {\bfseries shape}
+\item 
+sf\+::\+Text {\bfseries text}
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+include/menu.\+hpp\item 
+src/menu.\+cpp\end{DoxyCompactItemize}

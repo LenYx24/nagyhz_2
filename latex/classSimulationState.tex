@@ -1,0 +1,100 @@
+\doxysection{Simulation\+State Class Reference}
+\hypertarget{classSimulationState}{}\label{classSimulationState}\index{SimulationState@{SimulationState}}
+Inheritance diagram for Simulation\+State\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classSimulationState}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classSimulationState_ad2c20020d9986141a2b4ed1b6de004eb}\label{classSimulationState_ad2c20020d9986141a2b4ed1b6de004eb} 
+{\bfseries Simulation\+State} (std\+::vector$<$ \mbox{\hyperlink{classPlayer}{Player}} \texorpdfstring{$\ast$}{*} $>$ \&players, std\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{classMap}{Map}} $>$ \&map, sf\+::\+Render\+Window \&window, Game\+Mode mode, \mbox{\hyperlink{classStateManager}{State\+Manager}} \&state\+\_\+manager)
+\item 
+void \mbox{\hyperlink{classSimulationState_aac47ab08a17152f9c2a27423f69c15de}{handle\+\_\+events}} (sf\+::\+Event \&e) override
+\item 
+void \mbox{\hyperlink{classSimulationState_a425c30f615fa51057ebbd00ea80df538}{update}} () override
+\item 
+void \mbox{\hyperlink{classSimulationState_a652410dd42d23e1363f7c2230433c2ef}{draw}} (sf\+::\+Render\+Window \&window) override
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classSimulationState_aeff464fce885d96a4b0225130e19c705}\label{classSimulationState_aeff464fce885d96a4b0225130e19c705} 
+\mbox{\hyperlink{classResources_1_1Holder}{Resources\+::\+Holder}} {\bfseries h}
+\item 
+\Hypertarget{classSimulationState_a7a0772e22bd0a3df698769afcc89c345}\label{classSimulationState_a7a0772e22bd0a3df698769afcc89c345} 
+std\+::vector$<$ \mbox{\hyperlink{classPlayer}{Player}} \texorpdfstring{$\ast$}{*} $>$ \& {\bfseries players}
+\item 
+\Hypertarget{classSimulationState_a1f3f3aab9085a50fb8226230a16b8f5e}\label{classSimulationState_a1f3f3aab9085a50fb8226230a16b8f5e} 
+std\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{classMap}{Map}} $>$ {\bfseries map}
+\item 
+\Hypertarget{classSimulationState_a9d860eb2be9f7c4dc6b1c7bc6b5b0df3}\label{classSimulationState_a9d860eb2be9f7c4dc6b1c7bc6b5b0df3} 
+sf\+::\+Clock {\bfseries elapsed\+\_\+time}
+\item 
+\Hypertarget{classSimulationState_a4d176b3ad9d49351ea7d5bc773b03805}\label{classSimulationState_a4d176b3ad9d49351ea7d5bc773b03805} 
+\mbox{\hyperlink{classUI_1_1NamedBox}{UI\+::\+Named\+Box}} \texorpdfstring{$\ast$}{*} {\bfseries title}
+\item 
+\Hypertarget{classSimulationState_a57178caaeaccc601bd1626cc3041f1ca}\label{classSimulationState_a57178caaeaccc601bd1626cc3041f1ca} 
+Game\+Mode {\bfseries mode}
+\item 
+\Hypertarget{classSimulationState_a6c8226509b4e50eae30fb9ca922b668d}\label{classSimulationState_a6c8226509b4e50eae30fb9ca922b668d} 
+int {\bfseries round\+\_\+count} = 3
+\item 
+\Hypertarget{classSimulationState_a20aa78e838a0240cd87f15a8fa3def9f}\label{classSimulationState_a20aa78e838a0240cd87f15a8fa3def9f} 
+int {\bfseries round\+\_\+counter} = 0
+\item 
+\Hypertarget{classSimulationState_a48486b6658ad9a7fbaaec7e392b67921}\label{classSimulationState_a48486b6658ad9a7fbaaec7e392b67921} 
+sf\+::\+Text {\bfseries timer}
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{classState}{State}}}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classStateManager}{State\+Manager}} \& {\bfseries state\+\_\+manager}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Protected Member Functions inherited from \mbox{\hyperlink{classState}{State}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries State} (\mbox{\hyperlink{classStateManager}{State\+Manager}} \&state\+\_\+manager)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classSimulationState_a652410dd42d23e1363f7c2230433c2ef}\label{classSimulationState_a652410dd42d23e1363f7c2230433c2ef} 
+\index{SimulationState@{SimulationState}!draw@{draw}}
+\index{draw@{draw}!SimulationState@{SimulationState}}
+\doxysubsubsection{\texorpdfstring{draw()}{draw()}}
+{\footnotesize\ttfamily void Simulation\+State\+::draw (\begin{DoxyParamCaption}\item[{sf\+::\+Render\+Window \&}]{window }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{classState}{State}}.
+
+\Hypertarget{classSimulationState_aac47ab08a17152f9c2a27423f69c15de}\label{classSimulationState_aac47ab08a17152f9c2a27423f69c15de} 
+\index{SimulationState@{SimulationState}!handle\_events@{handle\_events}}
+\index{handle\_events@{handle\_events}!SimulationState@{SimulationState}}
+\doxysubsubsection{\texorpdfstring{handle\_events()}{handle\_events()}}
+{\footnotesize\ttfamily void Simulation\+State\+::handle\+\_\+events (\begin{DoxyParamCaption}\item[{sf\+::\+Event \&}]{e }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{classState}{State}}.
+
+\Hypertarget{classSimulationState_a425c30f615fa51057ebbd00ea80df538}\label{classSimulationState_a425c30f615fa51057ebbd00ea80df538} 
+\index{SimulationState@{SimulationState}!update@{update}}
+\index{update@{update}!SimulationState@{SimulationState}}
+\doxysubsubsection{\texorpdfstring{update()}{update()}}
+{\footnotesize\ttfamily void Simulation\+State\+::update (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{classState}{State}}.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+include/simulation.\+hpp\item 
+src/simulation.\+cpp\end{DoxyCompactItemize}

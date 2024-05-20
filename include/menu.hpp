@@ -33,7 +33,7 @@ public:
   void handle_events(sf::Event &event) override;
   void draw(sf::RenderWindow& window) override;
 private:
-  std::vector<UI::TextBox *> text_boxes;
+  std::map<std::string,UI::TextBox *> text_boxes;
 };
 class ModeSelectionState : public MenuState {
 public:

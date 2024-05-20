@@ -1,0 +1,82 @@
+\doxysection{River Class Reference}
+\hypertarget{classRiver}{}\label{classRiver}\index{River@{River}}
+
+
+the only difference from ground is that it has another color  
+
+
+
+
+{\ttfamily \#include $<$map.\+hpp$>$}
+
+Inheritance diagram for River\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{classRiver}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{classCell}{Cell}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries Cell} ()
+\begin{DoxyCompactList}\small\item\em cell constructor \end{DoxyCompactList}\item 
+virtual {\bfseries \texorpdfstring{$\sim$}{\string~}\+Cell} ()
+\begin{DoxyCompactList}\small\item\em deletes the owned entities from the map \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{classCell_a1c1d1049c7f42c429cd0ab2e283b91aa}{should\+\_\+update\+\_\+vision\+\_\+around}} (Side side\+\_\+)
+\begin{DoxyCompactList}\small\item\em updates the vision of the cell, should be called after every move and round ends \end{DoxyCompactList}\item 
+virtual bool {\bfseries can\+\_\+buy\+\_\+items} () const
+\begin{DoxyCompactList}\small\item\em returns true if entities can buy items on this cell \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{classCell_a2585861f5ae7b78daf31d08f3518455f}{set\+\_\+shop}} (bool shop\+\_\+)
+\begin{DoxyCompactList}\small\item\em set\textquotesingle{}s this cell property to a shop cell \end{DoxyCompactList}\item 
+virtual void {\bfseries set\+\_\+selected} ()
+\begin{DoxyCompactList}\small\item\em sets the current cell as selected \end{DoxyCompactList}\item 
+virtual bool {\bfseries is\+\_\+selected} () const
+\begin{DoxyCompactList}\small\item\em returns true if the current cell is selected \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{classCell_a6f463fa9b9b1781f730a76dab102b054}{can\+\_\+move\+\_\+here}} () const
+\begin{DoxyCompactList}\small\item\em true if entities are able to move here \end{DoxyCompactList}\item 
+virtual bool {\bfseries can\+\_\+ward\+\_\+here} () const
+\begin{DoxyCompactList}\small\item\em true if champions are able to put wards on this spot \end{DoxyCompactList}\item 
+virtual bool {\bfseries can\+\_\+attack\+\_\+entity} () const
+\begin{DoxyCompactList}\small\item\em returns if there are entities to attack on this cell \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{classCell_ace52acce42f79804cf029500059c5b7d}{add\+\_\+entity}} (\mbox{\hyperlink{classEntity}{Entity}} \texorpdfstring{$\ast$}{*}entity)
+\begin{DoxyCompactList}\small\item\em adds an entity to its entity list \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{classCell_ab698124e35a36f137bceb940032ad37c}{remove\+\_\+entity}} (\mbox{\hyperlink{classEntity}{Entity}} \texorpdfstring{$\ast$}{*}entity)
+\begin{DoxyCompactList}\small\item\em removes the entity from the entity list \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classCell_a98eea2b7c7d463be35a13e6bcdc17e35}{set\+\_\+color}} (sf\+::\+Color color)
+\begin{DoxyCompactList}\small\item\em sets the cell\textquotesingle{}s color \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{classCell_a12bbcb75a82637ebb745f14f7931f326}{contains}} (const int x, const int y)
+\begin{DoxyCompactList}\small\item\em checks if the given coordinates are inside the cell \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classEntity}{Entity}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{classCell_ad5c2d61fb833768a05a47a84347e559c}{get\+\_\+entity\+\_\+clicked}} (const int x, const int y)
+\begin{DoxyCompactList}\small\item\em get\textquotesingle{}s the entity clicked by the given coordinates \end{DoxyCompactList}\item 
+virtual void {\bfseries set\+\_\+highlighted} ()
+\begin{DoxyCompactList}\small\item\em sets the current cell to a highlighted color, to indicate it\textquotesingle{}s clickable \end{DoxyCompactList}\item 
+virtual void {\bfseries reset\+\_\+color} ()
+\begin{DoxyCompactList}\small\item\em resets the cells color to its default one \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{classCell_a37b09fbf8cb0efb021382356a6272870}{set\+\_\+vision}} (bool has\+\_\+vision)
+\begin{DoxyCompactList}\small\item\em sets the property vision to the given argument \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classCell_a6ec40de8f0efd55091ce2e7c708e0429}{set\+\_\+position}} (sf\+::\+Vector2f pos)
+\begin{DoxyCompactList}\small\item\em sets the current cells position \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{classCell_ad054dd2dc7324adc35d86feeba5b1723}{draw}} (sf\+::\+Render\+Window \&window)
+\begin{DoxyCompactList}\small\item\em draws the cell and its entities to the screen \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{classCell_a2b65077128c119166d1fe937ccb51536}{update\+\_\+shape}} (sf\+::\+Vector2f map\+\_\+position, sf\+::\+Vector2f cell\+\_\+size, float margin=2)
+\begin{DoxyCompactList}\small\item\em updates the shapes properties \end{DoxyCompactList}\item 
+sf\+::\+Vector2f {\bfseries get\+\_\+index} () const
+\begin{DoxyCompactList}\small\item\em gets the current index, this is where the cell is on the map \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classCell_a10c9318f17ed0237c808ff60162fc3b6}{update\+\_\+entities\+\_\+shape}} (sf\+::\+Vector2f mappos)
+\begin{DoxyCompactList}\small\item\em updates the entities positions on the given map position \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classEntity}{Entity}} \texorpdfstring{$\ast$}{*} {\bfseries get\+\_\+first\+\_\+entity} ()
+\begin{DoxyCompactList}\small\item\em gets the first entity on the cell \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classEntity}{Entity}} \texorpdfstring{$\ast$}{*} {\bfseries get\+\_\+attackable\+\_\+entity} (Side side\+\_\+)
+\begin{DoxyCompactList}\small\item\em gets an entity that is attackable and is on the other side than given in params @params side\+\_\+ the side which the entity asking is on, so it gives an entity of the opposing team \end{DoxyCompactList}\item 
+void {\bfseries unselect} ()
+\begin{DoxyCompactList}\small\item\em unselects the current cell \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+the only difference from ground is that it has another color 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+include/map.\+hpp\item 
+src/map.\+cpp\end{DoxyCompactItemize}

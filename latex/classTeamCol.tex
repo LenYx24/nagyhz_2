@@ -1,0 +1,89 @@
+\doxysection{Team\+Col Class Reference}
+\hypertarget{classTeamCol}{}\label{classTeamCol}\index{TeamCol@{TeamCol}}
+
+
+{\ttfamily \#include $<$draft.\+hpp$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classTeamCol_ac66d34f859deabf66731ae6261e5b37f}{Team\+Col}} (\mbox{\hyperlink{classResources_1_1Holder}{Resources\+::\+Holder}} \&holder, sf\+::\+Vector2f startpos, sf\+::\+Vector2f size=\{100, 30\}, float margin=10)
+\begin{DoxyCompactList}\small\item\em constructs the draftnamedbox with the correct design \end{DoxyCompactList}\item 
+\Hypertarget{classTeamCol_a01383d3b13ce512b5d1bc14133078a32}\label{classTeamCol_a01383d3b13ce512b5d1bc14133078a32} 
+void {\bfseries setpos} ()
+\begin{DoxyCompactList}\small\item\em sets the position of the team column \end{DoxyCompactList}\item 
+\Hypertarget{classTeamCol_a81fb3ea37080e17264d26750fc9ecbe0}\label{classTeamCol_a81fb3ea37080e17264d26750fc9ecbe0} 
+void {\bfseries draw\+\_\+to\+\_\+window} (sf\+::\+Render\+Window \&w)
+\begin{DoxyCompactList}\small\item\em draws the teamcol to the window \end{DoxyCompactList}\item 
+\Hypertarget{classTeamCol_aa66925ca4002f02219d00eccec8a24da}\label{classTeamCol_aa66925ca4002f02219d00eccec8a24da} 
+size\+\_\+t {\bfseries champs\+\_\+size} () const
+\begin{DoxyCompactList}\small\item\em gets the champions list size \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classChampion}{Champion}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{classTeamCol_afe5529698161e1ccc12d2e8af85211e8}{operator\mbox{[}$\,$\mbox{]}}} (size\+\_\+t index)
+\begin{DoxyCompactList}\small\item\em gets the champion at the given index, throws error if index is out of range \end{DoxyCompactList}\item 
+\Hypertarget{classTeamCol_abdd5dda3ff6cc4498cf82b9a61f947aa}\label{classTeamCol_abdd5dda3ff6cc4498cf82b9a61f947aa} 
+std\+::vector$<$ \mbox{\hyperlink{classChampion}{Champion}} \texorpdfstring{$\ast$}{*} $>$ \& {\bfseries get\+\_\+champs} ()
+\begin{DoxyCompactList}\small\item\em returns the champ list \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classTeamCol_a5fde8692f791d4b4120c55873a90534d}\label{classTeamCol_a5fde8692f791d4b4120c55873a90534d} 
+std\+::vector$<$ \mbox{\hyperlink{classDraftNamedBox}{Draft\+Named\+Box}} $>$ {\bfseries elements}
+\item 
+\Hypertarget{classTeamCol_ab018da699815664601fbf7d60e41d09e}\label{classTeamCol_ab018da699815664601fbf7d60e41d09e} 
+std\+::vector$<$ \mbox{\hyperlink{classChampion}{Champion}} \texorpdfstring{$\ast$}{*} $>$ {\bfseries champs}
+\item 
+\Hypertarget{classTeamCol_adf7578d2775479371ea9da86906516e1}\label{classTeamCol_adf7578d2775479371ea9da86906516e1} 
+sf\+::\+Vector2f {\bfseries startpos}
+\item 
+\Hypertarget{classTeamCol_a7a436f5d1237abd1c906cade505137d9}\label{classTeamCol_a7a436f5d1237abd1c906cade505137d9} 
+float {\bfseries margin}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+class that holds a column of champions 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{classTeamCol_ac66d34f859deabf66731ae6261e5b37f}\label{classTeamCol_ac66d34f859deabf66731ae6261e5b37f} 
+\index{TeamCol@{TeamCol}!TeamCol@{TeamCol}}
+\index{TeamCol@{TeamCol}!TeamCol@{TeamCol}}
+\doxysubsubsection{\texorpdfstring{TeamCol()}{TeamCol()}}
+{\footnotesize\ttfamily Team\+Col\+::\+Team\+Col (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classResources_1_1Holder}{Resources\+::\+Holder}} \&}]{holder,  }\item[{sf\+::\+Vector2f}]{startpos,  }\item[{sf\+::\+Vector2f}]{size = {\ttfamily \{100,30\}},  }\item[{float}]{margin = {\ttfamily 10} }\end{DoxyParamCaption})}
+
+
+
+constructs the draftnamedbox with the correct design 
+
+
+\begin{DoxyParams}{Parameters}
+{\em holder} & the object that can get the font face for the component \\
+\hline
+{\em size} & the size of the teamcol \\
+\hline
+{\em margin} & the margin between the elements \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classTeamCol_afe5529698161e1ccc12d2e8af85211e8}\label{classTeamCol_afe5529698161e1ccc12d2e8af85211e8} 
+\index{TeamCol@{TeamCol}!operator\mbox{[}\mbox{]}@{operator[]}}
+\index{operator\mbox{[}\mbox{]}@{operator[]}!TeamCol@{TeamCol}}
+\doxysubsubsection{\texorpdfstring{operator[]()}{operator[]()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{classChampion}{Champion}} \texorpdfstring{$\ast$}{*} Team\+Col\+::operator\mbox{[}$\,$\mbox{]} (\begin{DoxyParamCaption}\item[{size\+\_\+t}]{index }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+gets the champion at the given index, throws error if index is out of range 
+
+
+\begin{DoxyParams}{Parameters}
+{\em index} & the champ at this index \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+include/draft.\+hpp\item 
+src/draft.\+cpp\end{DoxyCompactItemize}

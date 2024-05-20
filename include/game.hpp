@@ -51,9 +51,6 @@ private:
   std::vector<Item> allitems;
   std::vector<Player*> players;
   Player *currentplayer;
-  // need this variable, because after a round ends the whole main loops runs,
-  // and only after does the simulation state begin
-  bool was_round_end = false;
   // selection
   Champion *selectedchamp;
   // UI

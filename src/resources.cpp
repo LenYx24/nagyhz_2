@@ -4,7 +4,7 @@ using namespace Resources;
 void Holder::load(Type type, const sf::String &filename) {
     std::unique_ptr<sf::Font> font(new sf::Font);
     if (!font->loadFromFile(filename)) {
-        throw "there was an error loading font";
+        throw std::runtime_error("there was an error loading font");
     }
     resources.insert(std::make_pair(type, std::move(font)));
 }

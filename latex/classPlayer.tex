@@ -1,0 +1,344 @@
+\doxysection{Player Class Reference}
+\hypertarget{classPlayer}{}\label{classPlayer}\index{Player@{Player}}
+
+
+the class that holds everything a player has  
+
+
+
+
+{\ttfamily \#include $<$gameobjects.\+hpp$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classPlayer_aaf69620f01bbd778213ca5f61f181f62}{Player}} (std\+::vector$<$ \mbox{\hyperlink{classChampion}{Champion}} \texorpdfstring{$\ast$}{*} $>$ champs)
+\begin{DoxyCompactList}\small\item\em constructor for player class, set\textquotesingle{}s it\textquotesingle{}s properties to the appropriate values \end{DoxyCompactList}\item 
+\Hypertarget{classPlayer_a749d2c00e1fe0f5c2746f7505a58c062}\label{classPlayer_a749d2c00e1fe0f5c2746f7505a58c062} 
+{\bfseries \texorpdfstring{$\sim$}{\string~}\+Player} ()
+\begin{DoxyCompactList}\small\item\em frees heap allocated properties, which are the minion waves and champions \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classPlayer_a11fc50b1eaa4302643dac7748f37995a}{spawn\+\_\+champs}} (const std\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{classMap}{Map}} $>$ \&map)
+\begin{DoxyCompactList}\small\item\em spawns the champions on the map, informs the map about it, and set\textquotesingle{}s the champs cell \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classPlayer_af96ea79ff05972e2c12a2075aa243231}{set\+\_\+spawn\+\_\+point}} (sf\+::\+Vector2f point)
+\begin{DoxyCompactList}\small\item\em set\textquotesingle{}s the champions spawn point, their base \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classPlayer_a9d536a80544ce21429d75aa2610aa23e}{set\+\_\+champ\+\_\+icons}} (const std\+::string \&icons)
+\begin{DoxyCompactList}\small\item\em set\textquotesingle{}s the champ icons, in order with each character of the string \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classPlayer_afe56af1b6a9301f2e625d21254df7646}{set\+\_\+font}} (\mbox{\hyperlink{classResources_1_1Holder}{Resources\+::\+Holder}} \&holder)
+\begin{DoxyCompactList}\small\item\em set\textquotesingle{}s all the champion\textquotesingle{}s icons font face \end{DoxyCompactList}\item 
+\Hypertarget{classPlayer_aa2c84e65f36a4d3860fdf211e262ac17}\label{classPlayer_aa2c84e65f36a4d3860fdf211e262ac17} 
+bool {\bfseries is\+\_\+gamemove\+\_\+active} () const
+\begin{DoxyCompactList}\small\item\em check\textquotesingle{}s if there\textquotesingle{}s a gamemove currently active on any of the champion \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classPlayer_af662a84f06749b074579d6fa2aa517d5}{set\+\_\+gamemove\+\_\+active}} (bool active)
+\begin{DoxyCompactList}\small\item\em set\textquotesingle{}s gamemove active to the given value \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classPlayer_a985095be2648a4f0064bddb93024dfa1}{do\+\_\+moves}} (std\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{classMap}{Map}} $>$ map)
+\begin{DoxyCompactList}\small\item\em does the moves on each of the champions \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{classPlayer_a08fe440dadddd7d58a4bad90e819fd58}{is\+\_\+his\+\_\+champ}} (\mbox{\hyperlink{classChampion}{Champion}} \texorpdfstring{$\ast$}{*}c)
+\begin{DoxyCompactList}\small\item\em returns true, if the given champ is his \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classPlayer_a4ef35f8c08868b2424818744a619daff}{show\+\_\+move\+\_\+options}} (const std\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{classMap}{Map}} $>$, \mbox{\hyperlink{classChampion}{Champion}} \texorpdfstring{$\ast$}{*}champ)
+\begin{DoxyCompactList}\small\item\em show\textquotesingle{}s the options to use a gamemove on, by the given champ \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classPlayer_a85a2e1a760f8e2798cb50e5612e9b851}{draw\+\_\+champs}} (sf\+::\+Render\+Window \&window)
+\begin{DoxyCompactList}\small\item\em draw\textquotesingle{}s each champ to the window \end{DoxyCompactList}\item 
+\Hypertarget{classPlayer_a67b90801665ff984bb7516c60efe3c6d}\label{classPlayer_a67b90801665ff984bb7516c60efe3c6d} 
+bool {\bfseries did\+\_\+start} () const
+\begin{DoxyCompactList}\small\item\em returns true, if this player started the game \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classPlayer_a4c65d4d0ba277a0ee1c6a37267ac76ec}{set\+\_\+starter}} (bool starter\+\_\+)
+\begin{DoxyCompactList}\small\item\em set\textquotesingle{}s if this player started the game, so it had the first turn \end{DoxyCompactList}\item 
+\Hypertarget{classPlayer_a627fac96001c75663f215cf0ce40a2f4}\label{classPlayer_a627fac96001c75663f215cf0ce40a2f4} 
+bool {\bfseries check\+\_\+round\+\_\+end} ()
+\begin{DoxyCompactList}\small\item\em check\textquotesingle{}s if the round ended, returns true if it did goes through the champions, and checks if they have movepoints left or not \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classPlayer_a11f8862ef62714162d36ff612ce729c4}{spawn\+\_\+minions}} (const std\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{classMap}{Map}} $>$ \&map)
+\begin{DoxyCompactList}\small\item\em spawns minions on to the map \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classPlayer_ac1cbb4eccd3572ae87ae5f145a2bde4e}{round\+\_\+end}} (std\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{classMap}{Map}} $>$ map)
+\begin{DoxyCompactList}\small\item\em ends the round, calls the champions round end methods \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classPlayer_a5b1d675cddc3c723719768209f09f3b2}{set\+\_\+simulation}} (bool sim)
+\begin{DoxyCompactList}\small\item\em set\textquotesingle{}s the simulation state for the player \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classPlayer_a79e362232a1ad445b39e6479fe4c2884}{update\+\_\+champ\+\_\+positions}} (std\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{classMap}{Map}} $>$ map)
+\begin{DoxyCompactList}\small\item\em update all of its champion position to the appropriate positions on the map \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classPlayer_a0c55318caa717091a8395c13c0c53e40}{set\+\_\+side}} (Side side)
+\begin{DoxyCompactList}\small\item\em set\textquotesingle{}s the current players side \end{DoxyCompactList}\item 
+\Hypertarget{classPlayer_a13a7b3d4b35a1ef98eb62492c7b64f94}\label{classPlayer_a13a7b3d4b35a1ef98eb62492c7b64f94} 
+Side {\bfseries get\+\_\+side} () const
+\begin{DoxyCompactList}\small\item\em returns the players team side \end{DoxyCompactList}\item 
+\Hypertarget{classPlayer_acbf91900e7f5c3786588df04b5eead3e}\label{classPlayer_acbf91900e7f5c3786588df04b5eead3e} 
+\mbox{\hyperlink{classChampion}{Champion}} \texorpdfstring{$\ast$}{*} {\bfseries get\+\_\+selected\+\_\+champs} (sf\+::\+Vector2f index)
+\begin{DoxyCompactList}\small\item\em gets the selected champions on the given map index \end{DoxyCompactList}\item 
+\Hypertarget{classPlayer_a8c06926781b0cdd5c545ea550a21fbf3}\label{classPlayer_a8c06926781b0cdd5c545ea550a21fbf3} 
+sf\+::\+Vector2f {\bfseries get\+\_\+spawn\+\_\+point} () const
+\begin{DoxyCompactList}\small\item\em set\textquotesingle{}s the spawn point where the champions should spawn \end{DoxyCompactList}\item 
+\Hypertarget{classPlayer_a2b34b061a75c6542badb056b427e0637}\label{classPlayer_a2b34b061a75c6542badb056b427e0637} 
+void {\bfseries clear\+\_\+gamemoves} ()
+\begin{DoxyCompactList}\small\item\em clears all the gamemoves from the champions \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classPlayer_a419bbfc26300be02bbfb52518c4fa868}{despawn\+\_\+champs}} (std\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{classMap}{Map}} $>$ \&map)
+\begin{DoxyCompactList}\small\item\em despawns the champions from the map \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+the class that holds everything a player has 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{classPlayer_aaf69620f01bbd778213ca5f61f181f62}\label{classPlayer_aaf69620f01bbd778213ca5f61f181f62} 
+\index{Player@{Player}!Player@{Player}}
+\index{Player@{Player}!Player@{Player}}
+\doxysubsubsection{\texorpdfstring{Player()}{Player()}}
+{\footnotesize\ttfamily Player\+::\+Player (\begin{DoxyParamCaption}\item[{std\+::vector$<$ \mbox{\hyperlink{classChampion}{Champion}} \texorpdfstring{$\ast$}{*} $>$}]{champs }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [explicit]}}
+
+
+
+constructor for player class, set\textquotesingle{}s it\textquotesingle{}s properties to the appropriate values 
+
+
+\begin{DoxyParams}{Parameters}
+{\em champs} & the champions owned by this player \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classPlayer_a419bbfc26300be02bbfb52518c4fa868}\label{classPlayer_a419bbfc26300be02bbfb52518c4fa868} 
+\index{Player@{Player}!despawn\_champs@{despawn\_champs}}
+\index{despawn\_champs@{despawn\_champs}!Player@{Player}}
+\doxysubsubsection{\texorpdfstring{despawn\_champs()}{despawn\_champs()}}
+{\footnotesize\ttfamily void Player\+::despawn\+\_\+champs (\begin{DoxyParamCaption}\item[{std\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{classMap}{Map}} $>$ \&}]{map }\end{DoxyParamCaption})}
+
+
+
+despawns the champions from the map 
+
+
+\begin{DoxyParams}{Parameters}
+{\em map} & the map where they should be removed from \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classPlayer_a985095be2648a4f0064bddb93024dfa1}\label{classPlayer_a985095be2648a4f0064bddb93024dfa1} 
+\index{Player@{Player}!do\_moves@{do\_moves}}
+\index{do\_moves@{do\_moves}!Player@{Player}}
+\doxysubsubsection{\texorpdfstring{do\_moves()}{do\_moves()}}
+{\footnotesize\ttfamily void Player\+::do\+\_\+moves (\begin{DoxyParamCaption}\item[{std\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{classMap}{Map}} $>$}]{map }\end{DoxyParamCaption})}
+
+
+
+does the moves on each of the champions 
+
+
+\begin{DoxyParams}{Parameters}
+{\em map} & the map to do the gamemoves on \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classPlayer_a85a2e1a760f8e2798cb50e5612e9b851}\label{classPlayer_a85a2e1a760f8e2798cb50e5612e9b851} 
+\index{Player@{Player}!draw\_champs@{draw\_champs}}
+\index{draw\_champs@{draw\_champs}!Player@{Player}}
+\doxysubsubsection{\texorpdfstring{draw\_champs()}{draw\_champs()}}
+{\footnotesize\ttfamily void Player\+::draw\+\_\+champs (\begin{DoxyParamCaption}\item[{sf\+::\+Render\+Window \&}]{window }\end{DoxyParamCaption})}
+
+
+
+draw\textquotesingle{}s each champ to the window 
+
+
+\begin{DoxyParams}{Parameters}
+{\em window} & the window to draw to \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classPlayer_a08fe440dadddd7d58a4bad90e819fd58}\label{classPlayer_a08fe440dadddd7d58a4bad90e819fd58} 
+\index{Player@{Player}!is\_his\_champ@{is\_his\_champ}}
+\index{is\_his\_champ@{is\_his\_champ}!Player@{Player}}
+\doxysubsubsection{\texorpdfstring{is\_his\_champ()}{is\_his\_champ()}}
+{\footnotesize\ttfamily bool Player\+::is\+\_\+his\+\_\+champ (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classChampion}{Champion}} \texorpdfstring{$\ast$}{*}}]{c }\end{DoxyParamCaption})}
+
+
+
+returns true, if the given champ is his 
+
+
+\begin{DoxyParams}{Parameters}
+{\em c} & the champ to check \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classPlayer_ac1cbb4eccd3572ae87ae5f145a2bde4e}\label{classPlayer_ac1cbb4eccd3572ae87ae5f145a2bde4e} 
+\index{Player@{Player}!round\_end@{round\_end}}
+\index{round\_end@{round\_end}!Player@{Player}}
+\doxysubsubsection{\texorpdfstring{round\_end()}{round\_end()}}
+{\footnotesize\ttfamily void Player\+::round\+\_\+end (\begin{DoxyParamCaption}\item[{std\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{classMap}{Map}} $>$}]{map }\end{DoxyParamCaption})}
+
+
+
+ends the round, calls the champions round end methods 
+
+
+\begin{DoxyParams}{Parameters}
+{\em map} & checks if minions should spawn, so it spawns them to the map \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classPlayer_a9d536a80544ce21429d75aa2610aa23e}\label{classPlayer_a9d536a80544ce21429d75aa2610aa23e} 
+\index{Player@{Player}!set\_champ\_icons@{set\_champ\_icons}}
+\index{set\_champ\_icons@{set\_champ\_icons}!Player@{Player}}
+\doxysubsubsection{\texorpdfstring{set\_champ\_icons()}{set\_champ\_icons()}}
+{\footnotesize\ttfamily void Player\+::set\+\_\+champ\+\_\+icons (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{icons }\end{DoxyParamCaption})}
+
+
+
+set\textquotesingle{}s the champ icons, in order with each character of the string 
+
+
+\begin{DoxyParams}{Parameters}
+{\em icons} & the string to get the characters from \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classPlayer_afe56af1b6a9301f2e625d21254df7646}\label{classPlayer_afe56af1b6a9301f2e625d21254df7646} 
+\index{Player@{Player}!set\_font@{set\_font}}
+\index{set\_font@{set\_font}!Player@{Player}}
+\doxysubsubsection{\texorpdfstring{set\_font()}{set\_font()}}
+{\footnotesize\ttfamily void Player\+::set\+\_\+font (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classResources_1_1Holder}{Resources\+::\+Holder}} \&}]{holder }\end{DoxyParamCaption})}
+
+
+
+set\textquotesingle{}s all the champion\textquotesingle{}s icons font face 
+
+
+\begin{DoxyParams}{Parameters}
+{\em holder} & the object that can be used to retrieve the font face \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classPlayer_af662a84f06749b074579d6fa2aa517d5}\label{classPlayer_af662a84f06749b074579d6fa2aa517d5} 
+\index{Player@{Player}!set\_gamemove\_active@{set\_gamemove\_active}}
+\index{set\_gamemove\_active@{set\_gamemove\_active}!Player@{Player}}
+\doxysubsubsection{\texorpdfstring{set\_gamemove\_active()}{set\_gamemove\_active()}}
+{\footnotesize\ttfamily void Player\+::set\+\_\+gamemove\+\_\+active (\begin{DoxyParamCaption}\item[{bool}]{active }\end{DoxyParamCaption})}
+
+
+
+set\textquotesingle{}s gamemove active to the given value 
+
+
+\begin{DoxyParams}{Parameters}
+{\em active} & true if there\textquotesingle{}s a gamemove active, false if not \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classPlayer_a0c55318caa717091a8395c13c0c53e40}\label{classPlayer_a0c55318caa717091a8395c13c0c53e40} 
+\index{Player@{Player}!set\_side@{set\_side}}
+\index{set\_side@{set\_side}!Player@{Player}}
+\doxysubsubsection{\texorpdfstring{set\_side()}{set\_side()}}
+{\footnotesize\ttfamily void Player\+::set\+\_\+side (\begin{DoxyParamCaption}\item[{Side}]{side }\end{DoxyParamCaption})}
+
+
+
+set\textquotesingle{}s the current players side 
+
+
+\begin{DoxyParams}{Parameters}
+{\em side} & the team where the player is on \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classPlayer_a5b1d675cddc3c723719768209f09f3b2}\label{classPlayer_a5b1d675cddc3c723719768209f09f3b2} 
+\index{Player@{Player}!set\_simulation@{set\_simulation}}
+\index{set\_simulation@{set\_simulation}!Player@{Player}}
+\doxysubsubsection{\texorpdfstring{set\_simulation()}{set\_simulation()}}
+{\footnotesize\ttfamily void Player\+::set\+\_\+simulation (\begin{DoxyParamCaption}\item[{bool}]{sim }\end{DoxyParamCaption})}
+
+
+
+set\textquotesingle{}s the simulation state for the player 
+
+
+\begin{DoxyParams}{Parameters}
+{\em sim} & if it\textquotesingle{}s simulation then sim is true \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classPlayer_af96ea79ff05972e2c12a2075aa243231}\label{classPlayer_af96ea79ff05972e2c12a2075aa243231} 
+\index{Player@{Player}!set\_spawn\_point@{set\_spawn\_point}}
+\index{set\_spawn\_point@{set\_spawn\_point}!Player@{Player}}
+\doxysubsubsection{\texorpdfstring{set\_spawn\_point()}{set\_spawn\_point()}}
+{\footnotesize\ttfamily void Player\+::set\+\_\+spawn\+\_\+point (\begin{DoxyParamCaption}\item[{sf\+::\+Vector2f}]{point }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+set\textquotesingle{}s the champions spawn point, their base 
+
+
+\begin{DoxyParams}{Parameters}
+{\em point} & the spawnpoint \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classPlayer_a4c65d4d0ba277a0ee1c6a37267ac76ec}\label{classPlayer_a4c65d4d0ba277a0ee1c6a37267ac76ec} 
+\index{Player@{Player}!set\_starter@{set\_starter}}
+\index{set\_starter@{set\_starter}!Player@{Player}}
+\doxysubsubsection{\texorpdfstring{set\_starter()}{set\_starter()}}
+{\footnotesize\ttfamily void Player\+::set\+\_\+starter (\begin{DoxyParamCaption}\item[{bool}]{starter\+\_\+ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+set\textquotesingle{}s if this player started the game, so it had the first turn 
+
+
+\begin{DoxyParams}{Parameters}
+{\em starter} & true if this player was the starter, otherwise false \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classPlayer_a4ef35f8c08868b2424818744a619daff}\label{classPlayer_a4ef35f8c08868b2424818744a619daff} 
+\index{Player@{Player}!show\_move\_options@{show\_move\_options}}
+\index{show\_move\_options@{show\_move\_options}!Player@{Player}}
+\doxysubsubsection{\texorpdfstring{show\_move\_options()}{show\_move\_options()}}
+{\footnotesize\ttfamily void Player\+::show\+\_\+move\+\_\+options (\begin{DoxyParamCaption}\item[{const std\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{classMap}{Map}} $>$}]{,  }\item[{\mbox{\hyperlink{classChampion}{Champion}} \texorpdfstring{$\ast$}{*}}]{champ }\end{DoxyParamCaption})}
+
+
+
+show\textquotesingle{}s the options to use a gamemove on, by the given champ 
+
+
+\begin{DoxyParams}{Parameters}
+{\em map} & the map where it searches for good cells \\
+\hline
+{\em champ} & the champ to search by \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classPlayer_a11fc50b1eaa4302643dac7748f37995a}\label{classPlayer_a11fc50b1eaa4302643dac7748f37995a} 
+\index{Player@{Player}!spawn\_champs@{spawn\_champs}}
+\index{spawn\_champs@{spawn\_champs}!Player@{Player}}
+\doxysubsubsection{\texorpdfstring{spawn\_champs()}{spawn\_champs()}}
+{\footnotesize\ttfamily void Player\+::spawn\+\_\+champs (\begin{DoxyParamCaption}\item[{const std\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{classMap}{Map}} $>$ \&}]{map }\end{DoxyParamCaption})}
+
+
+
+spawns the champions on the map, informs the map about it, and set\textquotesingle{}s the champs cell 
+
+
+\begin{DoxyParams}{Parameters}
+{\em map} & the map where they spawn \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classPlayer_a11f8862ef62714162d36ff612ce729c4}\label{classPlayer_a11f8862ef62714162d36ff612ce729c4} 
+\index{Player@{Player}!spawn\_minions@{spawn\_minions}}
+\index{spawn\_minions@{spawn\_minions}!Player@{Player}}
+\doxysubsubsection{\texorpdfstring{spawn\_minions()}{spawn\_minions()}}
+{\footnotesize\ttfamily void Player\+::spawn\+\_\+minions (\begin{DoxyParamCaption}\item[{const std\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{classMap}{Map}} $>$ \&}]{map }\end{DoxyParamCaption})}
+
+
+
+spawns minions on to the map 
+
+
+\begin{DoxyParams}{Parameters}
+{\em map} & the map to spawn to \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classPlayer_a79e362232a1ad445b39e6479fe4c2884}\label{classPlayer_a79e362232a1ad445b39e6479fe4c2884} 
+\index{Player@{Player}!update\_champ\_positions@{update\_champ\_positions}}
+\index{update\_champ\_positions@{update\_champ\_positions}!Player@{Player}}
+\doxysubsubsection{\texorpdfstring{update\_champ\_positions()}{update\_champ\_positions()}}
+{\footnotesize\ttfamily void Player\+::update\+\_\+champ\+\_\+positions (\begin{DoxyParamCaption}\item[{std\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{classMap}{Map}} $>$}]{map }\end{DoxyParamCaption})}
+
+
+
+update all of its champion position to the appropriate positions on the map 
+
+
+\begin{DoxyParams}{Parameters}
+{\em map} & the map is needed to determine where a given cell is \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+include/gameobjects.\+hpp\item 
+src/gameobjects.\+cpp\end{DoxyCompactItemize}

@@ -1,0 +1,349 @@
+\doxysection{Entity Class Reference}
+\hypertarget{classEntity}{}\label{classEntity}\index{Entity@{Entity}}
+
+
+The class that describes an entity.  
+
+
+
+
+{\ttfamily \#include $<$gameobjects.\+hpp$>$}
+
+Inheritance diagram for Entity\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=4.000000cm]{classEntity}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classEntity_ac479d009ddde62dfb378ca0a70d81307}\label{classEntity_ac479d009ddde62dfb378ca0a70d81307} 
+virtual {\bfseries \texorpdfstring{$\sim$}{\string~}\+Entity} ()=default
+\begin{DoxyCompactList}\small\item\em entity\textquotesingle{}s default destructor \end{DoxyCompactList}\item 
+\mbox{\hyperlink{classEntity_aef46b1aea52385237628d0a0fa155396}{Entity}} (std\+::string name="{}"{})
+\begin{DoxyCompactList}\small\item\em entity\textquotesingle{}s constructor \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{classEntity_a1309341dd268af435449b5031ff0a06d}{draw}} (sf\+::\+Render\+Window \&window)
+\begin{DoxyCompactList}\small\item\em the method that draws the entity to the window \end{DoxyCompactList}\item 
+\Hypertarget{classEntity_a840ac840f4b2fc787ac73be45df8dde7}\label{classEntity_a840ac840f4b2fc787ac73be45df8dde7} 
+double {\bfseries get\+\_\+base\+\_\+dmg} () const
+\begin{DoxyCompactList}\small\item\em returns the base damage of the champion, without any buffs/items only leveling up changes the base value \end{DoxyCompactList}\item 
+\Hypertarget{classEntity_a51413bb4837d45c905c537bbc3b57f90}\label{classEntity_a51413bb4837d45c905c537bbc3b57f90} 
+double {\bfseries get\+\_\+base\+\_\+hp} () const
+\begin{DoxyCompactList}\small\item\em returns the base hp, works the same way as get\+\_\+base\+\_\+dmg \end{DoxyCompactList}\item 
+\Hypertarget{classEntity_a70b5f51128029aeeed5d952388fef994}\label{classEntity_a70b5f51128029aeeed5d952388fef994} 
+double {\bfseries get\+\_\+total\+\_\+dmg} () const
+\begin{DoxyCompactList}\small\item\em returns the total damage, by adding buffs/items to the base dmg \end{DoxyCompactList}\item 
+\Hypertarget{classEntity_a33cbef480e431dfaeae0290d9c9ce392}\label{classEntity_a33cbef480e431dfaeae0290d9c9ce392} 
+double {\bfseries get\+\_\+total\+\_\+hp} () const
+\begin{DoxyCompactList}\small\item\em returns total hp, by adding buffs/items to the base dmg \end{DoxyCompactList}\item 
+\Hypertarget{classEntity_ac162777dcb268492364fd3662e62932e}\label{classEntity_ac162777dcb268492364fd3662e62932e} 
+int {\bfseries get\+\_\+xp\+\_\+given} () const
+\begin{DoxyCompactList}\small\item\em returns the amount of experience given to the entity that kills this entity \end{DoxyCompactList}\item 
+\Hypertarget{classEntity_a62d092e37c3e2d7c9e5c7aa68125084d}\label{classEntity_a62d092e37c3e2d7c9e5c7aa68125084d} 
+int {\bfseries get\+\_\+gold\+\_\+given} () const
+\begin{DoxyCompactList}\small\item\em returns the amount of gold given to the entity that kills this entity \end{DoxyCompactList}\item 
+\Hypertarget{classEntity_a4fc1c58e0cde7a74b68d7c0897492d09}\label{classEntity_a4fc1c58e0cde7a74b68d7c0897492d09} 
+void {\bfseries set\+\_\+side} (Side side\+\_\+)
+\begin{DoxyCompactList}\small\item\em set\textquotesingle{}s which team(side) is the entity on \end{DoxyCompactList}\item 
+\Hypertarget{classEntity_a0e76e4cb502d0b67ad5782d1effc01b0}\label{classEntity_a0e76e4cb502d0b67ad5782d1effc01b0} 
+Side {\bfseries get\+\_\+side} () const
+\begin{DoxyCompactList}\small\item\em gets the current team the entity is on \end{DoxyCompactList}\item 
+\Hypertarget{classEntity_a016985c6781b3dcabf9656f0addcaa38}\label{classEntity_a016985c6781b3dcabf9656f0addcaa38} 
+void {\bfseries set\+\_\+xp\+\_\+given} (int xp\+\_\+given\+\_\+)
+\begin{DoxyCompactList}\small\item\em set\textquotesingle{}s the amount of xp this entity could give \end{DoxyCompactList}\item 
+virtual std\+::vector$<$ std\+::string $>$ \mbox{\hyperlink{classEntity_a1529ff8252af5440d930bd871826d0ee}{get\+\_\+stats}} () const
+\begin{DoxyCompactList}\small\item\em gets this entity\textquotesingle{}s statistics that could describe it \end{DoxyCompactList}\item 
+\Hypertarget{classEntity_abadcf5fb781cafa3a9779091e210b96f}\label{classEntity_abadcf5fb781cafa3a9779091e210b96f} 
+bool {\bfseries is\+Alive} () const
+\begin{DoxyCompactList}\small\item\em checks if the entity is alive currently \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{classEntity_a6474bf6e6350afb2a86356bda803f5df}{should\+\_\+focus}} () const
+\begin{DoxyCompactList}\small\item\em returns true, if this entity should be focused by other entities when trying to pick a fight \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{classEntity_aa300a959f036dcdbc83bae3ed7a6c592}{gives\+\_\+creep\+\_\+score}} () const
+\begin{DoxyCompactList}\small\item\em checks if this entity increases the creep score of the other entity when killed \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{classEntity_a9f35766485f7ef8eb9e296bcf31c5b4f}{remove\+\_\+hp}} (double dmg)
+\begin{DoxyCompactList}\small\item\em removes the given damage from the entity\textquotesingle{}s total hp, and checks if the entity died by this damage \end{DoxyCompactList}\item 
+\Hypertarget{classEntity_a4a8f6d1d3b11b7e6d85079a05ca4c9bf}\label{classEntity_a4a8f6d1d3b11b7e6d85079a05ca4c9bf} 
+virtual void {\bfseries check\+\_\+death} ()
+\begin{DoxyCompactList}\small\item\em checks if the entity died \end{DoxyCompactList}\item 
+\Hypertarget{classEntity_add9cdf12963b02d01b44c1f274d1a0d4}\label{classEntity_add9cdf12963b02d01b44c1f274d1a0d4} 
+virtual bool {\bfseries clicked} (int x, int y)
+\begin{DoxyCompactList}\small\item\em checks if the entity\textquotesingle{}s shape was clicked on \end{DoxyCompactList}\item 
+\Hypertarget{classEntity_a7de96a0f5000751264f27e5696954f33}\label{classEntity_a7de96a0f5000751264f27e5696954f33} 
+\mbox{\hyperlink{classCell}{Cell}} \texorpdfstring{$\ast$}{*} {\bfseries get\+\_\+real\+\_\+cell} ()
+\begin{DoxyCompactList}\small\item\em returns the cell on which the entity is at every start of the round \end{DoxyCompactList}\item 
+virtual \mbox{\hyperlink{classCell}{Cell}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{classEntity_a64ed6f86b55e8c2039a0089cacdc9367}{get\+\_\+simulation\+\_\+cell}} ()
+\begin{DoxyCompactList}\small\item\em returns the cell on which the entity advances to with gamemoves during a round \end{DoxyCompactList}\item 
+\Hypertarget{classEntity_a9e5468253e6a29f43f3c0ae04120c6a3}\label{classEntity_a9e5468253e6a29f43f3c0ae04120c6a3} 
+void {\bfseries set\+\_\+cell} (\mbox{\hyperlink{classCell}{Cell}} \texorpdfstring{$\ast$}{*}c)
+\begin{DoxyCompactList}\small\item\em set\textquotesingle{}s this entity\textquotesingle{}s cell, it should be a valid cell on the map \end{DoxyCompactList}\item 
+virtual void \mbox{\hyperlink{classEntity_adeb0b3d5961956aaf3e7fb7bd5c1b2fe}{update\+\_\+shape\+\_\+pos}} (sf\+::\+Vector2f pos)
+\begin{DoxyCompactList}\small\item\em update\textquotesingle{}s the shape\textquotesingle{}s position so it appears on it\textquotesingle{}s cell \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{classEntity_a1d3994e373a94139594e817b8a48d988}{gives\+\_\+vision}} () const
+\begin{DoxyCompactList}\small\item\em return true if this entity should give vision around him \end{DoxyCompactList}\item 
+std\+::string \mbox{\hyperlink{classEntity_a999e644523050021ec39ee743022c919}{to\+\_\+ui\+\_\+int\+\_\+format}} (double num) const
+\begin{DoxyCompactList}\small\item\em changes the given num to the format which should be used on the ui \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classEntity_aa2d45bbcb8e9aa1fe7d4630a969ed565}{set\+\_\+color}} (sf\+::\+Color color\+\_\+)
+\begin{DoxyCompactList}\small\item\em set\textquotesingle{}s this entity\textquotesingle{}s shape fillcolor to the given color \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classEntity_a8edadc9e3494534f4706cb547154a87b}{set\+\_\+name}} (std\+::string name\+\_\+)
+\begin{DoxyCompactList}\small\item\em set\textquotesingle{}s the entitiy\textquotesingle{}s name \end{DoxyCompactList}\item 
+virtual bool \mbox{\hyperlink{classEntity_a04e6efaac1fdc7f380707b949c52566b}{can\+\_\+fight\+\_\+back}} () const
+\begin{DoxyCompactList}\small\item\em returns true, if this is an entity that can fight back \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classEntity_a931b21fbdebb1a5963b4bcab5df128f5}\label{classEntity_a931b21fbdebb1a5963b4bcab5df128f5} 
+std\+::string {\bfseries name}
+\item 
+\Hypertarget{classEntity_a0d09a7e175d9dcfbfb359e5f74f2e692}\label{classEntity_a0d09a7e175d9dcfbfb359e5f74f2e692} 
+bool {\bfseries alive} = true
+\item 
+\Hypertarget{classEntity_a3583ba1fc788029f312227293a0679d3}\label{classEntity_a3583ba1fc788029f312227293a0679d3} 
+double {\bfseries max\+\_\+hp} = 10
+\item 
+\Hypertarget{classEntity_a5d74d5a5e290b7e76ae38d1ed1cc736e}\label{classEntity_a5d74d5a5e290b7e76ae38d1ed1cc736e} 
+double {\bfseries hp} = 10
+\item 
+\Hypertarget{classEntity_abfccb682686c9fd4898df228edc56b5a}\label{classEntity_abfccb682686c9fd4898df228edc56b5a} 
+double {\bfseries damage} = 10
+\item 
+\Hypertarget{classEntity_acb3d4a4f68ca1fdbbe0ded5e81936680}\label{classEntity_acb3d4a4f68ca1fdbbe0ded5e81936680} 
+double {\bfseries total\+\_\+hp} = 10
+\item 
+\Hypertarget{classEntity_a06db42def59bea8c084b1cbdc3e28587}\label{classEntity_a06db42def59bea8c084b1cbdc3e28587} 
+double {\bfseries total\+\_\+damage} = 10
+\item 
+\Hypertarget{classEntity_a1649b91c8e92649aff4885c253bf6f7e}\label{classEntity_a1649b91c8e92649aff4885c253bf6f7e} 
+int {\bfseries respawn\+\_\+counter} = 0
+\item 
+\Hypertarget{classEntity_a2f5ac9847403104b43fe439b0a246520}\label{classEntity_a2f5ac9847403104b43fe439b0a246520} 
+int {\bfseries respawn\+\_\+timer} = 5
+\item 
+\Hypertarget{classEntity_a6e5ffa631291abaf3efa4007ee7c0cad}\label{classEntity_a6e5ffa631291abaf3efa4007ee7c0cad} 
+int {\bfseries xp\+\_\+given} = 10
+\item 
+\Hypertarget{classEntity_abf460add5d33971501141606b54a2064}\label{classEntity_abf460add5d33971501141606b54a2064} 
+int {\bfseries gold\+\_\+given} = 30
+\item 
+\Hypertarget{classEntity_ac9c20b2a7449dc746f60ecee08ab1610}\label{classEntity_ac9c20b2a7449dc746f60ecee08ab1610} 
+\mbox{\hyperlink{classCell}{Cell}} \texorpdfstring{$\ast$}{*} {\bfseries cell} = nullptr
+\item 
+\Hypertarget{classEntity_af65f15fce0ecc7a0e1e2ce4ca46ee178}\label{classEntity_af65f15fce0ecc7a0e1e2ce4ca46ee178} 
+Side {\bfseries side} = Side\+::\+BLUE
+\item 
+\Hypertarget{classEntity_af03d71c31725c3cf6d3af161d69ec3eb}\label{classEntity_af03d71c31725c3cf6d3af161d69ec3eb} 
+sf\+::\+Color {\bfseries color}
+\item 
+\Hypertarget{classEntity_a3472a61fe1898da72bdb2ae3f6e56538}\label{classEntity_a3472a61fe1898da72bdb2ae3f6e56538} 
+sf\+::\+Rectangle\+Shape {\bfseries shape}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+The class that describes an entity. 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{classEntity_aef46b1aea52385237628d0a0fa155396}\label{classEntity_aef46b1aea52385237628d0a0fa155396} 
+\index{Entity@{Entity}!Entity@{Entity}}
+\index{Entity@{Entity}!Entity@{Entity}}
+\doxysubsubsection{\texorpdfstring{Entity()}{Entity()}}
+{\footnotesize\ttfamily Entity\+::\+Entity (\begin{DoxyParamCaption}\item[{std\+::string}]{name = {\ttfamily "{}"{}} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [explicit]}}
+
+
+
+entity\textquotesingle{}s constructor 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & the name of the entity \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classEntity_a04e6efaac1fdc7f380707b949c52566b}\label{classEntity_a04e6efaac1fdc7f380707b949c52566b} 
+\index{Entity@{Entity}!can\_fight\_back@{can\_fight\_back}}
+\index{can\_fight\_back@{can\_fight\_back}!Entity@{Entity}}
+\doxysubsubsection{\texorpdfstring{can\_fight\_back()}{can\_fight\_back()}}
+{\footnotesize\ttfamily virtual bool Entity\+::can\+\_\+fight\+\_\+back (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+returns true, if this is an entity that can fight back 
+
+
+
+Reimplemented in \mbox{\hyperlink{classChampion_ae043cbd133b8e0dff246e7c11c325f86}{Champion}}.
+
+\Hypertarget{classEntity_a1309341dd268af435449b5031ff0a06d}\label{classEntity_a1309341dd268af435449b5031ff0a06d} 
+\index{Entity@{Entity}!draw@{draw}}
+\index{draw@{draw}!Entity@{Entity}}
+\doxysubsubsection{\texorpdfstring{draw()}{draw()}}
+{\footnotesize\ttfamily void Entity\+::draw (\begin{DoxyParamCaption}\item[{sf\+::\+Render\+Window \&}]{window }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+the method that draws the entity to the window 
+
+
+\begin{DoxyParams}{Parameters}
+{\em window} & the window to draw to \\
+\hline
+\end{DoxyParams}
+
+
+Reimplemented in \mbox{\hyperlink{classChampion_ad754cc0fbc9fdfc2bdd89e9100523767}{Champion}}.
+
+\Hypertarget{classEntity_a64ed6f86b55e8c2039a0089cacdc9367}\label{classEntity_a64ed6f86b55e8c2039a0089cacdc9367} 
+\index{Entity@{Entity}!get\_simulation\_cell@{get\_simulation\_cell}}
+\index{get\_simulation\_cell@{get\_simulation\_cell}!Entity@{Entity}}
+\doxysubsubsection{\texorpdfstring{get\_simulation\_cell()}{get\_simulation\_cell()}}
+{\footnotesize\ttfamily virtual \mbox{\hyperlink{classCell}{Cell}} \texorpdfstring{$\ast$}{*} Entity\+::get\+\_\+simulation\+\_\+cell (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+returns the cell on which the entity advances to with gamemoves during a round 
+
+
+
+Reimplemented in \mbox{\hyperlink{classChampion_a8461e4ea9b3c15039be285fcc86ad85c}{Champion}}.
+
+\Hypertarget{classEntity_a1529ff8252af5440d930bd871826d0ee}\label{classEntity_a1529ff8252af5440d930bd871826d0ee} 
+\index{Entity@{Entity}!get\_stats@{get\_stats}}
+\index{get\_stats@{get\_stats}!Entity@{Entity}}
+\doxysubsubsection{\texorpdfstring{get\_stats()}{get\_stats()}}
+{\footnotesize\ttfamily std\+::vector$<$ std\+::string $>$ Entity\+::get\+\_\+stats (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+gets this entity\textquotesingle{}s statistics that could describe it 
+
+
+
+Reimplemented in \mbox{\hyperlink{classChampion_adcf36b2f41753c18a470213715fdd055}{Champion}}.
+
+\Hypertarget{classEntity_aa300a959f036dcdbc83bae3ed7a6c592}\label{classEntity_aa300a959f036dcdbc83bae3ed7a6c592} 
+\index{Entity@{Entity}!gives\_creep\_score@{gives\_creep\_score}}
+\index{gives\_creep\_score@{gives\_creep\_score}!Entity@{Entity}}
+\doxysubsubsection{\texorpdfstring{gives\_creep\_score()}{gives\_creep\_score()}}
+{\footnotesize\ttfamily virtual bool Entity\+::gives\+\_\+creep\+\_\+score (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+checks if this entity increases the creep score of the other entity when killed 
+
+
+
+Reimplemented in \mbox{\hyperlink{classMinion_a22e1a32626c92a4888e252c040a44e9c}{Minion}}.
+
+\Hypertarget{classEntity_a1d3994e373a94139594e817b8a48d988}\label{classEntity_a1d3994e373a94139594e817b8a48d988} 
+\index{Entity@{Entity}!gives\_vision@{gives\_vision}}
+\index{gives\_vision@{gives\_vision}!Entity@{Entity}}
+\doxysubsubsection{\texorpdfstring{gives\_vision()}{gives\_vision()}}
+{\footnotesize\ttfamily virtual bool Entity\+::gives\+\_\+vision (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+return true if this entity should give vision around him 
+
+
+
+Reimplemented in \mbox{\hyperlink{classChampion_af6ffdf1580fe701a1381e151c9f9d1ed}{Champion}}, and \mbox{\hyperlink{classMinion_a1f0338de7be733cdd98f164824385159}{Minion}}.
+
+\Hypertarget{classEntity_a9f35766485f7ef8eb9e296bcf31c5b4f}\label{classEntity_a9f35766485f7ef8eb9e296bcf31c5b4f} 
+\index{Entity@{Entity}!remove\_hp@{remove\_hp}}
+\index{remove\_hp@{remove\_hp}!Entity@{Entity}}
+\doxysubsubsection{\texorpdfstring{remove\_hp()}{remove\_hp()}}
+{\footnotesize\ttfamily virtual void Entity\+::remove\+\_\+hp (\begin{DoxyParamCaption}\item[{double}]{dmg }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+removes the given damage from the entity\textquotesingle{}s total hp, and checks if the entity died by this damage 
+
+
+\begin{DoxyParams}{Parameters}
+{\em dmg} & the amount of damage dealt to this entity \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classEntity_aa2d45bbcb8e9aa1fe7d4630a969ed565}\label{classEntity_aa2d45bbcb8e9aa1fe7d4630a969ed565} 
+\index{Entity@{Entity}!set\_color@{set\_color}}
+\index{set\_color@{set\_color}!Entity@{Entity}}
+\doxysubsubsection{\texorpdfstring{set\_color()}{set\_color()}}
+{\footnotesize\ttfamily void Entity\+::set\+\_\+color (\begin{DoxyParamCaption}\item[{sf\+::\+Color}]{color\+\_\+ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+set\textquotesingle{}s this entity\textquotesingle{}s shape fillcolor to the given color 
+
+
+\begin{DoxyParams}{Parameters}
+{\em color} & the color to use \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classEntity_a8edadc9e3494534f4706cb547154a87b}\label{classEntity_a8edadc9e3494534f4706cb547154a87b} 
+\index{Entity@{Entity}!set\_name@{set\_name}}
+\index{set\_name@{set\_name}!Entity@{Entity}}
+\doxysubsubsection{\texorpdfstring{set\_name()}{set\_name()}}
+{\footnotesize\ttfamily void Entity\+::set\+\_\+name (\begin{DoxyParamCaption}\item[{std\+::string}]{name\+\_\+ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+set\textquotesingle{}s the entitiy\textquotesingle{}s name 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & the name to use instead \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classEntity_a6474bf6e6350afb2a86356bda803f5df}\label{classEntity_a6474bf6e6350afb2a86356bda803f5df} 
+\index{Entity@{Entity}!should\_focus@{should\_focus}}
+\index{should\_focus@{should\_focus}!Entity@{Entity}}
+\doxysubsubsection{\texorpdfstring{should\_focus()}{should\_focus()}}
+{\footnotesize\ttfamily virtual bool Entity\+::should\+\_\+focus (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+returns true, if this entity should be focused by other entities when trying to pick a fight 
+
+
+
+Reimplemented in \mbox{\hyperlink{classMinion_a5912aec0023eb1bbac8e09bcd84e6e60}{Minion}}.
+
+\Hypertarget{classEntity_a999e644523050021ec39ee743022c919}\label{classEntity_a999e644523050021ec39ee743022c919} 
+\index{Entity@{Entity}!to\_ui\_int\_format@{to\_ui\_int\_format}}
+\index{to\_ui\_int\_format@{to\_ui\_int\_format}!Entity@{Entity}}
+\doxysubsubsection{\texorpdfstring{to\_ui\_int\_format()}{to\_ui\_int\_format()}}
+{\footnotesize\ttfamily std\+::string Entity\+::to\+\_\+ui\+\_\+int\+\_\+format (\begin{DoxyParamCaption}\item[{double}]{num }\end{DoxyParamCaption}) const}
+
+
+
+changes the given num to the format which should be used on the ui 
+
+
+\begin{DoxyParams}{Parameters}
+{\em num} & the number to convert \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the string which should be drawn to the screen 
+\end{DoxyReturn}
+\Hypertarget{classEntity_adeb0b3d5961956aaf3e7fb7bd5c1b2fe}\label{classEntity_adeb0b3d5961956aaf3e7fb7bd5c1b2fe} 
+\index{Entity@{Entity}!update\_shape\_pos@{update\_shape\_pos}}
+\index{update\_shape\_pos@{update\_shape\_pos}!Entity@{Entity}}
+\doxysubsubsection{\texorpdfstring{update\_shape\_pos()}{update\_shape\_pos()}}
+{\footnotesize\ttfamily void Entity\+::update\+\_\+shape\+\_\+pos (\begin{DoxyParamCaption}\item[{sf\+::\+Vector2f}]{pos }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+update\textquotesingle{}s the shape\textquotesingle{}s position so it appears on it\textquotesingle{}s cell 
+
+
+
+Reimplemented in \mbox{\hyperlink{classChampion_a8c868876a6841622f9c03bcdad8a7165}{Champion}}.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+include/gameobjects.\+hpp\item 
+src/gameobjects.\+cpp\end{DoxyCompactItemize}

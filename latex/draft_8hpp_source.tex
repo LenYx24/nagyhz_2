@@ -1,0 +1,89 @@
+\doxysection{draft.\+hpp}
+\hypertarget{draft_8hpp_source}{}\label{draft_8hpp_source}\index{include/draft.hpp@{include/draft.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ DRAFT\_HPP}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ DRAFT\_HPP}}
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#include\ "{}UIcomponents.hpp"{}}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}gameobjects.hpp"{}}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ "{}resources.hpp"{}}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ "{}statemanagement.hpp"{}}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ "{}game.hpp"{}}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00012\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classDraftTurn}{DraftTurn}}\ \{}
+\DoxyCodeLine{00013\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00018\ \ \ \mbox{\hyperlink{classDraftTurn_ad0bbd1784343c9f74594af088b4b43ff}{DraftTurn}}(std::vector<Champion\ *>\ \&champs,\textcolor{keywordtype}{bool}\ banphase\ =\ \textcolor{keyword}{false})\ :\ champs(champs),banphase(banphase)\ \{\}}
+\DoxyCodeLine{00022\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classDraftTurn_a868b1cbb0598546e42f5034d54543bc9}{doturn}}(\mbox{\hyperlink{classChampion}{Champion}}\ *c);}
+\DoxyCodeLine{00026\ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classDraftTurn_a0ac6c4b7fc6ac42be5d14fc48c8bbe51}{isbanphase}}()\textcolor{keyword}{const}\{\textcolor{keywordflow}{return}\ banphase;\}}
+\DoxyCodeLine{00027\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00028\ \ \ std::vector<Champion\ *>\ \&champs;}
+\DoxyCodeLine{00029\ \ \ \textcolor{keywordtype}{bool}\ banphase;}
+\DoxyCodeLine{00030\ \};}
+\DoxyCodeLine{00034\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classDraftNamedBox}{DraftNamedBox}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{classUI_1_1NamedBox}{UI::NamedBox}}\ \{}
+\DoxyCodeLine{00035\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00041\ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{classDraftNamedBox_ac2da354706d50635ea57dd104ddadab6}{DraftNamedBox}}(\mbox{\hyperlink{classResources_1_1Holder}{Resources::Holder}}\ \&holder,\ sf::Vector2f\ size\ =\ \{100,30\}):NamedBox(holder)\ \{}
+\DoxyCodeLine{00042\ \ \ \ \ frame.setSize(size);}
+\DoxyCodeLine{00043\ \ \ \ \ frame.setFillColor(sf::Color::Red);}
+\DoxyCodeLine{00044\ \ \ \ \ label.setString(\textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{00045\ \ \ \}}
+\DoxyCodeLine{00046\ \};}
+\DoxyCodeLine{00050\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classTeamCol}{TeamCol}}\ \{}
+\DoxyCodeLine{00051\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00058\ \ \ \mbox{\hyperlink{classTeamCol_ac66d34f859deabf66731ae6261e5b37f}{TeamCol}}(\mbox{\hyperlink{classResources_1_1Holder}{Resources::Holder}}\ \&holder,sf::Vector2f\ startpos,sf::Vector2f\ size\ =\ \{100,30\},\ \textcolor{keywordtype}{float}\ margin\ =\ 10);}
+\DoxyCodeLine{00062\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classTeamCol_a01383d3b13ce512b5d1bc14133078a32}{setpos}}();}
+\DoxyCodeLine{00066\ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classTeamCol_a81fb3ea37080e17264d26750fc9ecbe0}{draw\_to\_window}}(sf::RenderWindow\ \&w);}
+\DoxyCodeLine{00070\ \ \ \textcolor{keywordtype}{size\_t}\ \mbox{\hyperlink{classTeamCol_aa66925ca4002f02219d00eccec8a24da}{champs\_size}}()\textcolor{keyword}{const}\{\textcolor{keywordflow}{return}\ champs.size();\}}
+\DoxyCodeLine{00075\ \ \ \mbox{\hyperlink{classChampion}{Champion}}\ *\mbox{\hyperlink{classTeamCol_afe5529698161e1ccc12d2e8af85211e8}{operator[]}}(\textcolor{keywordtype}{size\_t}\ index)\{}
+\DoxyCodeLine{00076\ \ \ \ \ \textcolor{keywordflow}{if}(index\ >=\ champs.size())\textcolor{keywordflow}{throw}\ std::out\_of\_range(\textcolor{stringliteral}{"{}index\ out\ of\ range\ inside\ team\ column"{}});}
+\DoxyCodeLine{00077\ \ \ \ \ \textcolor{keywordflow}{return}\ champs[index];}
+\DoxyCodeLine{00078\ \ \ \}}
+\DoxyCodeLine{00082\ \ \ std::vector<Champion\ *>\ \&\mbox{\hyperlink{classTeamCol_abdd5dda3ff6cc4498cf82b9a61f947aa}{get\_champs}}()\{\textcolor{keywordflow}{return}\ champs;\}}
+\DoxyCodeLine{00083\ }
+\DoxyCodeLine{00084\ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00085\ \ \ std::vector<DraftNamedBox>\ elements;}
+\DoxyCodeLine{00086\ \ \ std::vector<Champion\ *>\ champs;}
+\DoxyCodeLine{00087\ \ \ sf::Vector2f\ startpos;}
+\DoxyCodeLine{00088\ \ \ \textcolor{keywordtype}{float}\ margin;}
+\DoxyCodeLine{00089\ \};}
+\DoxyCodeLine{00090\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classDraftButton}{DraftButton}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{classUI_1_1Button}{UI::Button}}\ \{}
+\DoxyCodeLine{00091\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00092\ \textcolor{comment}{//\ Todo:\ static\ fgv,\ ami\ visszaad\ egy\ draftbutton\ stílusú\ gombot}}
+\DoxyCodeLine{00093\ \ \ \mbox{\hyperlink{classDraftButton}{DraftButton}}(}
+\DoxyCodeLine{00094\ \ \ \ \ \ \ \mbox{\hyperlink{classResources_1_1Holder}{Resources::Holder}}\ \&h,\ \textcolor{keyword}{const}\ sf::String\&\ str,\ std::function<\textcolor{keywordtype}{void}()>\ onclick\ =\ []()\ \{\ std::cout\ <<\ \textcolor{stringliteral}{"{}not\ impl"{}}\ <<\ std::endl;\ \});}
+\DoxyCodeLine{00095\ \};}
+\DoxyCodeLine{00096\ }
+\DoxyCodeLine{00097\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classChampBox}{ChampBox}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{classUI_1_1NamedBox}{UI::NamedBox}}\ \{}
+\DoxyCodeLine{00098\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00099\ \ \ \mbox{\hyperlink{classChampBox}{ChampBox}}(std::string\ label,\ sf::RectangleShape\ frame,\ \mbox{\hyperlink{classResources_1_1Holder}{Resources::Holder}}\ \&h,\ \mbox{\hyperlink{classChampion}{Champion}}\ *c)\ :\ NamedBox(label,\ frame,\ h),\ champ(c)\ \{\}}
+\DoxyCodeLine{00100\ \ \ \mbox{\hyperlink{classChampion}{Champion}}\ *get\_champ()\textcolor{keyword}{const}\{\textcolor{keywordflow}{return}\ champ;\}}
+\DoxyCodeLine{00101\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00102\ \ \ \mbox{\hyperlink{classChampion}{Champion}}\ *champ;}
+\DoxyCodeLine{00103\ \};}
+\DoxyCodeLine{00104\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classDraftState}{DraftState}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{classState}{State}}\ \{}
+\DoxyCodeLine{00105\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00106\ \ \ \mbox{\hyperlink{classDraftState}{DraftState}}(\mbox{\hyperlink{classStateManager}{StateManager}}\ \&state\_manager,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{structSettings}{Settings}}\&\ s,\ sf::RenderWindow\&\ window);}
+\DoxyCodeLine{00107\ \ \ \mbox{\hyperlink{classDraftState}{\string~DraftState}}();}
+\DoxyCodeLine{00108\ \ \ \textcolor{keywordtype}{void}\ handle\_events(sf::Event\ \&e);}
+\DoxyCodeLine{00109\ \ \ \textcolor{keywordtype}{void}\ update();}
+\DoxyCodeLine{00110\ \ \ \textcolor{keywordtype}{void}\ draw(sf::RenderWindow\&\ window);}
+\DoxyCodeLine{00111\ }
+\DoxyCodeLine{00112\ \ \ \textcolor{keywordtype}{void}\ lockin(\mbox{\hyperlink{classStateManager}{StateManager}}\&\ s,\ sf::RenderWindow\&\ window,\ \mbox{\hyperlink{structSettings}{Settings}}\ settings);}
+\DoxyCodeLine{00113\ \ \ \textcolor{keywordtype}{void}\ dont\_ban();}
+\DoxyCodeLine{00114\ }
+\DoxyCodeLine{00115\ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00116\ \ \ \mbox{\hyperlink{classResources_1_1Holder}{Resources::Holder}}\ h;}
+\DoxyCodeLine{00117\ \ \ std::vector<Champion\ *>\ allchamps;}
+\DoxyCodeLine{00118\ \ \ \mbox{\hyperlink{classChampion}{Champion}}\ *selectedchamp;}
+\DoxyCodeLine{00119\ \ \ std::vector<TeamCol>\ columns;}
+\DoxyCodeLine{00120\ \ \ sf::Clock\ elapsedtime;}
+\DoxyCodeLine{00121\ \ \ std::vector<DraftButton\ *>\ buttons;}
+\DoxyCodeLine{00122\ \ \ std::vector<ChampBox*>\ champlist;}
+\DoxyCodeLine{00123\ \ \ \mbox{\hyperlink{classChampion}{Champion}}\ *emptychamp;}
+\DoxyCodeLine{00124\ \ \ std::vector<DraftTurn>\ turns;}
+\DoxyCodeLine{00125\ \ \ \textcolor{keywordtype}{size\_t}\ turn\_counter;}
+\DoxyCodeLine{00126\ \ \ sf::Text\ timer;}
+\DoxyCodeLine{00127\ \};}
+\DoxyCodeLine{00128\ }
+\DoxyCodeLine{00129\ \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}
