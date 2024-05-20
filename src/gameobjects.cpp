@@ -15,7 +15,7 @@ void Ward::do_move(){
     alive = false;
   }
 }
-std::vector<std::string> splitString(const std::string& str, char delimiter) {
+std::vector<std::string> split_string(const std::string& str, char delimiter) {
     std::vector<std::string> tokens;
     std::stringstream ss(str);
     std::string token;
@@ -27,7 +27,7 @@ std::vector<std::string> splitString(const std::string& str, char delimiter) {
     return tokens;
 }
 void Champion::read_from_string(std::string &line, const char delimiter) {
-  std::vector<std::string> tokens = splitString(line, delimiter);
+  std::vector<std::string> tokens = split_string(line, delimiter);
   if(tokens.size() < 5){
     throw std::runtime_error("wrong file format");
   }
@@ -41,7 +41,7 @@ void Champion::read_from_string(std::string &line, const char delimiter) {
 }
 void Item::read_from_string(std::string &line, const char delimiter) {
   // Todo: read item datas
-  std::vector<std::string> tokens = splitString(line, delimiter);
+  std::vector<std::string> tokens = split_string(line, delimiter);
   if(tokens.size() < 4){
     throw "wrong file format";
   }
@@ -271,12 +271,6 @@ Champion::~Champion(){
     delete gamemove;
   }
 }
-// Todo: remove this
-void Player::draw_champs(sf::RenderWindow &window){
-  for(size_t i = 0; i < champs.size(); i++){
-    champs[i]->draw(window);
-  }
-}
 
 void Champion::finish_gamemove(Cell *cell){
   if(current_gamemove != nullptr){
@@ -396,8 +390,9 @@ sf::Vector2f Champion::current_gamemove_index()const{
 Cell *Champion::get_simulation_cell(){
   int lastindex = static_cast<int>(gamemoves.size()) - 1;
   for(int i = lastindex; i >= 0; i--){
-    if(gamemoves[i]->position_cell() != nullptr && gamemoves[i]->changes_pos()){
-      return gamemoves[i]->position_cell();
+    size_t index = static_cast<size_t>(i);
+    if(gamemoves[index]->position_cell() != nullptr && gamemoves[index]->changes_pos()){
+      return gamemoves[index]->position_cell();
     }
   }
   return cell;
@@ -443,6 +438,9 @@ void Champion::do_move(std::shared_ptr<Map> map){
       simulation_points_counter++;
     }
   }
+  for(size_t i = 0; i < wards.size(); i++){
+    wards[i]->do_move();
+  }
 }
 void MinionWave::do_move(const std::shared_ptr<Map> &map){
   for(auto minion: minions){
@@ -484,6 +482,12 @@ void Champion::fight(Entity *other){
   double other_total_dmg = other->get_total_dmg();
   remove_hp(other_total_dmg);
   other->remove_hp(total_dmg);
+  if(!other->isAlive()){
+    Effect effect = other->get_effect_if_killed();
+    if(effect.not_zero()){
+      buffs.push_back(effect);
+    }
+  }
 }
 void Champion::fight(Champion *other){
   double total_dmg = get_total_dmg();

@@ -50,8 +50,9 @@ public:
   virtual bool can_ward_here()const{return true;}
   /**
     * @brief returns if there are entities to attack on this cell
+    * @param enemy_side_ returns true only if there are entities that aren't from this side
    */
-  virtual bool can_attack_entity()const{return !entities.empty();}
+  virtual bool can_attack_entity(Side enemy_side_)const;
   /**
     * @brief adds an entity to its entity list
     * @param entity the entity to add
@@ -95,7 +96,7 @@ public:
     * @brief sets the property vision to the given argument
     * @param vision true if this cell has vision
    */
-  virtual void set_vision(bool has_vision);
+  virtual void set_vision(bool has_vision_);
   /**
     * @brief sets the current cells position
     * @param pos the position to change to
@@ -145,6 +146,7 @@ private:
 
   bool shop;
   bool selected;
+  bool has_vision;
 
   static sf::Uint8 has_vision_opacity;
   static sf::Uint8 no_vision_opacity;

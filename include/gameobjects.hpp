@@ -9,9 +9,41 @@
 #include <sstream>
 #include <memory>
 #include <utility>
-#include <format>
 class Cell;
 class Map;
+class Effect {
+public:
+  /**
+    * @brief contructor which set's bonus_dmg and bonus_hp to their respective values
+    * @param dmg the new damage to use
+    * @param hp the new hp to use
+   */
+  Effect(int dmg=0, int hp=0): bonus_dmg(dmg), bonus_hp(hp){}
+  /**
+    * @brief get's the bonus_dmg
+   */
+  [[nodiscard]] double get_bonus_dmg()const{return bonus_dmg;}
+  /**
+    * @brief get's the bonus_hp
+   */
+  [[nodiscard]] double get_bonus_hp()const{return bonus_hp;}
+  /**
+    * @brief set's bonus_dmg
+   */
+  void set_bonus_dmg(double bonus_dmg_){bonus_dmg = bonus_dmg_;}
+  /**
+    * @brief set's bonus_hp
+   */
+  void set_bonus_hp(double bonus_hp_){bonus_hp = bonus_hp_;}
+  /**
+   * checks if the two properties are zero, or not
+   * @return true if both of them aren't zero
+   */
+  bool not_zero()const{return bonus_dmg != 0 && bonus_hp != 0;}
+private:
+  double bonus_dmg;
+  double bonus_hp;
+};
 /**
  * @brief the enum that holds which team the entity is on
  */
@@ -146,6 +178,7 @@ public:
    * @param entity
    */
   virtual void killed_other(Entity *entity);
+  virtual Effect get_effect_if_killed()const{return Effect{0,0};}
 protected:
   std::string name;
 
@@ -168,38 +201,7 @@ protected:
   sf::Color color;
   sf::RectangleShape shape;
 };
-class Effect {
-public:
-  /**
-    * @brief default contructor, initializes bonus_hp and bonus_dmg to 0
-   */
-  Effect(): bonus_dmg(0), bonus_hp(0){}
-  /**
-    * @brief contructor which set's bonus_dmg and bonus_hp to their respective values
-    * @param dmg the new damage to use
-    * @param hp the new hp to use
-   */
-  Effect(int dmg, int hp): bonus_dmg(dmg), bonus_hp(hp){}
-  /**
-    * @brief get's the bonus_dmg
-   */
-  [[nodiscard]] double get_bonus_dmg()const{return bonus_dmg;}
-  /**
-    * @brief get's the bonus_hp
-   */
-  [[nodiscard]] double get_bonus_hp()const{return bonus_hp;}
-  /**
-    * @brief set's bonus_dmg
-   */
-  void set_bonus_dmg(double bonus_dmg_){bonus_dmg = bonus_dmg_;}
-  /**
-    * @brief set's bonus_hp
-   */
-  void set_bonus_hp(double bonus_hp_){bonus_hp = bonus_hp_;}
-private:
-  double bonus_dmg;
-  double bonus_hp;
-};
+
 /**
  * @brief the class that describes items, which are primarily used to give bonuses to champions
  * (could be used on entities too if needed)
@@ -397,7 +399,11 @@ public:
    * @param map the map to move on
    */
   void move(std::shared_ptr<Map> &map);
-  void killed_other(Entity *entity) override;
+  /**
+   * @brief if this entity killed another one
+   * @param other the other entity that was killed
+   */
+  void killed_other(Entity *other) override;
 
 
 private:
@@ -423,6 +429,8 @@ private:
   GameMove *current_gamemove = nullptr;
   int simulation_points_counter = 1;
   bool simulation = false;
+
+  std::vector<Effect> buffs;
 };
 /**
   * @brief the class for a tower, which damages other entities that come near it
@@ -452,21 +460,11 @@ class Nexus : public Structure {
 };
 
 /**
-  * @brief a common class for monsters
-  * which are not managed by the player, they can attack champions, and champions can slain them
-  * they give xp to the champ that killed them
- */
-class Monster : public Entity {
-private:
-  int xp_given; // the amount of xp given to the champion by slaying them
-  int gold_given; // the amount of gold given to the champion by slaying them
-};
-/**
   * @brief a common class for camps
   * which are not able to move (baron nashor, drakes and jungle camps)
   *because of how the game works, every camp can give an effect to the champion(s) that slain it
  */
-class Camp : public Monster {
+class Camp : public Entity {
 public:
   /**
     * @brief set's up the camps attributes (hp,dmg)
@@ -499,7 +497,7 @@ public:
   * @brief class for minions,
   * which are a type of monsters that go through the lanes, attacking anything that's in front of them
  */
-class Minion : public Monster {
+class Minion : public Entity {
 public:
   /**
     * @brief set's up the minions attributes (hp,dmg)
@@ -619,11 +617,6 @@ public:
     * @param c the champ to check
    */
   bool is_his_champ(Champion *c);
-  /**
-    * @brief draw's each champ to the window
-    * @param window the window to draw to
-   */
-  void draw_champs(sf::RenderWindow &window);
   /**
     * @brief returns true, if this player started the game
    */

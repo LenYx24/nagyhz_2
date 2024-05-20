@@ -23,8 +23,9 @@ void Cell::reset_selection_color(){
   shape.setFillColor(c);
 }
 void Cell::reset_vision_color(){
+  has_vision = false;
   sf::Color c = shape.getFillColor();
-  if(c.a != selected_opacity){
+  if(!selected){
     c.a = has_vision_opacity;
   }
   shape.setFillColor(c);
@@ -37,9 +38,9 @@ void Cell::set_highlighted() {
 }
 void Cell::draw(sf::RenderWindow &w) {
   w.draw(shape);
-  for(auto & entitie : entities){
-    if(entitie != nullptr ) // && shape.getFillColor().a == has_vision_opacity
-      entitie->draw(w);
+  for(auto & entity : entities){
+    if(entity != nullptr && has_vision) //
+      entity->draw(w);
   }
 }
 void Cell::set_color(sf::Color c) {
@@ -167,7 +168,7 @@ Map::Map(sf::Vector2f pos) {
         break;
       }
       default: {
-        std::cout << "err: wrong symbol: " << line[line_index] << std::endl;
+        throw std::invalid_argument("err: wrong symbol: " + std::to_string(line[line_index]));
         cells[i][j] = nullptr;
         break;
       }
@@ -285,7 +286,8 @@ void Map::check_game_end(){
     }
   }
 }
-void Cell::set_vision(bool has_vision){
+void Cell::set_vision(bool has_vision_){
+  has_vision = has_vision_;
   sf::Color shape_color = shape.getFillColor();
   if(shape_color.a != selected_opacity){
     if(has_vision){
@@ -305,7 +307,6 @@ void Cell::remove_entity(Entity *entity){
   auto element = std::find(entities.begin(),entities.end(),entity);
   if(element != entities.end())
     entities.erase(element);
-  else std::cout << "no such entity on given cell" << std::endl;
 }
 Cell *Map::get_clicked_cell(const int x, const int y) {
   for (size_t i = 0; i < size.x; i++) {
@@ -315,7 +316,6 @@ Cell *Map::get_clicked_cell(const int x, const int y) {
       }
     }
   }
-  std::cout << "x:" <<x << "y: " << y << "  !!cellnullptr" << std::endl;
   return nullptr;
 }
 bool Cell::contains(const int x, const int y) {
@@ -349,8 +349,10 @@ void Map::setselectednearbycells(Champion *c, P pred){
   sf::Vector2f index = c->get_simulation_cell()->get_index();
   std::vector<Cell *> nearbycells = getnearbycells(index);
   for(size_t i = 0; i < nearbycells.size(); i++){
-    if(pred(nearbycells[i]))
+    if(pred(nearbycells[i])){
       nearbycells[i]->set_selected();
+      break;
+    }
   }
 }
 void Map::select_accessible_cells(Champion *champ){
@@ -359,8 +361,16 @@ void Map::select_accessible_cells(Champion *champ){
 void Map::select_wardable_cells(Champion *champ){
   setselectednearbycells(champ,[](Cell *c){return c->can_ward_here();});
 }
-void Map::select_attackable_entities(Champion *c){
-  setselectednearbycells(c,[](Cell *c){return c->can_attack_entity();});
+void Map::select_attackable_entities(Champion *champ){
+  setselectednearbycells(champ,[champ](Cell *c){
+    return c->can_attack_entity(champ->get_side());
+  });
+}
+bool Cell::can_attack_entity(Side enemy_side_)const{
+  for(Entity *entity: entities){
+    if(entity->get_side() != enemy_side_)return true;
+  }
+  return false;
 }
 void Cell::unselect(){
   selected = false;

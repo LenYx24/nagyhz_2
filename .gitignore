@@ -7,6 +7,8 @@ build/*
 docs/*
 out/*
 test/bin/*
+html
+latex
 .cache
 .idea
 .vs
