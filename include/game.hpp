@@ -34,6 +34,7 @@ public:
   void onclick_base();
   void onclick_ward();
   void onclick_item(Item *selected_item);
+  void onclick_reset_gamemove();
 
   bool is_gamemove_finisher(Cell *clickedcell);
   void end_turn();
@@ -49,7 +50,7 @@ private:
   Resources::Holder h;
   // game elements
   std::vector<Item> allitems;
-  std::vector<Player*> players;
+  std::vector<Player *> players;
   Player *currentplayer;
   // selection
   Champion *selectedchamp;

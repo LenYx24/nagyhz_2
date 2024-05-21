@@ -48,7 +48,7 @@ public:
   TextBox(const std::string& label,Resources::Holder &holder, sf::Vector2f pos = {0, 0}, const std::string& text_default="");
   void draw(sf::RenderWindow& window) override;
   void set_position(sf::Vector2f pos)override{shape.setPosition(pos);}
-  virtual sf::Vector2f get_size()override{return shape.getSize();}
+  sf::Vector2f get_size()override{return shape.getSize();}
   bool contains(int x, int y)const override;
   inline sf::FloatRect get_global_bounds() const {
     return shape.getGlobalBounds();
@@ -101,8 +101,8 @@ public:
     return label.getString();
   }
   bool contains(int x, int y)const override;
-  sf::Vector2f get_size();
-  void draw(sf::RenderWindow& window);
+  sf::Vector2f get_size() override;
+  void draw(sf::RenderWindow& window)override;
 
 protected:
   sf::RectangleShape frame;

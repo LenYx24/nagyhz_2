@@ -19,7 +19,8 @@ void PlaceWard::do_move(Champion *champ, std::shared_ptr<Map> map){
     map->update_vision();
 }
 void AttackMove::do_move(Champion *champ, std::shared_ptr<Map> map){
-    map->move(champ, champ->get_real_cell()->get_index(), cell->get_index());
+    //map->move(champ, champ->get_real_cell()->get_index(), cell->get_index());
+    map->check_game_end();
     champ->set_cell(cell);
     // Todo: if there are no enemy entity to attack, then cancel move
     Entity *other = cell->get_first_entity();

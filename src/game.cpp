@@ -30,6 +30,7 @@ GameState::GameState(StateManager &state_manager, std::vector<Champion*> p1champ
   gamemove_buttons.push_back(new GameButton(h, "attack", [state = this]() { state->onclick_attack(); }));
   gamemove_buttons.push_back(new GameButton(h, "ward", [state = this]() { state->onclick_ward(); }));
   gamemove_buttons.push_back(new GameButton(h, "base", [state = this]() { state->onclick_base(); }));
+  gamemove_buttons.push_back(new GameButton(h, "reset gamemove", [state = this]() { state->onclick_reset_gamemove(); }));
 
   UI::Grid grid{{windowsize.x/4, 100}, {5, 5},{0,1}};
   std::vector<UI::GridElement *> els(gamemove_buttons.begin(), gamemove_buttons.end());
@@ -84,15 +85,14 @@ GameState::GameState(StateManager &state_manager, std::vector<Champion*> p1champ
       player->round_end(state->map);
     }
     state->elapsed_time.restart();
-    auto stats = state->selectedchamp->get_stats();
-    state->show_stats(stats);
+    state->selectedchamp = nullptr;
   };
   create_simulation = [state = this, &window, simulation_ended](){
     state->state_manager.push_state(std::make_unique<SimulationState>(
         state->players, state->map, window, state->mode,state->state_manager,simulation_ended)
     );
   };
-  
+
   // seed the random generator
   srand(static_cast<unsigned>(time(0)));
   // Todo: randomly select starter champ
@@ -143,6 +143,14 @@ void GameState::onclick_item(Item *selected_item) {
   Cell *spawnpoint = map->getcell(currentplayer->get_spawn_point());
   if(currentplayer->is_his_champ(selectedchamp) && selectedchamp->get_simulation_cell() == spawnpoint){
     selectedchamp->add_item(selected_item);
+    auto stats = selectedchamp->get_stats();
+    show_stats(stats);
+  }
+}
+void GameState::onclick_reset_gamemove(){
+  if(selectedchamp && currentplayer->is_his_champ(selectedchamp)){
+    selectedchamp->remove_last_gamemove();
+    map->reset_cell_selections();
   }
 }
 
@@ -229,7 +237,6 @@ void GameState::handle_events(sf::Event &e) {
     }
     for (ItemBox *b : items_boxes) {
       if (b->contains(e.mouseButton.x, e.mouseButton.y)) {
-        // Todo: make itemboxes item a private member
         onclick_item(b->item);
         return;
       }

@@ -47,7 +47,7 @@ private:
 /**
  * @brief the enum that holds which team the entity is on
  */
-enum class Side { BLUE, RED };
+enum class Side { BLUE, RED, NEUTRAL };
 /**
  * @brief The class that describes an entity
  */
@@ -124,7 +124,7 @@ public:
     * @brief removes the given damage from the entity's total hp, and checks if the entity died by this damage
     * @param dmg the amount of damage dealt to this entity
    */
-  virtual void remove_hp(double dmg){if(get_total_hp()-dmg > 0)hp-=dmg; check_death();}
+  virtual void remove_hp(double dmg){total_hp-=dmg; check_death();}
   /**
     * @brief checks if the entity died
    */
@@ -348,6 +348,10 @@ public:
    */
   void finish_gamemove(Cell *cell);
   /**
+   * @brief removes the last gamemove from this champion
+   */
+  void remove_last_gamemove();
+  /**
     * @brief update the champion's shape position, to match where it should be on the map
     * @param pos the position to change to
    */
@@ -409,7 +413,7 @@ public:
 private:
   sf::Vector2f gamemove_index(size_t offset)const;
   int cs = 0;
-  int gold = 0;
+  int gold = 600;
   int hp_per_level = 0;  // the amount of hp given per level up
   int dmg_per_level = 0; // the amount of dmg given per level up
   int level = 1; // the current level of the champion

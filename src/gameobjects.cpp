@@ -111,7 +111,7 @@ void Champion::round_end(){
   gamemoves.clear();
   simulation_points_counter = 1;
   // passive gold generation
-  gold++;
+  gold+=20;
 
   // check if any wards expired and remove them
   for(auto iter = wards.begin(); iter != wards.end(); iter++){
@@ -216,7 +216,9 @@ std::vector<std::string> Champion::get_stats()const{
   std::vector<std::string> stats = Entity::get_stats();
   stats.push_back("movepoints: "+std::to_string(movepoints));
   stats.push_back("level: "+std::to_string(level));
-  stats.emplace_back("items: ");
+  stats.push_back("gold: "+std::to_string(gold));
+  stats.push_back("experience: "+std::to_string(xp));
+  stats.emplace_back("items: " + std::to_string(items.size()));
   for(auto & item : items){
     stats.push_back(item->get_name());
   }
@@ -236,6 +238,7 @@ Camp::Camp(){
   hp = 100;
   damage = 15;
   set_xp_given(30);
+  set_side(Side::NEUTRAL);
   shape.setFillColor(sf::Color{130,100,230});
 }
 Nexus::Nexus(){
@@ -252,6 +255,19 @@ bool Player::is_his_champ(Champion *c){
   }
   return false;
 }
+void Champion::remove_last_gamemove(){
+  if(!gamemoves.empty()){
+    if(gamemoves.back()->is_complete()){
+      movepoints += gamemoves.back()->get_movepoints();
+    }
+    delete gamemoves.back();
+    gamemoves.pop_back();
+    if(!gamemoves.empty())
+      current_gamemove = gamemoves.back();
+    else current_gamemove = nullptr;
+  }
+}
+
 Champion *Player::get_selected_champs(sf::Vector2f index){
   for(int i = static_cast<int>(champs.size())-1; i >=0; i--){
     size_t current_index = static_cast<size_t>(i);
@@ -363,8 +379,9 @@ Champion::Champion(){
   icon.setFillColor(sf::Color::White);
 }
 void Champion::add_item(Item *item){
-  if(items.size() < 6){
+  if(items.size() < 6 && item->get_gold_value() <= gold){
     items.push_back(item);
+    gold -= item->get_gold_value();
   }
   update_total_dmg();
   update_total_hp();
@@ -427,11 +444,19 @@ void MinionWave::round_end(){
   }
 }
 void Champion::do_move(std::shared_ptr<Map> map){
+  if(!isAlive()){
+    respawn_timer--;
+    if(respawn_timer == 0){
+      // Todo: respawn
+    }
+    return;
+  }
   if(!gamemoves.empty()){
     // Todo: use begin instead of indexing
-    if(gamemoves[0]->get_movepoints() == simulation_points_counter){
-      gamemoves[0]->do_move(this,map);
-      delete gamemoves[0];
+    GameMove *first = *gamemoves.begin();
+    if(first->get_movepoints() == simulation_points_counter && first->is_complete()){
+      first->do_move(this,map);
+      delete first;
       gamemoves.erase(gamemoves.begin());
       simulation_points_counter = 1;
     }else{
@@ -497,7 +522,7 @@ void Champion::fight(Champion *other){
   // if one of them can kill the other
   if(total_dmg >= other_total_hp || other_total_dmg >= total_hp){
     double chance = ((total_dmg+other_total_dmg)/total_dmg + (total_hp+other_total_hp)/total_hp) /2;
-    double ran = rand();
+    int ran = rand();
     std::cout << "change for the fight: " << chance << std::endl;
     std::cout << "random number: " << ran << std::endl;
     // the champ won

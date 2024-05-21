@@ -25,7 +25,7 @@ target_sources(lolmacrogametest
     ../src/UIcomponents.cpp
     ../src/menu.cpp
 
-    ./main.cpp
+        main_test.cpp
 )
 target_link_libraries(lolmacrogametest PRIVATE sfml-graphics)
 target_compile_features(lolmacrogametest PRIVATE cxx_std_17)

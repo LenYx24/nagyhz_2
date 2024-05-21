@@ -57,7 +57,7 @@ void SimulationState::update(){
 SimulationState::~SimulationState(){
   delete title;
   // no gamemoves should be on any champion, this is just to make sure all of them get deleted
-  for(Player *player: players){
+  for(auto player: players){
     player->clear_gamemoves();
   }
   callback();

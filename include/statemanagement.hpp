@@ -9,7 +9,7 @@
 class State;
 class StateManager {
 public:
-  StateManager():pop(false){buffer_state = std::move(std::unique_ptr<State>(nullptr));}
+  StateManager():pop(false){buffer_state = std::unique_ptr<State>(nullptr);}
   void change_state(std::unique_ptr<State> state);
   void push_state(std::unique_ptr<State> state);
   void pop_state();

@@ -23,7 +23,7 @@ void Cell::reset_selection_color(){
   shape.setFillColor(c);
 }
 void Cell::reset_vision_color(){
-  has_vision = false;
+  has_vision = true;
   sf::Color c = shape.getFillColor();
   if(!selected){
     c.a = has_vision_opacity;
@@ -121,7 +121,7 @@ Map::Map(sf::Vector2f pos) {
         cells[i][j]->add_entity(nexus);
         break;
       }
-      // sima jungle camp
+      // red jungle camp
       case 'j': {
         cells[i][j] = new Ground{};
         cells[i][j]->add_entity(new Camp);
@@ -140,7 +140,7 @@ Map::Map(sf::Vector2f pos) {
       // drake
       case 'd': {
         cells[i][j] = new Ground{};
-        cells[i][j]->add_entity(new Drake);
+        cells[i][j]->add_entity( new Drake);
         break;
       }
       // redbuff
@@ -325,7 +325,8 @@ Entity* Cell::get_entity_clicked(const int x, const int y){
   // need to start iterating from the back, because of how the entities are drawn to the screen, 
   //the last one is drawn on top of the other ones
   for(int i = static_cast<int>(entities.size())-1; i >=0; i--){
-    if(entities[i]->clicked(x,y))return entities[i];
+    size_t index = static_cast<size_t>(i);
+    if(entities[index]->clicked(x,y))return entities[index];
   }
   return nullptr;
 }
@@ -351,7 +352,6 @@ void Map::setselectednearbycells(Champion *c, P pred){
   for(size_t i = 0; i < nearbycells.size(); i++){
     if(pred(nearbycells[i])){
       nearbycells[i]->set_selected();
-      break;
     }
   }
 }
