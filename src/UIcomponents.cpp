@@ -1,7 +1,9 @@
+#include <utility>
+
 #include "../include/UIcomponents.hpp"
 using namespace UI;
 
-Button::Button(sf::String str, std::function<void()> onclick, sf::Vector2f pos) {
+Button::Button(const sf::String& str, std::function<void()> onclick, sf::Vector2f pos) {
   // default button settings
   text.setString(str);
   text.setFillColor({220, 225, 223});
@@ -11,8 +13,9 @@ Button::Button(sf::String str, std::function<void()> onclick, sf::Vector2f pos) 
   shape.setFillColor({33, 104, 105});
   shape.setSize({500, 120});
   text.setOrigin({text.getLocalBounds().width / 2, text.getLocalBounds().height / 2});
-  set_position(pos);
-  this->onclick = onclick;
+  shape.setPosition(pos);
+  text.setPosition(pos);
+  this->onclick = std::move(onclick);
 }
 void TextBox::draw(sf::RenderWindow& window){
   window.draw(shape);
@@ -61,9 +64,6 @@ void TextBox::remove_char(){
   str.pop_back();
   text.setString(str);
 }
-void Button::set_text(const sf::String& str) {
-  text.setString(str);
-}
 void Button::set_position(sf::Vector2f pos) {
   shape.setOrigin(shape.getLocalBounds().width / 2.f, shape.getLocalBounds().height / 2.f);
   shape.setPosition(pos);
@@ -87,14 +87,14 @@ NamedBox::NamedBox(const std::string& label, sf::RectangleShape frame, Resources
   this->frame = std::move(frame);
 }
 
-void NamedBox::set_char_size(int size) {
+void NamedBox::set_char_size(unsigned size) {
   label.setCharacterSize(size);
 }
 void NamedBox::set_label_color(const sf::Color &c) {
   label.setFillColor(c);
 }
-void NamedBox::setlabel(std::string l){
-  label.setString(l);
+void NamedBox::set_label(const std::string& label_test){
+  label.setString(label_test);
 }
 
 void NamedBox::set_position(sf::Vector2f pos) {
@@ -119,7 +119,14 @@ void Grid::set_elements_pos() {
     pos.y += (element->get_size().y + margin.y) * direction.y;
   }
 }
-
+sf::FloatRect Grid::get_global_bounds() const {
+  sf::FloatRect f{};
+  f.top = start_pos.y;
+  f.left = start_pos.x;
+  f.width = static_cast<float>(elements.size())*(margin.x+ direction.x);
+  f.height = static_cast<float>(elements.size())*(margin.y+ direction.y);
+  return f;
+}
 void Grid::set_elements(std::vector<GridElement *> elements_) {
   elements = std::move(elements_);
 }

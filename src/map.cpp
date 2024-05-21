@@ -11,8 +11,8 @@ void Cell::update_shape(sf::Vector2f map_position, sf::Vector2f cell_size, float
   update_entities_shape(pos);
 }
 void Cell::update_entities_shape(sf::Vector2f mappos){
-  for(size_t i = 0; i < entities.size(); i++){
-    entities[i]->update_shape_pos(mappos);
+  for(auto & entity : entities){
+    entity->update_shape_pos(mappos);
   }
 }
 void Cell::reset_selection_color(){
@@ -63,6 +63,7 @@ SpawnArea::SpawnArea() {
   set_shop(true);
 }
 Map::Map(sf::Vector2f pos) {
+  vision_side = Side::NEUTRAL;
   position = pos;
   std::string map_filename = "resources/map.txt";
   std::ifstream file(map_filename);

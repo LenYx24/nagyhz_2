@@ -1,5 +1,5 @@
-#ifndef UICOMPONENTS_HPP
-#define UICOMPONENTS_HPP
+#ifndef UI_COMPONENTS
+#define UI_COMPONENTS
 
 #include <SFML/Graphics.hpp>
 #include <functional>
@@ -16,17 +16,16 @@ public:
   virtual ~GridElement() = default;
   virtual void draw(sf::RenderWindow& window) = 0;
   virtual void set_position(sf::Vector2f pos) = 0;
-  virtual bool contains(int x, int y)const=0;
+  [[nodiscard]] virtual bool contains(int x, int y)const=0;
   virtual sf::Vector2f get_size() = 0;
 };
 
 class Button : public GridElement {
 public:
-  Button() {}
-  Button(
-      sf::String text, std::function<void()> onclick = []() { std::cout << "onclick not implemented yet" << std::endl;},
+  Button() = default;
+  explicit Button(
+      const sf::String& text, std::function<void()> onclick = []() { std::cout << "onclick not implemented yet" << std::endl;},
       sf::Vector2f pos = {0, 0});
-  void set_text(const sf::String& text);
   void set_position(sf::Vector2f pos) override;
   void update_text_position();
   void draw_to_window(sf::RenderWindow &window);
@@ -70,15 +69,7 @@ public:
   void set_elements(std::vector<GridElement *> elements_);
   void set_elements_pos();
   [[nodiscard]] bool contains(int x, int y)const;
-  void draw();
-  [[nodiscard]] inline sf::FloatRect get_global_bounds() const {
-    sf::FloatRect f{};
-    f.top = start_pos.y;
-    f.left = start_pos.x;
-    f.width = static_cast<float>(elements.size())*(margin.x+ direction.x);
-    f.height = static_cast<float>(elements.size())*(margin.y+ direction.y);
-    return f;
-  }
+  [[nodiscard]] sf::FloatRect get_global_bounds() const;
 private:
   std::vector<GridElement *> elements;
   sf::Vector2f start_pos;
@@ -87,18 +78,14 @@ private:
 };
 class NamedBox : public GridElement {
 public:
-  NamedBox(Resources::Holder &h) {label.setFont(h.get(Resources::Type::FONT));}
+  explicit NamedBox(Resources::Holder &h) {label.setFont(h.get(Resources::Type::FONT));}
   NamedBox(const std::string& label, sf::RectangleShape frame, Resources::Holder &h);
-  void setlabel(std::string l);
-  void setframe(sf::RectangleShape);
+  void set_label(const std::string& l);
   void set_position(sf::Vector2f pos) override;
-  void set_char_size(int size);
+  void set_char_size(unsigned size);
   void set_label_color(const sf::Color &c);
-  inline sf::FloatRect get_global_bounds() const {
+  sf::FloatRect get_global_bounds() const {
     return frame.getGlobalBounds();
-  }
-  std::string getlabel() const {
-    return label.getString();
   }
   bool contains(int x, int y)const override;
   sf::Vector2f get_size() override;

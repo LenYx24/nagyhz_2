@@ -10,18 +10,16 @@ GameButton::GameButton(Resources::Holder &h, const sf::String& str, std::functio
 }
 GameState::GameState(StateManager &state_manager, std::vector<Champion*> p1champs,std::vector<Champion*> p2champs, Settings settings, sf::RenderWindow& window) : State(state_manager),map(std::make_unique<Map>(sf::Vector2f{500,20})) {
   // load items from the file and save them to the allitems variable
-  iofile inp(settings.items_filepath);
-  for (std::string line; std::getline(inp.getfile(), line);) {
-    Item item;
-    item.read_from_string(line);
-    allitems.push_back(item);
+  IOParser::File input(settings.items_filepath);
+  for (std::string line; std::getline(input.getfile(), line);) {
+    allitems.push_back(IOParser::create_item(line));
   }
   // set gamemode
   this->mode = settings.mode;
   // load font
   h.load(Resources::Type::FONT, "./resources/fonts/Roboto.ttf");
   // create the UI components:
-  sf::Vector2f windowsize = state_manager.get_size(window);
+  sf::Vector2f windowsize = StateManager::get_size(window);
   // todo: get the gamebuttons sizes, and position it accordingly
   buttons.push_back(new GameButton(h, "End my turn", [state = this]() { state->end_turn(); },{80,40}));
   buttons.push_back(new GameButton(h, "back", [&state_manager]() { state_manager.pop_state(); },{80,windowsize.y-50}));
@@ -71,8 +69,10 @@ GameState::GameState(StateManager &state_manager, std::vector<Champion*> p1champ
   player_1->set_font(h);
   player_2->set_font(h);
   // spawn champs
-  player_1->set_spawn_point({0, static_cast<float>(map->get_cell_grid_size().y) - 1});
-  player_2->set_spawn_point({static_cast<float>(map->get_cell_grid_size().x) - 1, 0});
+  Cell *player1_spawn_point = map->getcell({0, static_cast<float>(map->get_cell_grid_size().y) - 1});
+  Cell *player2_spawn_point = map->getcell({static_cast<float>(map->get_cell_grid_size().x) - 1, 0});
+  player_1->set_spawn_point(player1_spawn_point);
+  player_2->set_spawn_point(player2_spawn_point);
   player_1->spawn_champs(map);
   player_2->spawn_champs(map);
   player_1->set_side(Side::BLUE);
@@ -140,8 +140,8 @@ void GameState::end_turn() {
 }
 void GameState::onclick_item(Item *selected_item) {
   if(selectedchamp == nullptr)return;
-  Cell *spawnpoint = map->getcell(currentplayer->get_spawn_point());
-  if(currentplayer->is_his_champ(selectedchamp) && selectedchamp->get_simulation_cell() == spawnpoint){
+  if(currentplayer->is_his_champ(selectedchamp)
+      && selectedchamp->get_simulation_cell() == currentplayer->get_spawn_point()){
     selectedchamp->add_item(selected_item);
     auto stats = selectedchamp->get_stats();
     show_stats(stats);
@@ -173,7 +173,7 @@ void GameState::onclick_base(){
   TeleportBase tp_base;
   if(tp_base.check_gamemove_addable(currentplayer, selectedchamp)){
     selectedchamp->add_gamemove(new TeleportBase);
-    selectedchamp->finish_gamemove(map->getcell(currentplayer->get_spawn_point()));
+    selectedchamp->finish_gamemove(currentplayer->get_spawn_point());
   }
 }
 void GameState::onclick_ward(){
@@ -183,7 +183,7 @@ void GameState::onclick_ward(){
     selectedchamp->add_gamemove(new PlaceWard);
   }
 }
-void GameState::show_cellinfo(sf::Vector2f index){
+void GameState::show_cell_info(sf::Vector2f index){
   sf::RectangleShape shape{{100,60}};
   shape.setFillColor(sf::Color::Black);
   for(auto & label : stat_labels){
@@ -200,11 +200,11 @@ void GameState::show_cellinfo(sf::Vector2f index){
   statlabel->set_position({70,200});
   stat_labels.push_back(statlabel);
 }
-void GameState::show_stats(std::vector<std::string> &statsentity){
+void GameState::show_stats(std::vector<std::string> &stats){
   sf::Vector2f startpos{70,300};
   sf::RectangleShape shape{{100,30}};
   shape.setFillColor(sf::Color::Black);
-  for(const auto & i : statsentity){
+  for(const auto & i : stats){
     UI::NamedBox *statlabel = new UI::NamedBox{i,shape,h};
     statlabel->set_position(startpos);
     float margin_y = 5;
@@ -213,11 +213,11 @@ void GameState::show_stats(std::vector<std::string> &statsentity){
     stat_labels.push_back(statlabel);
   }
 }
-bool GameState::is_gamemove_finisher(Cell *clickedcell){
+bool GameState::is_gamemove_finisher(Cell *clicked_cell){
   return selectedchamp
          && currentplayer->is_his_champ(selectedchamp)
          && !selectedchamp->is_gamemove_complete()
-         && clickedcell->is_selected();
+         && clicked_cell->is_selected();
 }
 void GameState::handle_events(sf::Event &e) {
   if (e.type == sf::Event::Closed) {
@@ -237,7 +237,7 @@ void GameState::handle_events(sf::Event &e) {
     }
     for (ItemBox *b : items_boxes) {
       if (b->contains(e.mouseButton.x, e.mouseButton.y)) {
-        onclick_item(b->item);
+        onclick_item(b->get_item());
         return;
       }
     }
@@ -245,8 +245,8 @@ void GameState::handle_events(sf::Event &e) {
     Cell *clickedcell = map->get_clicked_cell(e.mouseButton.x, e.mouseButton.y);
     if(clickedcell != nullptr){
       std::vector<std::string> statsentity;
-      
-      show_cellinfo(clickedcell->get_index());
+
+      show_cell_info(clickedcell->get_index());
       if(is_gamemove_finisher(clickedcell)){
         selectedchamp->finish_gamemove(clickedcell);
         selectedchamp->move(map);

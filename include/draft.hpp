@@ -1,10 +1,13 @@
 #ifndef DRAFT_HPP
 #define DRAFT_HPP
 #include "UIcomponents.hpp"
+#include "game.hpp"
 #include "gameobjects.hpp"
+#include "ioparser.h"
 #include "resources.hpp"
 #include "statemanagement.hpp"
-#include "game.hpp"
+#include <fstream>
+#include <sstream>
 #include <vector>
 /**
  * @brief class used to store one draft turn
@@ -19,7 +22,7 @@ public:
   /**
     * @brief does one turn
    */
-  void doturn(Champion *c);
+  void doturn(Champion *champ);
   /**
     * @brief returns the banphase variable, true if this turn is banphase
    */
@@ -63,11 +66,11 @@ public:
   /**
     * @brief draws the teamcol to the window
    */
-  void draw_to_window(sf::RenderWindow &w);
+  void draw_to_window(sf::RenderWindow &window);
   /**
     * @brief gets the champions list size
    */
-  size_t champs_size()const{return champs.size();}
+  [[nodiscard]] size_t champs_size()const{return champs.size();}
   /**
     * @brief gets the champion at the given index, throws error if index is out of range
     * @param index the champ at this index
@@ -107,17 +110,17 @@ private:
 };
 class DraftState : public State {
 public:
-  DraftState(StateManager &state_manager, const Settings& s, sf::RenderWindow& window);
+  DraftState(StateManager &state_manager, const Settings& settings, sf::RenderWindow& window);
   ~DraftState();
-  void handle_events(sf::Event &e);
+  void handle_events(sf::Event &event);
   void update();
   void draw(sf::RenderWindow& window);
 
-  void lockin(StateManager& s, sf::RenderWindow& window, Settings settings);
+  void lockin(StateManager& state_manager, sf::RenderWindow& window, Settings settings);
   void dont_ban();
 
 protected:
-  Resources::Holder h;
+  Resources::Holder holder;
   std::vector<Champion *> allchamps;
   Champion *selectedchamp;
   std::vector<TeamCol> columns;

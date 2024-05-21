@@ -4,6 +4,7 @@
 #include <vector>
 #include <filesystem>
 #include <memory>
+#include <fstream>
 enum class Side;
 /**
   * @brief the base class for a cell on the map
@@ -31,7 +32,7 @@ public:
     * @brief set's this cell property to a shop cell
     * @param shop true if this is a cell where entities can shop
    */
-  virtual void set_shop(bool shop_){shop=shop_;}
+  void set_shop(bool shop_){shop=shop_;}
   /**
     * @brief sets the current cell as selected
    */
@@ -113,7 +114,7 @@ public:
     * @param cell_size the size of this cell
     * @param margin the margin to leave between it's neighbours
    */
-  virtual void update_shape(sf::Vector2f map_position, sf::Vector2f cell_size, float margin= 2);
+  void update_shape(sf::Vector2f map_position, sf::Vector2f cell_size, float margin= 2);
   /**
     * @brief gets the current index, this is where the cell is on the map
    */
@@ -144,9 +145,9 @@ private:
   sf::Vector2f indicies; // basically the index + 1 coordinates of the cell, it's useful if we want to calculate things
   sf::RectangleShape shape;
 
-  bool shop;
-  bool selected;
-  bool has_vision;
+  bool shop = false;
+  bool selected = false;
+  bool has_vision = false;
 
   static sf::Uint8 has_vision_opacity;
   static sf::Uint8 no_vision_opacity;

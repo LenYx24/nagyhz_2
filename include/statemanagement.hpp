@@ -19,7 +19,7 @@ public:
   void update();
   void draw(sf::RenderWindow &window);
 
-  sf::Vector2f get_size(sf::RenderWindow& window)const;
+  static sf::Vector2f get_size(sf::RenderWindow& window);
   inline bool has_state() const {return !states.empty() || buffer_state;}
 
   void exit();

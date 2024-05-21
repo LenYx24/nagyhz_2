@@ -20,7 +20,7 @@ class SimulationState : public State {
   void draw(sf::RenderWindow& window) override;
 
 protected:
-  // the callback function that is ran after simulation state ends
+  // the callback function that is run after simulation state ends
   std::function<void()>callback;
   Resources::Holder h;
   std::vector<Player *> &players;

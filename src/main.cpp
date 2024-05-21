@@ -1,10 +1,7 @@
 #include <SFML/Graphics.hpp>
-#include <SFML/Window/Keyboard.hpp>
-#include <iostream>
 #include <memory>
 
 #include "../include/menu.hpp"
-#include "../include/statemanagement.hpp"
 
 int main() {
   sf::RenderWindow window = sf::RenderWindow{sf::VideoMode{1280,800}, "lolmacrogame"};

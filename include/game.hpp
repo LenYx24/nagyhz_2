@@ -2,17 +2,23 @@
 #define GAME_HPP
 #include "UIcomponents.hpp"
 #include "gameobjects.hpp"
+#include "ioparser.h"
 #include "map.hpp"
 #include "resources.hpp"
-#include "statemanagement.hpp"
 #include "simulation.hpp"
+#include "statemanagement.hpp"
 #include <cstdlib>
 #include <ctime>
+#include <fstream>
+#include <utility>
 #include <vector>
 
 class ItemBox : public UI::NamedBox {
 public:
-  ItemBox(std::string label, sf::RectangleShape frame, Resources::Holder &h, Item *i) : NamedBox(label, frame, h), item(i) {}
+  ItemBox(const std::string& label, sf::RectangleShape frame, Resources::Holder &h, Item *i)
+      : NamedBox(label, std::move(frame), h), item(i) {}
+  Item *get_item()const{return item;}
+private:
   Item *item;
 };
 class GameButton : public UI::Button {
@@ -24,10 +30,10 @@ public:
 class GameState : public State {
 public:
   GameState(StateManager &state_manager, std::vector<Champion*> p1champs,std::vector<Champion*> p2champs, Settings settings, sf::RenderWindow& window);
-  ~GameState();
-  void handle_events(sf::Event &e);
-  void update();
-  void draw(sf::RenderWindow& window);
+  ~GameState() override;
+  void handle_events(sf::Event &e)override;
+  void update()override;
+  void draw(sf::RenderWindow& window)override;
 
   void onclick_gamemove();
   void onclick_attack();
@@ -36,11 +42,11 @@ public:
   void onclick_item(Item *selected_item);
   void onclick_reset_gamemove();
 
-  bool is_gamemove_finisher(Cell *clickedcell);
+  bool is_gamemove_finisher(Cell *clicked_cell);
   void end_turn();
 
-  void show_cellinfo(sf::Vector2f index);
-  void show_stats(std::vector<std::string> &statsentity);
+  void show_cell_info(sf::Vector2f index);
+  void show_stats(std::vector<std::string> &stats);
 
   std::function<void()> create_simulation;
   void next_player();

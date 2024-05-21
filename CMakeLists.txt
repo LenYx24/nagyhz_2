@@ -24,8 +24,8 @@ target_sources(${PROJECT_NAME}
     ./src/game.cpp
     ./src/gamemoves.cpp
     ./src/gameobjects.cpp
+        src/ioparser.cpp
     ./src/map.cpp
-    ./src/ioparser.cpp
     ./src/gameobjects.cpp
     ./src/resources.cpp
     ./src/statemanagement.cpp
@@ -59,7 +59,8 @@ target_compile_options(${PROJECT_NAME}
 target_link_options(${PROJECT_NAME} PRIVATE -fsanitize=address)
 
 
-add_executable(${PROJECT_NAME}_test)
+add_executable(${PROJECT_NAME}_test
+        test/main_test.cpp)
 target_sources(${PROJECT_NAME}_test
         PRIVATE
         ./src/simulation.cpp
@@ -74,7 +75,7 @@ target_sources(${PROJECT_NAME}_test
         ./src/statemanagement.cpp
         ./src/UIcomponents.cpp
         ./src/menu.cpp
-        
+
         ./test/main_test.cpp
 )
 target_include_directories(${PROJECT_NAME}

@@ -1,3 +1,5 @@
+#include <utility>
+
 #include "../include/menu.hpp"
 
 namespace Menu {
@@ -33,7 +35,7 @@ void MainState::handle_events(sf::Event &event){
         t.second->set_selected(true);
       }
     }
-    // if the user clicked outside of the text_boxes, then unselected them
+    // if the user clicked outside the text_boxes, then unselected them
     if(!clicked_inside_textbox)
       for(auto t: text_boxes) {t.second->set_selected(false);}
     for (UI::Button* b : buttons) {
@@ -59,7 +61,7 @@ void MainState::handle_events(sf::Event &event){
     }
   }
 }
-MenuButton::MenuButton(Resources::Holder &h, const sf::String& str, std::function<void()> onclick_) : Button(str, onclick_) {
+MenuButton::MenuButton(Resources::Holder &h, const sf::String& str, std::function<void()> onclick_) : Button(str, std::move(onclick_)) {
   // menu button specific override settings
   text.setCharacterSize(15);
   text.setFont(h.get(Resources::Type::FONT));
@@ -108,7 +110,7 @@ ModeSelectionState::ModeSelectionState(StateManager &s, sf::RenderWindow& window
     state->state_manager.push_state(std::make_unique<DraftState>(state->state_manager, state->setting, window));
   };
 
-  // for now there's only gamemode, but in the future there could be more
+  // for now there's only game mode, but in the future there could be more
   buttons.push_back(new MenuButton{resources_holder, "Player vs Player", [state=this,onclick_draft](){state->setting.mode = GameMode::TWOPLAYER;onclick_draft();}});
   buttons.push_back(new MenuButton{resources_holder, "back", [state=this](){state->state_manager.pop_state();}});
 

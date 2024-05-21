@@ -15,40 +15,15 @@ void Ward::do_move(){
     alive = false;
   }
 }
-std::vector<std::string> split_string(const std::string& str, char delimiter) {
-    std::vector<std::string> tokens;
-    std::stringstream ss(str);
-    std::string token;
-
-    while (std::getline(ss, token, delimiter)) {
-        tokens.push_back(token);
-    }
-
-    return tokens;
-}
-void Champion::read_from_string(std::string &line, const char delimiter) {
-  std::vector<std::string> tokens = split_string(line, delimiter);
-  if(tokens.size() < 5){
-    throw std::runtime_error("wrong file format");
-  }
-  name = tokens[0];
-  damage = std::stod(tokens[1]);
-  dmg_per_level = std::stoi(tokens[2]);
-  hp = std::stod(tokens[3]);
-  max_hp = hp;
-  hp_per_level = std::stoi(tokens[4]);
-  cell = nullptr;
-}
-void Item::read_from_string(std::string &line, const char delimiter) {
-  // Todo: read item datas
-  std::vector<std::string> tokens = split_string(line, delimiter);
-  if(tokens.size() < 4){
-    throw "wrong file format";
-  }
-  name = tokens[0];
-  gold_value = std::stoi(tokens[1]);
-  set_bonus_dmg(std::stod(tokens[2]));
-  set_bonus_hp(std::stod(tokens[3]));
+Champion::Champion(const std::string& name_, double damage_, double dmg_per_level_, double hp_, double max_hp_, double hp_per_level_){
+  name = name_;
+  damage = damage_;
+  dmg_per_level = dmg_per_level_;
+  hp = hp_;
+  hp_per_level = hp_per_level_;
+  max_hp = max_hp_;
+  icon.setCharacterSize(10);
+  icon.setFillColor(sf::Color::White);
 }
 Player::Player(std::vector<Champion*> champs):side(Side::BLUE),starter(false){
   this->champs = std::move(champs);
@@ -57,6 +32,13 @@ Player::Player(std::vector<Champion*> champs):side(Side::BLUE),starter(false){
   minion_timer_mark = 3;
   is_simulation = false;
 }
+Item::Item(std::string name_, int gold_, double bonus_dmg_, double bonus_hp_){
+  name = std::move(name_);
+  gold_value = gold_;
+  set_bonus_dmg(bonus_dmg_);
+  set_bonus_hp(bonus_hp_);
+}
+
 void Player::spawn_minions(const std::shared_ptr<Map>& map){
   float offset = 2;
   float sign = 1;
@@ -66,7 +48,8 @@ void Player::spawn_minions(const std::shared_ptr<Map>& map){
 
   // top
   std::vector<sf::Vector2f> dir_top = {{0,sign*1},{sign*1,0}};
-  points.emplace_back(spawnpoint.x+offset*sign,spawnpoint.y);
+  sf::Vector2f spawn_point_index = spawn_point->get_index();
+  points.emplace_back(spawn_point_index.x+offset*sign,spawn_point_index.y);
   // need to reverse the sequence, because on redside the minion first moves horizontally left, then vertically down
   // but on the blue side it first goes up then right (first vertically then horizontally)
   if(side == Side::RED)std::reverse(dir_top.begin(), dir_top.end());
@@ -74,21 +57,21 @@ void Player::spawn_minions(const std::shared_ptr<Map>& map){
   // mid
   std::vector<sf::Vector2f> dir_mid = {{sign*1,sign*1}};
   directions.push_back(dir_mid);
-  points.emplace_back(spawnpoint.x+offset*sign,spawnpoint.y-offset*sign);
+  points.emplace_back(spawn_point_index.x+offset*sign,spawn_point_index.y-offset*sign);
   // bot
   std::vector<sf::Vector2f> dir_bot = {{sign*1,0},{0,sign*1}};
   if(side == Side::RED)std::reverse(dir_top.begin(), dir_top.end());
   directions.push_back(dir_bot);
-  points.emplace_back(spawnpoint.x,spawnpoint.y-offset*sign);
+  points.emplace_back(spawn_point_index.x,spawn_point_index.y-offset*sign);
 
   // spawn
   for(size_t i = 0; i < points.size(); i++){
-    MinionWave *wave = new MinionWave;
-    wave->spawn(points[i],directions[i],map, side);
+    MinionWave wave;
+    wave.spawn(points[i],directions[i],map, side);
     minion_waves.push_back(wave);
   }
 }
-void Player::round_end(std::shared_ptr<Map> map){
+void Player::round_end(std::shared_ptr<Map> &map){
   minion_timer++;
   if(minion_timer == minion_timer_mark){
     spawn_minions(map);
@@ -151,7 +134,7 @@ void Champion::draw(sf::RenderWindow &window){
   window.draw(icon);
 }
 sf::Vector2f Minion::get_next_direction_pos_index(){
-  if(cell == nullptr && !directions.empty()){
+  if(cell == nullptr || !directions.empty()){
      return directions[0];
   }
   sf::Vector2f current_pos = cell->get_index();
@@ -162,9 +145,10 @@ sf::Vector2f Minion::get_next_direction_pos_index(){
   }
   return !directions.empty() ? directions[0] : sf::Vector2f{0, 0};
 }
-Minion::Minion(Side side_, std::vector<sf::Vector2f> directions_){
+Minion::Minion(Side side_, std::vector<sf::Vector2f> directions_, Cell *spawn_point){
   directions = directions_;
   side = side_;
+  cell = spawn_point;
   set_color(sf::Color{100,165,90});
   this->set_name("minion");
   this->hp = 30;
@@ -173,8 +157,9 @@ Minion::Minion(Side side_, std::vector<sf::Vector2f> directions_){
 }
 void Player::spawn_champs(const std::shared_ptr<Map> &map){
   for(auto & champ : champs){
-    map->spawn(champ,spawnpoint);
-    champ->set_cell(map->getcell(spawnpoint));
+    sf::Vector2f spawn_point_index = spawn_point->get_index();
+    map->spawn(champ,spawn_point_index);
+    champ->set_cell(map->getcell(spawn_point_index));
   }
 }
 void Player::do_moves(std::shared_ptr<Map> map){
@@ -182,7 +167,7 @@ void Player::do_moves(std::shared_ptr<Map> map){
     champ->do_move(map);
   }
   for(auto & wave : minion_waves){
-    wave->do_move(map);
+    wave.do_move(map);
   }
 }
 void Player::set_champ_icons(const std::string &icons){
@@ -370,9 +355,6 @@ Player::~Player(){
   for(Champion *champ: champs){
     delete champ;
   }
-  for(MinionWave *wave: minion_waves){
-    delete wave;
-  }
 }
 Champion::Champion(){
   icon.setCharacterSize(10);
@@ -416,22 +398,23 @@ Cell *Champion::get_simulation_cell(){
 }
 void Champion::move(std::shared_ptr<Map> &map){
   if(!current_gamemove)return;
-  if(current_gamemove->changes_pos())
+  if(current_gamemove->changes_pos()){
     map->move(this, current_gamemove_index(), last_gamemove_index());
+  }
 }
 
 bool Player::check_round_end(){
-  for(size_t i = 0; i < champs.size(); i++){
-    if(champs[i]->getmovepoints() !=0)return false;
+  for(auto & champ : champs){
+    if(champ->getmovepoints() !=0)return false;
   }
   return true;
 }
 void MinionWave::spawn(sf::Vector2f startpoint,std::vector<sf::Vector2f> directions_, std::shared_ptr<Map> map, Side side_){
   directions = directions_;
   for(size_t i = 0; i < minion_wave_size; i++){
-    Minion *minion = new Minion{side_,directions_};
+    Minion *minion = new Minion{side_,directions_,map->getcell(startpoint)};
     minions.push_back(minion);
-    map->spawn(minion,startpoint);
+    map->spawn(minions.back(),startpoint);
   }
 }
 bool Champion::is_gamemove_complete() const {
@@ -443,16 +426,29 @@ void MinionWave::round_end(){
     minion->check_death();
   }
 }
+void Champion::set_spawn_point(Cell *spawn_point_){
+  if(spawn_point_ != nullptr)spawn_point = spawn_point_;
+}
+void Player::set_spawn_point(Cell *spawn_point_){
+  if(spawn_point_ != nullptr){
+    spawn_point = spawn_point_;
+    for(Champion *champ: champs){
+      champ->set_spawn_point(spawn_point);
+    }
+  }
+}
 void Champion::do_move(std::shared_ptr<Map> map){
   if(!isAlive()){
-    respawn_timer--;
-    if(respawn_timer == 0){
-      // Todo: respawn
+    respawn_counter--;
+    if(respawn_counter == 0){
+      hp = max_hp;
+      if(spawn_point!=nullptr){
+        cell = spawn_point;
+      }
     }
     return;
   }
   if(!gamemoves.empty()){
-    // Todo: use begin instead of indexing
     GameMove *first = *gamemoves.begin();
     if(first->get_movepoints() == simulation_points_counter && first->is_complete()){
       first->do_move(this,map);
@@ -473,8 +469,15 @@ void MinionWave::do_move(const std::shared_ptr<Map> &map){
   }
 }
 void Minion::do_move(const std::shared_ptr<Map> &map){
-  sf::Vector2f next_cell_index = this->get_next_direction_pos_index();
+  sf::Vector2f next_cell_dir = this->get_next_direction_pos_index();
+  // Todo: if it cannot go in that direction, then go to next direction,
+  // or if no direction is available then just go
+  sf::Vector2f next_cell_index = cell->get_index()+next_cell_dir;
+  //if(map->in_bounds(next_cell_index)){
+
+  //}
   Cell *next_cell = map->getcell(next_cell_index);
+
   // if there are enemies on the next cell the minion wants to go to, then it attacks the enemy
   Entity *enemy = next_cell->get_attackable_entity(side);
   if(enemy != nullptr){
@@ -483,6 +486,7 @@ void Minion::do_move(const std::shared_ptr<Map> &map){
   }
   // if there are not then it just moves to the next cell
   else{
+    map->move(this,cell->get_index(),next_cell->get_index());
     cell = next_cell;
   }
 }
@@ -503,6 +507,7 @@ void Player::update_champ_positions(std::shared_ptr<Map> map){
 }
 void Champion::fight(Entity *other){
   if(!isAlive() || !other->isAlive())return;
+  std::cout << "fight " << std::endl;
   double total_dmg = get_total_dmg();
   double other_total_dmg = other->get_total_dmg();
   remove_hp(other_total_dmg);

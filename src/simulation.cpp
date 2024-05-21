@@ -14,7 +14,7 @@ SimulationState::SimulationState(
   // load font
   h.load(Resources::Type::FONT, "./resources/fonts/Roboto.ttf");
   // create the UI components:
-  sf::Vector2f window_size = state_manager.get_size(window);
+  sf::Vector2f window_size = StateManager::get_size(window);
   title = new UI::NamedBox{h};
   title->set_position({window_size.x/2.f - 150,10});
   // set timer
@@ -25,7 +25,7 @@ SimulationState::SimulationState(
   // reset vision and selections, as they are not needed in simulation state
   map->reset_cell_selections();
   map->reset_cell_vision();
-};
+}
 void SimulationState::handle_events(sf::Event &e){
     if (e.type == sf::Event::Closed) {
         state_manager.exit();
@@ -33,10 +33,10 @@ void SimulationState::handle_events(sf::Event &e){
 }
 void SimulationState::update(){
     std::string s = "Time left: ";
-    int timeleft = 2;
-    s += std::to_string(timeleft - (int)elapsed_time.getElapsedTime().asSeconds());
+    int seconds_left = 2;
+    s += std::to_string(seconds_left - (int)elapsed_time.getElapsedTime().asSeconds());
     timer.setString(s);
-    if (static_cast<int>(elapsed_time.getElapsedTime().asSeconds()) == timeleft) {
+    if (static_cast<int>(elapsed_time.getElapsedTime().asSeconds()) == seconds_left) {
         elapsed_time.restart();
         // do one turn
         for(auto & player : players){

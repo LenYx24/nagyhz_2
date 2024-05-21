@@ -1,12 +1,12 @@
 #ifndef GAMEOBJECTS_HPP
 #define GAMEOBJECTS_HPP
 #include "gamemoves.hpp"
-#include "ioparser.hpp"
 #include "map.hpp"
 #include "resources.hpp"
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <sstream>
+#include <list>
 #include <memory>
 #include <utility>
 class Cell;
@@ -208,11 +208,7 @@ protected:
  */
 class Item : public Effect {
 public:
-  /**
-    * @brief reads an items properties from a string (usually read from a file)
-    * if given bad input, it throws an exception
-   */
-  void read_from_string(std::string &line, const char delimiter= ';');
+  Item(std::string name_, int gold_, double bonus_dmg_, double bonus_hp_);
   /**
     * @brief gets the amount of gold needed to purchase this item from the shop
    */
@@ -252,12 +248,22 @@ private:
 /**
   * @brief class for describing champions, they're a type of entities that the players can manipulate with gamemoves
  */
-class Champion : public Entity, public Ireadstring {
+class Champion : public Entity{
 public:
   /**
     * @brief constructs a basic champion with all the necessary values
    */
   Champion();
+  /**
+   * @brief constructing a champion with all its necessary properties
+   * @param name_
+   * @param damage_
+   * @param dmg_per_level_
+   * @param hp_
+   * @param max_hp_
+   * @param hp_per_level_
+   */
+   Champion(const std::string& name_, double damage_, double dmg_per_level_, double hp_,double max_hp_, double hp_per_level_);
   /**
     * @brief destructor for champion class, frees the heap allocated properties
    */
@@ -305,12 +311,6 @@ public:
     * @param holder the object that let's you retrieve the font face
    */
   void set_font(Resources::Holder &holder);
-  /**
-    * @brief reads from a string line the appropriate properties, throws error if the line is in a bad format
-    * @param line the line to parse
-    * @param delimiter this is what separates the fields
-   */
-  void read_from_string(std::string &line, const char delimiter=';')override;
   /**
     * @brief draws the champion to the window
     * @param window the window to draw to
@@ -408,14 +408,19 @@ public:
    * @param other the other entity that was killed
    */
   void killed_other(Entity *other) override;
+  /**
+   * @brief set's the spawnpoint for the champion
+   * @param spawn_point_
+   */
+  void set_spawn_point(Cell *spawn_point_);
 
 
 private:
   sf::Vector2f gamemove_index(size_t offset)const;
   int cs = 0;
   int gold = 600;
-  int hp_per_level = 0;  // the amount of hp given per level up
-  int dmg_per_level = 0; // the amount of dmg given per level up
+  double hp_per_level = 0;  // the amount of hp given per level up
+  double dmg_per_level = 0; // the amount of dmg given per level up
   int level = 1; // the current level of the champion
   int max_level = 18;
   int level_xp_increase = 10; // the amount of xp which is added to xp_cutoff at every levelup
@@ -433,6 +438,8 @@ private:
   GameMove *current_gamemove = nullptr;
   int simulation_points_counter = 1;
   bool simulation = false;
+
+  Cell *spawn_point = nullptr;
 
   std::vector<Effect> buffs;
 };
@@ -507,8 +514,9 @@ public:
     * @brief set's up the minions attributes (hp,dmg)
     * @param side_ the team the minion is on
     * @param directions_ the vector of map positions, where the minion should go (top/mid/bot)
+    * @param spawn_point the spawn_point of the minion on the minimap
    */
-  Minion(Side side_, std::vector<sf::Vector2f> directions_);
+  Minion(Side side_, std::vector<sf::Vector2f> directions_, Cell *spawn_point);
   /**
     * @brief describes if the minion gives vision or not
    */
@@ -563,7 +571,7 @@ public:
    */
   void do_move(const std::shared_ptr<Map> &map);
 private:
-  std::vector<Minion *> minions;
+  std::list<Minion *> minions;
   std::vector<sf::Vector2f> directions;
   sf::Vector2f current_direction;
   size_t minion_wave_size;
@@ -591,7 +599,7 @@ public:
     * @brief set's the champions spawn point, their base
     * @param point the spawnpoint
    */
-  void set_spawn_point(sf::Vector2f point){spawnpoint = point;}
+  void set_spawn_point(Cell *spawn_point_);
   /**
     * @brief set's the champ icons, in order with each character of the string
     * @param icons the string to get the characters from
@@ -644,7 +652,7 @@ public:
     * @brief ends the round, calls the champions round end methods
     * @param map checks if minions should spawn, so it spawns them to the map
    */
-  void round_end(std::shared_ptr<Map> map);
+  void round_end(std::shared_ptr<Map> &map);
   /**
     * @brief set's the simulation state for the player
     * @param sim if it's simulation then sim is true
@@ -671,7 +679,7 @@ public:
   /**
     * @brief set's the spawn point where the champions should spawn
    */
-  [[nodiscard]] sf::Vector2f get_spawn_point()const{return spawnpoint;}
+  [[nodiscard]] Cell *get_spawn_point()const{return spawn_point;}
   /**
     * @brief clears all the gamemoves from the champions
    */
@@ -685,10 +693,10 @@ public:
 
 private:
   std::vector<Champion*> champs;
-  std::vector<MinionWave*> minion_waves;
+  std::list<MinionWave> minion_waves;
 
   Side side;
-  sf::Vector2f spawnpoint;
+  Cell *spawn_point;
 
   // save global buffs here, so the minions know, if there's nashor buff
   int minion_timer;

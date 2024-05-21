@@ -1,3 +1,5 @@
+#include <utility>
+
 #include "../include/statemanagement.hpp"
 
 void StateManager::change_state(std::unique_ptr<State> state) {
@@ -25,7 +27,7 @@ void StateManager::update_state(){
   }
 }
 void StateManager::handle_events(sf::RenderWindow &window) {
-  sf::Event e;
+  sf::Event e{};
   while (window.pollEvent(e)){
     if(!states.empty())
       states.top()->handle_events(e);
@@ -49,13 +51,13 @@ void StateManager::exit() {
     states.pop();
 }
 
-sf::Vector2f StateManager::get_size(sf::RenderWindow& window)const{
-  sf::Vector2u wsizeu = window.getSize();
-  return sf::Vector2f{static_cast<float>(wsizeu.x),static_cast<float>(wsizeu.y)};
+sf::Vector2f StateManager::get_size(sf::RenderWindow& window){
+  sf::Vector2u window_size_unsigned = window.getSize();
+  return sf::Vector2f{static_cast<float>(window_size_unsigned.x),static_cast<float>(window_size_unsigned.y)};
 }
 
 Settings::Settings(std::string champs_filepath, std::string items_filepath, GameMode mode){
-  this->champs_filepath = champs_filepath;
-  this->items_filepath = items_filepath;
+  this->champs_filepath = std::move(champs_filepath);
+  this->items_filepath = std::move(items_filepath);
   this->mode = mode;
 }
