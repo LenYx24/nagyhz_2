@@ -13,20 +13,45 @@
 #include <fstream>
 #include <utility>
 #include <vector>
-
+/**
+ * @brief a specialized namedbox class that holds an item
+ */
 class ItemBox : public UI::NamedBox {
 public:
-  ItemBox(const std::string& label, sf::RectangleShape frame, Resources::Holder &h, Item *i);
+  /**
+   * @brief constructs an itembox
+   * @param label the label on the box
+   * @param frame the frame to put the box inside
+   * @param holder the resource holder
+   * @param item the item to put inside
+   */
+  ItemBox(const std::string& label, sf::RectangleShape frame, Resources::Holder &holder, Item *item);
+  /**
+   * @brief gets the held item
+   * @return the item
+   */
   Item *get_item()const{return item;}
 private:
   Item *item;
 };
+/**
+ * @brief a button that has a specific style used for game buttons
+ */
 class GameButton : public UI::Button {
 public:
-// Todo: static fgv, ami visszaad egy draftbutton stílusú gombot
+  /**
+   * @brief constructs a gamebutton
+   * @param holder the resources holder
+   * @param str the title of the button
+   * @param onclick the onclick that has to be called if the gamebutton gets clicked
+   * @param pos the position of the gamebutton on the window
+   */
   GameButton(
-      Resources::Holder &h, const sf::String& str, std::function<void()> onclick = []() { std::cout << "not impl" << std::endl; }, sf::Vector2f pos = {0,0});
+      Resources::Holder &holder, const sf::String& str, std::function<void()> onclick = []() { std::cout << "not impl" << std::endl; }, sf::Vector2f pos = {0,0});
 };
+/**
+ * @brief the state that is responsible for navigating through a game
+ */
 class GameState : public State {
 public:
   GameState(StateManager &state_manager,

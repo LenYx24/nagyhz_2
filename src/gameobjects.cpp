@@ -11,7 +11,6 @@ Entity::Entity(std::string name) : name(std::move(name)) {
 void Ward::do_move(){
   cooldown--;
   if(cooldown == 0){
-    // basically kill the ward, by reducing its base_hp
     alive = false;
   }
 }
@@ -50,27 +49,44 @@ void Player::spawn_minions(const std::shared_ptr<Map>& map){
   sf::Vector2f spawn_point_index = spawn_point->get_index();
 
   // top
-  std::vector<sf::Vector2f> dir_top = {{0,sign.y*1},{sign.x*1,0}};
+  std::vector<sf::Vector2f> dir_top = {
+      {0,sign.y*1},
+      {sign.x*1,0}
+  };
   // need to reverse the sequence, because on redside the minion first moves horizontally left, then vertically down
   // but on the blue side it first goes up then right (first vertically then horizontally)
-  if(side == Side::RED)std::reverse(dir_top.begin(), dir_top.end());
+  if(side == Side::RED)
+    std::reverse(dir_top.begin(), dir_top.end());
   directions.push_back(dir_top);
   // mid
   std::vector<sf::Vector2f> dir_mid = {{sign.x*1,sign.y*1}};
   directions.push_back(dir_mid);
   // bot
   std::vector<sf::Vector2f> dir_bot = {{sign.x*1,0},{0,sign.y*1}};
-  if(side == Side::RED)std::reverse(dir_bot.begin(), dir_bot.end());
+  if(side == Side::RED)
+    std::reverse(dir_bot.begin(), dir_bot.end());
   directions.push_back(dir_bot);
-
+  float x=0,y=0;
   if(side ==Side::BLUE){
-    points.emplace_back(spawn_point_index.x,spawn_point_index.y+offset.y*sign.y);
-    points.emplace_back(spawn_point_index.x+offset.x*sign.x,spawn_point_index.y+offset.y*sign.y);
-    points.emplace_back(spawn_point_index.x+offset.x*sign.x,spawn_point_index.y);
+      x = spawn_point_index.x;
+      y = spawn_point_index.y+offset.y*sign.y;
+      points.emplace_back(x,y);
+      x = spawn_point_index.x+offset.x*sign.x;
+      y = spawn_point_index.y+offset.y*sign.y;
+      points.emplace_back(x,y);
+      x = spawn_point_index.x+offset.x*sign.x;
+      y = spawn_point_index.y;
+      points.emplace_back(x,y);
   }else{
-    points.emplace_back(spawn_point_index.x + offset.x*sign.x,spawn_point_index.y);
-    points.emplace_back(spawn_point_index.x+offset.x*sign.x,spawn_point_index.y+offset.y*sign.y);
-    points.emplace_back(spawn_point_index.x,spawn_point_index.y+offset.y*sign.y);
+    x = spawn_point_index.x+offset.x*sign.x;
+    y = spawn_point_index.y;
+    points.emplace_back(x, y);
+    x = spawn_point_index.x+offset.x*sign.x;
+    y = spawn_point_index.y+offset.y*sign.y;
+    points.emplace_back(x,y);
+    x = spawn_point_index.x;
+    y = spawn_point_index.y+offset.y*sign.y;
+    points.emplace_back(x,y);
   }
 
   // spawn
@@ -125,6 +141,7 @@ void Champion::round_end(){
   simulation_points_counter = 1;
   // passive gold generation
   gold+=20;
+  // passive hp regen
   int passive_hp_regen = 5;
   if(current_hp+passive_hp_regen <=get_max_hp()){
     current_hp+=passive_hp_regen;
@@ -135,6 +152,8 @@ void Champion::round_end(){
     if(!(*iter)->is_alive()){
       // erase returns the next element after the erased one,
       // this way we can delete elements while looping through the vector
+      // Todo: check if this ward deletion works
+      delete *iter;
       iter = wards.erase(iter);
     }
   }
@@ -230,7 +249,11 @@ std::vector<std::string> Champion::get_stats()const{
   for(auto & buff : buffs){
     std::string b_hp = std::to_string(buff.get_bonus_hp());
     std::string b_dmg = std::to_string(buff.get_bonus_dmg());
-    stats.push_back("buff: bonus hp: " +b_hp+" bonus dmg: "+b_dmg);
+    std::string buff_stat = "buff: bonus hp: ";
+    buff_stat += b_hp;
+    buff_stat += " bonus dmg: ";
+    buff_stat += b_dmg;
+    stats.push_back(buff_stat);
   }
   return stats;
 }
@@ -239,7 +262,7 @@ Minion::Minion(Side side_, std::vector<sf::Vector2f> directions_, Cell *spawn_po
   side = side_;
   cell = spawn_point;
   set_color(sf::Color{100,165,90});
-  this->set_name("minion");
+  set_name("minion");
   base_hp = 40;
   current_hp = base_hp;
   damage = 5;
@@ -270,9 +293,11 @@ Nexus::Nexus(){
   shape.setFillColor(sf::Color{100,50,88});
 }
 bool Player::is_his_champ(Champion *c){
-  if(c == nullptr)return false;
+  if(c == nullptr)
+      return false;
   for(auto & champ : champs){
-    if(champ->get_name() == c->get_name())return true;
+    if(champ->get_name() == c->get_name())
+        return true;
   }
   return false;
 }
@@ -285,22 +310,21 @@ void Champion::remove_last_gamemove(){
     gamemoves.pop_back();
     if(!gamemoves.empty())
       current_gamemove = gamemoves.back();
-    else current_gamemove = nullptr;
+    else
+      current_gamemove = nullptr;
   }
 }
 
 Champion *Player::get_selected_champs(sf::Vector2f index){
   for(int i = static_cast<int>(champs.size())-1; i >=0; i--){
     auto current_index = static_cast<size_t>(i);
-    if(champs[current_index]->get_simulation_cell()->get_index() == index)return champs[current_index];
+    if(champs[current_index]->get_simulation_cell()->get_index() == index)
+      return champs[current_index];
   }
   return nullptr;
 }
 bool Player::is_gamemove_active() const{
   return gamemoveactive;
-}
-void Player::set_gamemove_active(bool active){
-  gamemoveactive = active;
 }
 
 Champion::~Champion(){
@@ -417,7 +441,9 @@ void Champion::add_item(Item *item){
   update_total_hp();
 }
 sf::Vector2f Champion::gamemove_index(size_t offset)const{
-  if(!current_gamemove)throw std::runtime_error("current game move is a nullptr");
+  if(!current_gamemove)
+    throw std::runtime_error("current game move is a nullptr");
+
   int last_index = static_cast<int>(gamemoves.size()) - 1;
   for(int i = last_index - static_cast<int>(offset); i >= 0; i--){
     auto index = static_cast<size_t>(i);
@@ -425,7 +451,8 @@ sf::Vector2f Champion::gamemove_index(size_t offset)const{
       return gamemoves[index]->position_cell()->get_index();
     }
   }
-  if(cell == nullptr)return {-1,-1};
+  if(cell == nullptr)
+    return {-1,-1};
   return cell->get_index();
 }
 sf::Vector2f Champion::last_gamemove_index()const{
@@ -435,10 +462,11 @@ sf::Vector2f Champion::current_gamemove_index()const{
   return gamemove_index(1);
 }
 Cell *Champion::get_simulation_cell(){
-  int lastindex = static_cast<int>(gamemoves.size()) - 1;
-  for(int i = lastindex; i >= 0; i--){
-    size_t index = static_cast<size_t>(i);
-    if(gamemoves[index]->position_cell() != nullptr && gamemoves[index]->changes_pos()){
+  int last_index = static_cast<int>(gamemoves.size()) - 1;
+  for(int i = last_index; i >= 0; i--){
+    auto index = static_cast<size_t>(i);
+    if(gamemoves[index]->position_cell() != nullptr
+        && gamemoves[index]->changes_pos()){
       return gamemoves[index]->position_cell();
     }
   }
@@ -460,12 +488,12 @@ void MinionWave::spawn(
     sf::Vector2f startpoint,
     const std::vector<sf::Vector2f>& directions_,
     const std::shared_ptr<Map>& map, Side side_){
-  directions = directions_;
-  for(size_t i = 0; i < minion_wave_size; i++){
-    auto minion = new Minion{side_,directions_,map->getcell(startpoint)};
-    minions.push_back(minion);
-    map->spawn(minions.back(),startpoint);
-  }
+    directions = directions_;
+    for(size_t i = 0; i < minion_wave_size; i++){
+      auto minion = new Minion{side_,directions_,map->getcell(startpoint)};
+      minions.push_back(minion);
+      map->spawn(minions.back(),startpoint);
+    }
 }
 bool Champion::is_gamemove_complete() const {
   if(gamemoves.empty())return true;
@@ -557,17 +585,21 @@ void Minion::do_move(const std::shared_ptr<Map> &map){
   }
 }
 void Player::set_simulation(bool sim){
-  for(size_t i = 0; i < champs.size(); i++){
-    champs[i]->set_simulation(sim);
+  for(auto & champ : champs){
+    champ->set_simulation(sim);
   }
   is_simulation = sim;
 }
 void Player::update_champ_positions(std::shared_ptr<Map> map){
-  for(size_t i = 0; i < champs.size(); i++){
+  for(auto & champ : champs){
     if(is_simulation){
-      map->move(champs[i], champs[i]->get_real_cell()->get_index(), champs[i]->get_simulation_cell()->get_index());
+      map->move(champ,
+                champ->get_real_cell()->get_index(),
+                champ->get_simulation_cell()->get_index());
     }else{
-      map->move(champs[i], champs[i]->get_simulation_cell()->get_index(), champs[i]->get_real_cell()->get_index());
+      map->move(champ,
+                champ->get_simulation_cell()->get_index(),
+                champ->get_real_cell()->get_index());
     }
   }
 }

@@ -1,6 +1,20 @@
-akali;100;3;21;5
+akali100;5;21;5aaaaaa
 alistar;200;5;10;4
-ahri;120;4;22;3
+asdasd;120;4;22;3
 anivia;130;5;15;4
 yuumi;300;3;18;3
 rengar;150;5;11;4
+yasuo;180;5;30;5
+yone;320;4;24;3
+zoe;208;3;15;4
+hwei;109;5;22;5
+ezreal;200;4;30;2
+irelia;109;5;23;4
+skarner;200;4;22;2
+miss fortune;105;5;15;5
+kayle;105;5;15;5
+viktor;150;5;15;5
+orianna;170;3;25;4
+xerath;140;4;16;6
+renekton;103;4;14;4
+zed;102;4;35;5

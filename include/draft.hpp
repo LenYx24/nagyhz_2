@@ -78,7 +78,7 @@ public:
    */
   std::vector<Champion *> &get_champs(){return champs;}
 
-protected:
+private:
   std::vector<DraftNamedBox> elements;
   std::vector<Champion *> champs;
   sf::Vector2f start_pos;
@@ -97,8 +97,8 @@ public:
  */
 class ChampBox : public UI::NamedBox {
 public:
-  ChampBox(const std::string& label, [[maybe_unused]]sf::RectangleShape frame, Resources::Holder &h, Champion *c)
-      : NamedBox(label, std::move(frame), h), champ(c) {}
+  ChampBox(const std::string& label, [[maybe_unused]]sf::RectangleShape frame, Resources::Holder &holder, Champion *champ)
+      : NamedBox(label, std::move(frame), holder), champ(champ) {}
   /**
    * @brief gets the champion which is held in this box
    * @return the champion
@@ -116,9 +116,9 @@ public:
   void draw(sf::RenderWindow& window)override;
   /**
    * @brief locks in the currently selected champion to the correct draftstate
-   * @param state_manager
-   * @param window
-   * @param settings
+   * @param state_manager the statemanager of the application
+   * @param window the window of the program
+   * @param settings the currently used gamesettings
    */
   void lock_in(StateManager& state_manager, sf::RenderWindow& window, Settings& settings);
   /**
@@ -127,17 +127,23 @@ public:
   void dont_ban();
 
 protected:
+  // resources
   Resources::Holder holder;
+  // main
   std::vector<Champion *> all_champs;
   Champion *selected_champ;
-  std::vector<TeamCol> columns;
-  sf::Clock elapsed_time;
-  std::vector<DraftButton *> buttons;
-  std::vector<ChampBox*> champ_list;
   Champion *empty_champ;
   std::vector<DraftTurn> turns;
+  size_t final_turn_count = 20;
+  // UI
+  std::vector<TeamCol> columns;
+  std::vector<DraftButton *> buttons;
+  std::vector<ChampBox *> champ_list;
+  // time
   size_t turn_counter;
   sf::Text timer;
+  sf::Clock elapsed_time;
+
 };
 
 #endif

@@ -36,7 +36,7 @@ bool NamedBox::contains(int x, int y)const{
 }
 TextBox::TextBox(const std::string& label_, Resources::Holder &holder, sf::Vector2f pos, const std::string& text_default){
   shape.setFillColor(sf::Color::White);
-  shape.setSize({200,50});
+  shape.setSize({400,50});
   shape.setOutlineColor({sf::Color::Black});
   shape.setOutlineThickness(3);
   shape.setPosition(pos);

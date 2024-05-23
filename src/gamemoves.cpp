@@ -8,7 +8,8 @@ bool GameMove::check_gamemove_addable( Player *current_player, Champion *selecte
          && selected_champ->getmovepoints() - points >= 0;
 }
 std::string GameMove::get_state_info()const{
-  if(cell == nullptr)return ";not_complete\n";
+  if(cell == nullptr)
+    return ";not_complete\n";
   sf::Vector2f index = cell->get_index();
   std::string info = "cell: x:"+std::to_string(index.x) + " y:"+std::to_string(index.y)+";";
   return info;
@@ -46,7 +47,7 @@ void PlaceWard::do_move(Champion *champ, std::shared_ptr<Map> map){
 }
 void AttackMove::do_move(Champion *champ, std::shared_ptr<Map> map){
     map->check_game_end();
-    if(!cell)return;
+    if(!cell) return;
     Entity *other = cell->get_first_entity();
     if(champ->get_side() != other->get_side())
       champ->fight(other);

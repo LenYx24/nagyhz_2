@@ -87,7 +87,7 @@ void MenuState::handle_events(sf::Event &event) {
       try{
         b->onclick_here(event);
       }catch(const std::invalid_argument& error){
-        std::cout << "invalid argument exception: " <<error.what() << std::endl;
+        std::cout << "invalid argument exception: " << error.what() << std::endl;
         state_manager.exit();
         return;
       }

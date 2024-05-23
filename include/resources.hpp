@@ -5,13 +5,21 @@
 #include <map>
 #include <memory>
 
-// Todo: szedjem külön
 namespace Resources {
+/**
+ * @brief the types of resources there are
+ */
 enum class Type { FONT };
-
-// Todo: do it with templates
+/**
+ * @brief the class which holdes the resources for the application
+ */
 class Holder {
 public:
+  /**
+   * @brief loads the given resources
+   * @param type the type of the resource
+   * @param filename the path to the resource
+   */
     void load(Type type, const sf::String &filename);
     sf::Font &get(Type type);
 

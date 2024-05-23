@@ -34,9 +34,7 @@ public:
   /**
     * @brief finishes the gamemove, by giving it the cell to use
    */
-  virtual void finish(Cell *cell_) {
-    cell = cell_;
-  }
+  virtual void finish(Cell *cell_) {cell = cell_;}
   /**
    * the amount of points needed to perform this action
    * @return the points
@@ -52,7 +50,7 @@ public:
     * @param champ the champ whose move it is
     * @param map the map to do the moves on
    */
-  virtual void do_move(Champion *champ, std::shared_ptr<Map> map)=0;
+  virtual void do_move(Champion *champ, std::shared_ptr<Map> map) = 0;
   /**
     * @brief checks if the gamemove is addable or not to the selected champion
     * @param current_player the currently selected player
@@ -95,7 +93,7 @@ public:
   AttackMove(){
     set_movepoints(2);
   }
-  std::string get_state_info()const override;
+  [[nodiscard]] std::string get_state_info()const override;
   void do_move(Champion *champ, std::shared_ptr<Map> map) override;
 };
 /**
@@ -106,7 +104,7 @@ public:
   PlaceWard(){
     set_movepoints(2);
   }
-  std::string get_state_info()const override;
+  [[nodiscard]] std::string get_state_info()const override;
   void do_move(Champion *champ, std::shared_ptr<Map> map) override;
 };
 /**
@@ -117,7 +115,7 @@ public:
   TeleportBase(){
     set_movepoints(2);
   }
-  std::string get_state_info()const override;
+  [[nodiscard]] std::string get_state_info()const override;
   [[nodiscard]] bool changes_pos()const override{return true;}
   void do_move(Champion *champ, std::shared_ptr<Map> map)override;
 };

@@ -10,10 +10,16 @@
 #include "statemanagement.hpp"
 
 namespace UI {
-
+/**
+ * @brief the base class for grid elements
+ */
 class GridElement {
 public:
   virtual ~GridElement() = default;
+  /**
+   * @brief tells the gridelement to draw itself to the window
+   * @param window
+   */
   virtual void draw(sf::RenderWindow& window) = 0;
   virtual void set_position(sf::Vector2f pos) = 0;
   [[nodiscard]] virtual bool contains(int x, int y)const=0;
@@ -24,7 +30,8 @@ class Button : public GridElement {
 public:
   Button() = default;
   explicit Button(
-      const sf::String& text, std::function<void()> onclick = []() { std::cout << "onclick not implemented yet" << std::endl;},
+      const sf::String& text,
+      std::function<void()> onclick = []() { std::cout << "onclick not implemented yet" << std::endl;},
       sf::Vector2f pos = {0, 0});
   void set_position(sf::Vector2f pos) override;
   void update_text_position();
@@ -35,7 +42,6 @@ public:
   sf::Vector2f get_size() override{return shape.getSize();}
   sf::FloatRect get_global_bounds() const {return shape.getGlobalBounds();}
   void onclick_here(const sf::Event &e);
-  void set_onclick(std::function<void()> onclick_);
 
 protected:
   sf::RectangleShape shape;
@@ -44,14 +50,15 @@ protected:
 };
 class TextBox : public GridElement {
 public:
-  TextBox(const std::string& label,Resources::Holder &holder, sf::Vector2f pos = {0, 0}, const std::string& text_default="");
+  TextBox(const std::string& label,
+          Resources::Holder &holder,
+          sf::Vector2f pos = {0, 0},
+          const std::string& text_default="");
   void draw(sf::RenderWindow& window) override;
   void set_position(sf::Vector2f pos)override{shape.setPosition(pos);}
   sf::Vector2f get_size()override{return shape.getSize();}
   bool contains(int x, int y)const override;
-  inline sf::FloatRect get_global_bounds() const {
-    return shape.getGlobalBounds();
-  }
+  sf::FloatRect get_global_bounds() const {return shape.getGlobalBounds();}
   void set_selected(bool s){is_selected = s;}
   bool get_is_selected()const{return is_selected;}
   void add_char(char c);
