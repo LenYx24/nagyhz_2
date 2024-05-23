@@ -247,12 +247,13 @@ public:
   /**
     * @brief gets the currently selected champion
    */
-  Champion *getselectedchamp();
+  Champion *get_selected_champ();
   /**
     * @brief gets cell at the given position
     * @pos the position
    */
   Cell *getcell(sf::Vector2f pos){
+    if(!in_bounds(pos))return nullptr;
     posindex p_index = toposindex(pos);
     return cells[p_index.i][p_index.j];}
   /**
@@ -261,7 +262,7 @@ public:
     * @param pred the predicate which should be satisfied by the cell
    */
   template<typename P>
-  void setselectednearbycells(Champion *champ, P pred);
+  void set_selected_nearby_cells(Champion *champ, P pred);
   /**
     * @brief selects accessible cells where the champion could move
     * @param champ the champion to use

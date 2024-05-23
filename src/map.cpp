@@ -98,7 +98,7 @@ Map::Map(sf::Vector2f pos) {
       // the red side turret
       case 't': {
         cells[i][j] = new Ground{};
-        Tower *tower = new Tower;
+        auto tower = new Tower;
         tower->set_side(Side::RED);
         cells[i][j]->add_entity(tower);
         break;
@@ -106,21 +106,21 @@ Map::Map(sf::Vector2f pos) {
       // the blue side turret
       case 'z': {
         cells[i][j] = new Ground{};
-        Tower *tower = new Tower;
+        auto tower = new Tower;
         tower->set_side(Side::BLUE);
         cells[i][j]->add_entity(tower);
         break;
       }
       case 'n': {
         cells[i][j] = new Ground{};
-        Nexus *nexus = new Nexus;
+        auto nexus = new Nexus;
         nexus->set_side(Side::RED);
         cells[i][j]->add_entity(nexus);
         break;
       }
       case 'm': {
         cells[i][j] = new Ground{};
-        Nexus *nexus = new Nexus;
+        auto nexus = new Nexus;
         nexus->set_side(Side::BLUE);
         cells[i][j]->add_entity(nexus);
         break;
@@ -364,8 +364,8 @@ std::vector<Cell*> Map::getnearbycells(sf::Vector2f pos, int distance){
   return around;
 }
 template<typename P>
-void Map::setselectednearbycells(Champion *c, P pred){
-  sf::Vector2f index = c->get_simulation_cell()->get_index();
+void Map::set_selected_nearby_cells(Champion *champ, P pred){
+  sf::Vector2f index = champ->get_simulation_cell()->get_index();
   std::vector<Cell *> nearbycells = getnearbycells(index);
   for(size_t i = 0; i < nearbycells.size(); i++){
     if(pred(nearbycells[i])){
@@ -374,15 +374,13 @@ void Map::setselectednearbycells(Champion *c, P pred){
   }
 }
 void Map::select_accessible_cells(Champion *champ){
-  setselectednearbycells(champ,[](Cell *c){return c->can_move_here();});
+  set_selected_nearby_cells(champ, [](Cell *c) { return c->can_move_here(); });
 }
 void Map::select_wardable_cells(Champion *champ){
-  setselectednearbycells(champ,[](Cell *c){return c->can_ward_here();});
+  set_selected_nearby_cells(champ, [](Cell *c) { return c->can_ward_here(); });
 }
 void Map::select_attackable_entities(Champion *champ){
-  setselectednearbycells(champ,[champ](Cell *c){
-    return c->can_attack_entity(champ->get_side());
-  });
+  set_selected_nearby_cells(champ, [champ](Cell *c) { return c->can_attack_entity(champ->get_side()); });
 }
 bool Cell::can_attack_entity(Side enemy_side_)const{
   for(Entity *entity: entities){

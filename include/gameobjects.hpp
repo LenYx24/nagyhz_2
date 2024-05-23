@@ -89,6 +89,11 @@ public:
    */
   int get_xp_given()const{return xp_given;}
   /**
+   * returns the current hp of this entity
+   * @return the hp
+   */
+  double get_current_hp()const{return current_hp;}
+  /**
     * @brief returns the amount of gold given to the entity that kills this entity
    */
   int get_gold_given()const{return gold_given;}
@@ -692,7 +697,11 @@ public:
     * @param map the map where they should be removed from
    */
   void despawn_champs(std::shared_ptr<Map> &map);
-
+  /**
+   * returns the current gamemoves state informations
+   * @return a block of text describing the gamemove state
+   */
+  std::string get_gamemoves_state()const;
 
 private:
   std::vector<Champion*> champs;

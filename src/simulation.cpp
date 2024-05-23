@@ -6,9 +6,13 @@ SimulationState::SimulationState(
     std::vector<Player *> &players,
     std::shared_ptr<Map> &map,
     sf::RenderWindow& window,
-    GameMode mode, StateManager& state_manager,
-    std::function<void()> callback_):State(state_manager),players(players){
-  this->mode = mode;
+    Settings& settings_, StateManager& state_manager,
+    std::function<void()> callback_)
+      :
+      State(state_manager),
+      settings(settings_),
+      players(players)
+      {
   this->map = map;
   this->callback = std::move(callback_);
   // load font
@@ -25,9 +29,27 @@ SimulationState::SimulationState(
   // reset vision and selections, as they are not needed in simulation state
   map->reset_cell_selections();
   map->reset_cell_vision();
+  // create the file
+  std::time_t time = std::time(nullptr);
+  std::tm *now = std::localtime(&time);
+  std::string filename = this->settings.get_output_prefix();
+  filename+="_";
+
+  filename+= std::to_string(now->tm_year)
+              + ":"+std::to_string(now->tm_mon+1)
+              + ":"+std::to_string(now->tm_mday)
+              + ":"+std::to_string(now->tm_hour)
+              + ":"+std::to_string(now->tm_min)
+              + ":"+std::to_string(now->tm_sec);
+  filename += ".txt";
+  output_file = std::ofstream(filename);
+  if(!output_file){
+    throw std::invalid_argument("wrong filepath");
+  }
+  output_file << "test" << std::endl;
 }
-void SimulationState::handle_events(sf::Event &e){
-    if (e.type == sf::Event::Closed) {
+void SimulationState::handle_events(sf::Event &event){
+    if (event.type == sf::Event::Closed) {
         state_manager.exit();
     }
 }
@@ -40,6 +62,10 @@ void SimulationState::update(){
         elapsed_time.restart();
         // do one turn
         for(auto & player : players){
+          // this gives us the current save to save to the file
+          std::string gamemoves_state = player->get_gamemoves_state();
+          output_file << gamemoves_state << '\n';
+
           player->do_moves(map);
         }
         if(map->did_game_end()){
@@ -56,12 +82,13 @@ void SimulationState::update(){
     map->disable_vision();
 }
 SimulationState::~SimulationState(){
+  callback();
   delete title;
   // no gamemoves should be on any champion, this is just to make sure all of them get deleted
   for(auto player: players){
     player->clear_gamemoves();
   }
-  callback();
+  output_file.close();
 }
 void SimulationState::draw(sf::RenderWindow& window){
     sf::Color background_color = sf::Color(220, 225, 222);

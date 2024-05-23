@@ -29,7 +29,11 @@ public:
 };
 class GameState : public State {
 public:
-  GameState(StateManager &state_manager, std::vector<Champion*> p1champs,std::vector<Champion*> p2champs, const Settings& settings, sf::RenderWindow& window);
+  GameState(StateManager &state_manager,
+            std::vector<Champion*> p1champs,
+            std::vector<Champion*> p2champs,
+            Settings& settings,
+            sf::RenderWindow& window);
   ~GameState() override;
   void handle_events(sf::Event &e)override;
   void update()override;
@@ -52,13 +56,13 @@ public:
   void next_player();
 
 private:
-  GameMode mode;
   Resources::Holder h;
+  Settings &settings;
   // game elements
   std::vector<Item> allitems;
   std::vector<Player *> players;
-  Player *currentplayer;
   // selection
+  Player *currentplayer;
   Champion *selectedchamp;
   // UI
   int time_left = 60;

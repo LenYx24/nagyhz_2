@@ -5,6 +5,7 @@
 #include <iostream>
 #include <memory>
 #include <stack>
+#include <utility>
 
 class State;
 class StateManager {
@@ -20,7 +21,7 @@ public:
   void draw(sf::RenderWindow &window);
 
   static sf::Vector2f get_size(sf::RenderWindow& window);
-  inline bool has_state() const {return !states.empty() || buffer_state;}
+  [[nodiscard]] inline bool has_state() const {return !states.empty() || buffer_state;}
 
   void exit();
 
@@ -31,21 +32,31 @@ private:
 };
 class State {
 public:
-  virtual ~State() {}
+  virtual ~State() = default;
   virtual void handle_events(sf::Event &event) = 0;
   virtual void update() = 0;
   virtual void draw(sf::RenderWindow& window) = 0;
 
 protected:
-  State(StateManager &state_manager) : state_manager(state_manager) {}
+  explicit State(StateManager &state_manager) : state_manager(state_manager) {}
   StateManager &state_manager;
 };
-enum class GameMode { TWOPLAYER };
-struct Settings {
+enum class GameMode { TWO_PLAYER };
+class Settings {
 public:
-  Settings(std::string champs_filepath, std::string items_filepath, GameMode mode);
+  Settings(std::string champs_filepath, std::string items_filepath,std::string output_prefix, GameMode mode);
+  [[nodiscard]] std::string get_champs_filepath()const{return champs_filepath;};
+  [[nodiscard]] std::string get_items_filepath()const{return items_filepath;};
+  [[nodiscard]] std::string get_output_prefix()const{return output_prefix;};
+  [[nodiscard]] GameMode get_mode()const{return mode;};
+  void set_champs_filepath(std::string path){champs_filepath=std::move(path);}
+  void set_items_filepath(std::string path){items_filepath=std::move(path);}
+  void set_output_prefix(std::string path){output_prefix=std::move(path);}
+  void set_gamemode(GameMode mode_){mode=mode_;}
+private:
   std::string champs_filepath;
   std::string items_filepath;
+  std::string output_prefix;
   GameMode mode;
 };
 #endif

@@ -54,8 +54,9 @@ sf::Vector2f StateManager::get_size(sf::RenderWindow& window){
   return sf::Vector2f{static_cast<float>(window_size_unsigned.x),static_cast<float>(window_size_unsigned.y)};
 }
 
-Settings::Settings(std::string champs_filepath, std::string items_filepath, GameMode mode){
+Settings::Settings(std::string champs_filepath, std::string items_filepath,std::string output_prefix, GameMode mode){
   this->champs_filepath = std::move(champs_filepath);
   this->items_filepath = std::move(items_filepath);
+  this->output_prefix = std::move(output_prefix);
   this->mode = mode;
 }

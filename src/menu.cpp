@@ -7,8 +7,9 @@ MainState::MainState(StateManager &state_manager, sf::RenderWindow &window) : Me
   resources_holder.load(Resources::Type::FONT, "./resources/fonts/Roboto.ttf");
 
   std::function<void()> onclick_start = [state=this,&window, &state_manager](){
-    state->setting.champs_filepath = state->text_boxes["champs"]->get_text();
-    state->setting.items_filepath = state->text_boxes["items"]->get_text();
+    state->setting.set_champs_filepath(state->text_boxes["champs"]->get_text());
+    state->setting.set_items_filepath(state->text_boxes["items"]->get_text());
+    state->setting.set_output_prefix(state->text_boxes["items"]->get_text());
     state_manager.push_state(std::make_unique<ModeSelectionState>(state_manager,window));
   };
   buttons.push_back(new MenuButton{resources_holder, "Start", onclick_start});
@@ -19,8 +20,18 @@ MainState::MainState(StateManager &state_manager, sf::RenderWindow &window) : Me
   grid.set_elements(els);
   grid.set_elements_pos();
   sf::Vector2f window_size_f = {static_cast<float>(window_size.x),static_cast<float>(window_size.y)};
-  text_boxes["champs"] = (new UI::TextBox{"champions file:",resources_holder,{window_size_f.x/2,300},setting.champs_filepath});
-  text_boxes["items"] = (new UI::TextBox{"items file:",resources_holder,{window_size_f.x/2,360},setting.items_filepath});
+  text_boxes["champs"] = (new UI::TextBox{"champions file:",
+                                          resources_holder,
+                                          {window_size_f.x/2,300},
+                                          setting.get_champs_filepath()});
+  text_boxes["items"] = (new UI::TextBox{"items file:",
+                                         resources_holder,
+                                         {window_size_f.x/2,360},
+                                         setting.get_items_filepath()});
+  text_boxes["output"] = (new UI::TextBox{"game output prefix:",
+                                          resources_holder,
+                                          {window_size_f.x/2,420},
+                                          setting.get_output_prefix()});
 }
 void MainState::handle_events(sf::Event &event){
   if (event.type == sf::Event::Closed) {
@@ -108,13 +119,17 @@ ModeSelectionState::ModeSelectionState(StateManager &s, sf::RenderWindow& window
   };
 
   // for now there's only game mode, but in the future there could be more
-  buttons.push_back(new MenuButton{resources_holder, "Player vs Player", [state=this,onclick_draft](){state->setting.mode = GameMode::TWOPLAYER;onclick_draft();}});
-  buttons.push_back(new MenuButton{resources_holder, "back", [state=this](){state->state_manager.pop_state();}});
+  buttons.push_back(new MenuButton{resources_holder, "Player vs Player",
+                                   [state=this,onclick_draft]()
+                                   {state->setting.set_gamemode(GameMode::TWO_PLAYER);onclick_draft();}});
+  buttons.push_back(new MenuButton{resources_holder, "back",
+                                   [state=this]()
+                                   {state->state_manager.pop_state();}});
 
   sf::Vector2u window_size = window.getSize();
   UI::Grid grid{{static_cast<float>(window_size.x) / 2.f, 100}, {5, 5},{0,1}};
-  std::vector<UI::GridElement *> els(buttons.begin(), buttons.end());
-  grid.set_elements(els);
+  std::vector<UI::GridElement *> elements(buttons.begin(), buttons.end());
+  grid.set_elements(elements);
   grid.set_elements_pos();
 }
 } // namespace Menu

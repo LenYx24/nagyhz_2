@@ -110,24 +110,24 @@ private:
 };
 class DraftState : public State {
 public:
-  DraftState(StateManager &state_manager, const Settings& settings, sf::RenderWindow& window);
+  DraftState(StateManager &state_manager, Settings& settings, sf::RenderWindow& window);
   ~DraftState();
-  void handle_events(sf::Event &event);
-  void update();
-  void draw(sf::RenderWindow& window);
+  void handle_events(sf::Event &event)override;
+  void update()override;
+  void draw(sf::RenderWindow& window)override;
 
-  void lockin(StateManager& state_manager, sf::RenderWindow& window, const Settings& settings);
+  void lockin(StateManager& state_manager, sf::RenderWindow& window, Settings& settings);
   void dont_ban();
 
 protected:
   Resources::Holder holder;
-  std::vector<Champion *> allchamps;
-  Champion *selectedchamp;
+  std::vector<Champion *> all_champs;
+  Champion *selected_champ;
   std::vector<TeamCol> columns;
-  sf::Clock elapsedtime;
+  sf::Clock elapsed_time;
   std::vector<DraftButton *> buttons;
-  std::vector<ChampBox*> champlist;
-  Champion *emptychamp;
+  std::vector<ChampBox*> champ_list;
+  Champion *empty_champ;
   std::vector<DraftTurn> turns;
   size_t turn_counter;
   sf::Text timer;

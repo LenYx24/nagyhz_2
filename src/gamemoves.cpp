@@ -1,8 +1,11 @@
 #include "../include/gamemoves.hpp"
 #include "../include/map.hpp"
 
-bool GameMove::check_gamemove_addable( Player *current_player, Champion *selected_champ)const{
-    return selected_champ != nullptr && current_player->is_his_champ(selected_champ) && !current_player->is_gamemove_active() && selected_champ->getmovepoints() - points >= 0;
+bool GameMove::check_gamemove_addable( Player *current_player, Champion *selected_champ){
+    return selected_champ != nullptr
+         && current_player->is_his_champ(selected_champ)
+         && !current_player->is_gamemove_active()
+         && selected_champ->getmovepoints() - points >= 0;
 }
 
 void MoveCell::do_move(Champion *champ, std::shared_ptr<Map> map){

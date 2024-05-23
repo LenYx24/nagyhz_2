@@ -100,6 +100,7 @@ void Champion::round_end(){
   for(GameMove *move : gamemoves){
     delete move;
   }
+
   gamemoves.clear();
   simulation_points_counter = 1;
   // passive gold generation
@@ -148,16 +149,7 @@ sf::Vector2f Minion::get_next_direction_pos_index(){
   }
   return sf::Vector2f{0, 0};
 }
-Minion::Minion(Side side_, std::vector<sf::Vector2f> directions_, Cell *spawn_point){
-  directions = std::move(directions_);
-  side = side_;
-  cell = spawn_point;
-  set_color(sf::Color{100,165,90});
-  this->set_name("minion");
-  this->base_hp = 30;
-  this->damage = 30;
-  this->shape.setSize({10,10});
-}
+
 void Player::spawn_champs(const std::shared_ptr<Map> &map){
   for(auto & champ : champs){
     sf::Vector2f spawn_point_index = spawn_point->get_index();
@@ -210,7 +202,24 @@ std::vector<std::string> Champion::get_stats()const{
   for(auto & item : items){
     stats.push_back(item->get_name());
   }
+  stats.emplace_back("buffs: " + std::to_string(items.size()));
+  for(auto & buff : buffs){
+    std::string b_hp = std::to_string(buff.get_bonus_hp());
+    std::string b_dmg = std::to_string(buff.get_bonus_dmg());
+    stats.push_back("buff: bonus hp: " +b_hp+" bonus dmg: "+b_dmg);
+  }
   return stats;
+}
+Minion::Minion(Side side_, std::vector<sf::Vector2f> directions_, Cell *spawn_point){
+  directions = std::move(directions_);
+  side = side_;
+  cell = spawn_point;
+  set_color(sf::Color{100,165,90});
+  this->set_name("minion");
+  base_hp = 40;
+  current_hp = base_hp;
+  damage = 5;
+  shape.setSize({10,10});
 }
 Tower::Tower(){
   name = "tower";
@@ -299,6 +308,7 @@ void Player::set_side(Side side_){
    check_death();
  }
 void Tower::attack(Map *map){
+  if(!is_alive())return;
   // checks if there are nearby enemies, and attacks them
   std::vector<Cell *> nearby_cells = map->getnearbycells(cell->get_index());
   // first check if there are focusable entities to attack
@@ -497,12 +507,18 @@ void Minion::do_move(const std::shared_ptr<Map> &map){
   sf::Vector2f next_cell_dir = get_next_direction_pos_index();
   sf::Vector2f next_cell_index = cell->get_index()+next_cell_dir;
   if(!map->in_bounds(next_cell_index)){
-    if(directions.empty())return;
+    if(directions.empty()){
+      Entity *enemy = cell->get_attackable_entity(side);
+      if(enemy != nullptr){
+        enemy->remove_hp(damage);
+        remove_hp(enemy->get_total_dmg());
+      }
+    }
     directions.erase(directions.begin());
     next_cell_index = cell->get_index()+next_cell_dir;
   }
   Cell *next_cell = map->getcell(next_cell_index);
-
+  if(!next_cell)return;
   // if there are enemies on the next cell the minion wants to go to, then it attacks the enemy
   Entity *enemy = next_cell->get_attackable_entity(side);
   if(enemy != nullptr){
@@ -548,21 +564,22 @@ void Champion::fight(Entity *other){
   double total_dmg = get_total_dmg();
   double other_total_dmg = other->get_total_dmg();
   // if one of them can kill the other
-  if(other->can_fight_back()){
-    if(total_dmg >= current_hp || other_total_dmg >= total_hp){
-      double chance = ((total_dmg+other_total_dmg)/total_dmg + (total_hp+other->current_hp)/total_hp) /2;
-      int ran = rand();
-      std::cout << "change for the fight: " << chance << std::endl;
-      std::cout << "random number: " << ran << std::endl;
-      // the champ won
-      if(chance <= ran){
-        other->remove_hp(damage);
-        killed_other(other);
-      }
-      else{ // the other entity won
-        remove_hp(other_total_dmg);
-        other->killed_other(this);
-      }
+  if(other->can_fight_back()
+      &&
+      (total_dmg >= current_hp || other_total_dmg >= total_hp)){
+    std::cout << "champion fight" << std::endl;
+    double chance = ((total_dmg+other_total_dmg)/total_dmg + (total_hp+other->get_current_hp())/total_hp) /2;
+    int ran = rand();
+    std::cout << "change for the fight: " << chance << std::endl;
+    std::cout << "random number: " << ran << std::endl;
+    // the champ won
+    if(chance <= ran){
+      other->remove_hp(damage);
+      killed_other(other);
+    }
+    else{ // the other entity won
+      remove_hp(other_total_dmg);
+      other->killed_other(this);
     }
   }
   else{

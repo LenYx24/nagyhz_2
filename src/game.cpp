@@ -14,14 +14,20 @@ GameButton::GameButton(Resources::Holder &h,
   text.setString(str);
   this->set_position(pos);
 }
-GameState::GameState(StateManager &state_manager, std::vector<Champion*> p1champs,std::vector<Champion*> p2champs, const Settings& settings, sf::RenderWindow& window) : State(state_manager),map(std::make_unique<Map>(sf::Vector2f{500,20})) {
+GameState::GameState(StateManager &state_manager,
+                     std::vector<Champion*> p1champs,
+                     std::vector<Champion*> p2champs,
+                     Settings& settings,
+                     sf::RenderWindow& window) :
+      State(state_manager),
+      settings(settings),
+      map(std::make_unique<Map>(sf::Vector2f{500,20}))
+      {
   // load items from the file and save them to the all items variable
-  IOParser::File input(settings.items_filepath);
+  IOParser::File input(settings.get_items_filepath());
   for (std::string line; std::getline(input.getfile(), line);) {
     allitems.push_back(IOParser::create_item(line));
   }
-  // set gamemode
-  this->mode = settings.mode;
   // load font
   h.load(Resources::Type::FONT, "./resources/fonts/Roboto.ttf");
   // create the UI components:
@@ -104,7 +110,7 @@ GameState::GameState(StateManager &state_manager, std::vector<Champion*> p1champ
   };
   create_simulation = [state = this, &window, simulation_ended](){
     state->state_manager.push_state(std::make_unique<SimulationState>(
-        state->players, state->map, window, state->mode,state->state_manager,simulation_ended)
+        state->players, state->map, window, state->settings,state->state_manager,simulation_ended)
     );
   };
 
@@ -169,33 +175,37 @@ void GameState::onclick_reset_gamemove(){
 }
 
 void GameState::onclick_gamemove() {
-  MoveCell move_cell;
-  if(move_cell.check_gamemove_addable(currentplayer, selectedchamp)){
+  auto move = new MoveCell;
+  if(move->check_gamemove_addable(currentplayer, selectedchamp)){
     map->select_accessible_cells(selectedchamp);
-    selectedchamp->add_gamemove(new MoveCell);
+    selectedchamp->add_gamemove(move);
   }
+  else delete move;
 }
 
 void GameState::onclick_attack(){
-  AttackMove attack_move;
-  if(attack_move.check_gamemove_addable(currentplayer, selectedchamp)){
+  auto move = new AttackMove;
+  if(move->check_gamemove_addable(currentplayer, selectedchamp)){
     map->select_attackable_entities(selectedchamp);
-    selectedchamp->add_gamemove(new AttackMove);
+    selectedchamp->add_gamemove(move);
   }
+  else delete move;
 }
 void GameState::onclick_base(){
-  TeleportBase tp_base;
-  if(tp_base.check_gamemove_addable(currentplayer, selectedchamp)){
-    selectedchamp->add_gamemove(new TeleportBase);
+  auto move = new TeleportBase;
+  if(move->check_gamemove_addable(currentplayer, selectedchamp)){
+    selectedchamp->add_gamemove(move);
     selectedchamp->finish_gamemove(currentplayer->get_spawn_point());
   }
+  else delete move;
 }
 void GameState::onclick_ward(){
-  PlaceWard place_ward;
-  if(place_ward.check_gamemove_addable(currentplayer, selectedchamp)){
+  auto move = new PlaceWard;
+  if(move->check_gamemove_addable(currentplayer, selectedchamp)){
     map->select_wardable_cells(selectedchamp);
-    selectedchamp->add_gamemove(new PlaceWard);
+    selectedchamp->add_gamemove(move);
   }
+  else delete move;
 }
 void GameState::show_cell_info(sf::Vector2f index){
   sf::RectangleShape shape{{100,60}};

@@ -4,18 +4,18 @@ void onclick_back(StateManager &s) {
   s.pop_state();
 }
 
-void DraftState::lockin(StateManager &s, sf::RenderWindow& window, const Settings& settings) {
-  if (selectedchamp != nullptr) {
-    elapsedtime.restart();
-    turns[turn_counter++].do_turn(selectedchamp);
-    auto it = champlist.begin();
-    for(;it != champlist.end();it++){
-      if((*it)->get_champ()->get_name() == selectedchamp->get_name()){
-        champlist.erase(it);
+void DraftState::lockin(StateManager &s, sf::RenderWindow& window, Settings &settings) {
+  if (selected_champ != nullptr) {
+    elapsed_time.restart();
+    turns[turn_counter++].do_turn(selected_champ);
+    auto it = champ_list.begin();
+    for(;it != champ_list.end();it++){
+      if((*it)->get_champ()->get_name() == selected_champ->get_name()){
+        champ_list.erase(it);
         break;
       }
     }
-    selectedchamp = nullptr;
+    selected_champ = nullptr;
   }
   if(turn_counter == 20){
     std::vector<Champion *> p1champs{columns[0].champs_size()};
@@ -32,22 +32,22 @@ void DraftState::lockin(StateManager &s, sf::RenderWindow& window, const Setting
   }
 }
 void DraftState::dont_ban() {
-  elapsedtime.restart();
+  elapsed_time.restart();
   if(turns[turn_counter].is_ban_phase())
-    turns[turn_counter++].do_turn(emptychamp);
+    turns[turn_counter++].do_turn(empty_champ);
 }
 DraftButton::DraftButton(Resources::Holder &h, const sf::String& str, [[maybe_unused]] std::function<void()> onclick_) : Button(str, std::move(onclick_)) {
   shape.setSize({150, 70});
   text.setCharacterSize(15);
   text.setFont(h.get(Resources::Type::FONT));
 }
-DraftState::DraftState(StateManager &state_manager, const Settings& settings, sf::RenderWindow& window) : State(state_manager) {
+DraftState::DraftState(StateManager &state_manager, Settings& settings, sf::RenderWindow& window) : State(state_manager) {
   try{
-    IOParser::File input(settings.champs_filepath);
+    IOParser::File input(settings.get_champs_filepath());
     for (std::string line; std::getline(input.getfile(), line);) {
-      allchamps.push_back(IOParser::create_champ(line));
+      all_champs.push_back(IOParser::create_champ(line));
     }
-    if (allchamps.size() < 10) {
+    if (all_champs.size() < 10) {
       throw std::invalid_argument("Not enough champions listed in the file, you need at least 10 champions to play!");
     }
   }catch(const std::invalid_argument& err){
@@ -58,19 +58,23 @@ DraftState::DraftState(StateManager &state_manager, const Settings& settings, sf
 
 
   // create the placeholder empty champ
-  emptychamp = new Champion;
-  emptychamp->set_name("empty");
+  empty_champ = new Champion;
+  empty_champ->set_name("empty");
   // create the UI components
   sf::Vector2f window_size = StateManager::get_size(window);
 
   holder.load(Resources::Type::FONT, "./resources/fonts/Roboto.ttf");
-  buttons.push_back(new DraftButton(holder, "Lock in", [state = this, &window, settings]() { state->lockin(state->state_manager,window,settings); }));
+  buttons.push_back(new DraftButton(holder, "Lock in",
+                                    [state = this, &window, &settings]()
+                                    { state->lockin(state->state_manager,window,settings); }));
   buttons.push_back(new DraftButton(holder, "Don't ban", [state = this]() { state->dont_ban(); }));
   buttons.push_back(new DraftButton(holder, "back", [&state_manager](){ onclick_back(state_manager);}));
 
   sf::Vector2f button_size = buttons[0]->get_size();
   float margin = 5;
-  UI::Grid grid{{window_size.x/2 - button_size.x*static_cast<float>(buttons.size())/2, window_size.y- button_size.y -margin}, {margin, margin}};
+  UI::Grid grid{{
+                    window_size.x/2 - button_size.x*static_cast<float>(buttons.size())/2,
+                    window_size.y- button_size.y -margin}, {margin, margin}};
   std::vector<UI::GridElement *> els(buttons.begin(), buttons.end());
   grid.set_elements(els);
   grid.set_elements_pos();
@@ -79,13 +83,13 @@ DraftState::DraftState(StateManager &state_manager, const Settings& settings, sf
 
   sf::RectangleShape baseshape{{150, 20}};
   baseshape.setOutlineColor({33, 35, 45});
-  for (size_t i = 0; i < allchamps.size(); i++) {
-    champlist.push_back(new ChampBox{allchamps[i]->get_name(), baseshape, holder, allchamps[i]});
-    champlist[i]->set_char_size(11);
-    champlist[i]->set_label_color(sf::Color::Black);
+  for (size_t i = 0; i < all_champs.size(); i++) {
+    champ_list.push_back(new ChampBox{all_champs[i]->get_name(), baseshape, holder, all_champs[i]});
+    champ_list[i]->set_char_size(11);
+    champ_list[i]->set_label_color(sf::Color::Black);
   }
   UI::Grid champgrid{{window_size.x/2 - baseshape.getSize().x, 10}, {margin, margin}, {0, 1}};
-  std::vector<UI::GridElement *> champels(champlist.begin(), champlist.end());
+  std::vector<UI::GridElement *> champels(champ_list.begin(), champ_list.end());
   champgrid.set_elements(champels);
   champgrid.set_elements_pos();
 
@@ -109,14 +113,14 @@ DraftState::DraftState(StateManager &state_manager, const Settings& settings, sf
  
 
   turn_counter = 0;
-  elapsedtime.restart();
-  selectedchamp = nullptr;
+  elapsed_time.restart();
+  selected_champ = nullptr;
   timer.setPosition({200, 40});
   timer.setFont(holder.get(Resources::Type::FONT));
 
   // temporarily here, so I don't have to do the draft phase while debugging
    for(size_t i = 0; i < 20; i++){
-     this->turns[turn_counter++].do_turn(champlist[i]->get_champ());
+     this->turns[turn_counter++].do_turn(champ_list[i]->get_champ());
   }
   // this should be change state, but then the champions should be moved
   //state_manager.push_state(std::make_unique<GameState>(state_manager,columns[0].champs,columns[1].champs,settings, window));
@@ -126,23 +130,23 @@ void DraftTurn::do_turn(Champion *champ) {
   champs.push_back(champ);
 }
 DraftState::~DraftState() {
-  for (auto & champ : allchamps)
+  for (auto & champ : all_champs)
     delete champ;
   for(auto button: buttons){
     delete button;
   }
-  for(auto champ: champlist){
+  for(auto champ: champ_list){
     delete champ;
   }
-  delete emptychamp;
+  delete empty_champ;
 }
 void DraftState::handle_events(sf::Event &e) {
   if (e.type == sf::Event::Closed) {
     state_manager.exit();
   } else if (e.type == sf::Event::MouseButtonPressed) {
-    for (auto & i : champlist) {
+    for (auto & i : champ_list) {
         if (i->contains(e.mouseButton.x, e.mouseButton.y)) {
-          selectedchamp = i->get_champ();
+          selected_champ = i->get_champ();
         }
     }
     for (UI::Button *b : buttons) {
@@ -153,24 +157,24 @@ void DraftState::handle_events(sf::Event &e) {
 void DraftState::update() {
   std::string s = "Time: ";
   int waiting_time = 30;
-  s += std::to_string(waiting_time - (int)elapsedtime.getElapsedTime().asSeconds());
+  s += std::to_string(waiting_time - (int)elapsed_time.getElapsedTime().asSeconds());
   timer.setString(s);
-  if ((int)elapsedtime.getElapsedTime().asSeconds() == waiting_time) {
-    if(selectedchamp != nullptr){
-      turns[turn_counter++].do_turn(selectedchamp);
+  if ((int)elapsed_time.getElapsedTime().asSeconds() == waiting_time) {
+    if(selected_champ != nullptr){
+      turns[turn_counter++].do_turn(selected_champ);
     }else{
       if(turns[turn_counter].is_ban_phase()){
-        turns[turn_counter++].do_turn(emptychamp);
+        turns[turn_counter++].do_turn(empty_champ);
       }else{
         state_manager.pop_state();
       }
     }
-    elapsedtime.restart();
+    elapsed_time.restart();
   }
-  for (auto & i : champlist) {
+  for (auto & i : champ_list) {
     i->set_label_color(sf::Color::Black);
   }
-  if(champlist.empty()){
+  if(champ_list.empty()){
     state_manager.pop_state();
   }
 }
@@ -183,8 +187,8 @@ void DraftState::draw(sf::RenderWindow& window) {
   for (auto & column : columns) {
     column.draw_to_window(window);
   }
-  for (auto & i : champlist) {
-    if (selectedchamp == i->get_champ()) {
+  for (auto & i : champ_list) {
+    if (selected_champ == i->get_champ()) {
       i->set_label_color({100, 100, 100});
     }
     i->draw(window);

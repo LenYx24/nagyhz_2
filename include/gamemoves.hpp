@@ -26,11 +26,11 @@ public:
   /**
     * @brief checks if the gamemove is complete, returns true if it is
    */
-  bool is_complete() const{return cell != nullptr;}
+  [[nodiscard]] bool is_complete() const{return cell != nullptr;}
   /**
     * @brief gets the current position cell of the gamemove
    */
-  virtual Cell *position_cell() const{return cell;}
+  [[nodiscard]] virtual Cell *position_cell() const{return cell;}
   /**
     * @brief finishes the gamemove, by giving it the cell to use
    */
@@ -38,34 +38,35 @@ public:
     cell = cell_;
   }
   /**
+   * the amount of points needed to perform this action
+   * @return the points
+   */
+  [[nodiscard]] int get_movepoints()const{return points;}
+  /**
+   * sets the points
+   * @param points_ the new points value
+   */
+  void set_movepoints(int points_){points=points_;}
+  /**
     * @brief does the move with the champ on the map
     * @param champ the champ whose move it is
     * @param map the map to do the moves on
    */
   virtual void do_move(Champion *champ, std::shared_ptr<Map> map)=0;
   /**
-    * @brief gets the movepoints this move consumes
-   */
-  int get_movepoints() const{return points;};
-  /**
-   * @brief set's the movepoints this move consumes
-   * @param points_ the new points
-   */
-   void set_movepoints(int points_){points = points_;}
-  /**
     * @brief checks if the gamemove is addable or not to the selected champion
     * @param current_player the currently selected player
     * @param selected_champ the currently selected champion
    */
-  bool check_gamemove_addable(Player *current_player, Champion *selected_champ)const;
+  virtual bool check_gamemove_addable(Player *current_player, Champion *selected_champ);
   /**
    * @brief checks if this move changes entities position
    * @return true if this gamemove changes the entities position
    */
-  virtual bool changes_pos()const{return false;}
+  [[nodiscard]] virtual bool changes_pos()const{return false;}
 
 protected:
-  int points = 1; // the amount of points needed to do this move
+  int points = 1;
   Cell *cell; // the cell to move to
 };
 
@@ -83,9 +84,6 @@ public:
     set_movepoints(2);
   }
   void do_move(Champion *champ, std::shared_ptr<Map> map) override;
-
-private:
-  Entity *attacked_entity = nullptr;
 };
 /**
   * @brief the class that implements the ward placing mechanism
@@ -103,7 +101,7 @@ public:
 class TeleportBase : public GameMove {
 public:
   TeleportBase(){
-    set_movepoints(3);
+    set_movepoints(2);
   }
   [[nodiscard]] bool changes_pos()const override{return true;}
   void do_move(Champion *champ, std::shared_ptr<Map> map)override;
