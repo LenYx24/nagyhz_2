@@ -137,6 +137,11 @@ public:
     * @brief unselects the current cell
    */
   void unselect();
+  /**
+   * @brief tries to do attack on each one of its entities
+   * @param map
+   */
+  void do_attack(Map *map);
  
 private:
   std::vector<Entity *> entities;
@@ -276,12 +281,17 @@ public:
     * @brief checks if the given number is a good index inside the map
     * @param p the x coordinate
    */
-  bool inboundsrow(int p){return 0 <= p && p < static_cast<int>(size.x);}
+  bool in_bounds_row(int p){return 0 <= p && p < static_cast<int>(size.x);}
   /**
     * @brief checks if the given number is a good index inside the map
     * @param p the y coordinate
    */
-  bool inboundscol(int p){return 0 <= p && p < static_cast<int>(size.x);}
+  bool in_bounds_col(int p){return 0 <= p && p < static_cast<int>(size.x);}
+  /**
+   * @brief checks if the given index is inside the map or in other words valid
+   * @return true if its inside, false otherwise
+   */
+  bool in_bounds(sf::Vector2f);
   /**
     * @brief moves the entity from one cell to another
     * @param entity the entity to move
@@ -318,6 +328,10 @@ public:
    * @brief resets all the cells vision to having vision, but doesnt change fields that are selected
    */
   void reset_cell_vision();
+  /**
+   * @brief tells every one of its entities to try an attack
+   */
+  void do_attack();
 
 private:
   struct posindex{

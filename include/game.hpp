@@ -7,6 +7,7 @@
 #include "resources.hpp"
 #include "simulation.hpp"
 #include "statemanagement.hpp"
+
 #include <cstdlib>
 #include <ctime>
 #include <fstream>
@@ -15,8 +16,7 @@
 
 class ItemBox : public UI::NamedBox {
 public:
-  ItemBox(const std::string& label, sf::RectangleShape frame, Resources::Holder &h, Item *i)
-      : NamedBox(label, std::move(frame), h), item(i) {}
+  ItemBox(const std::string& label, sf::RectangleShape frame, Resources::Holder &h, Item *i);
   Item *get_item()const{return item;}
 private:
   Item *item;
@@ -29,7 +29,7 @@ public:
 };
 class GameState : public State {
 public:
-  GameState(StateManager &state_manager, std::vector<Champion*> p1champs,std::vector<Champion*> p2champs, Settings settings, sf::RenderWindow& window);
+  GameState(StateManager &state_manager, std::vector<Champion*> p1champs,std::vector<Champion*> p2champs, const Settings& settings, sf::RenderWindow& window);
   ~GameState() override;
   void handle_events(sf::Event &e)override;
   void update()override;

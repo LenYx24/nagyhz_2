@@ -14,7 +14,7 @@ namespace Menu {
 
 class MenuState : public State {
 public:
-  explicit MenuState(StateManager &state_manager) : State(state_manager),setting("examples/champ.txt","examples/items.txt",GameMode::TWOPLAYER){}
+  explicit MenuState(StateManager &state_manager) : State(state_manager),setting("examples/champions.txt","examples/items.txt",GameMode::TWOPLAYER){}
   ~MenuState() override;
   void handle_events(sf::Event &event) override;
   void update() override;

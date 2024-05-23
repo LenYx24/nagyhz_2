@@ -19,9 +19,9 @@ SimulationState::SimulationState(
   title->set_position({window_size.x/2.f - 150,10});
   // set timer
   elapsed_time.restart();
-  timer.setPosition({250, 10});
+  timer.setPosition({100, 200});
   timer.setFont(h.get(Resources::Type::FONT));
-  timer.setCharacterSize(18);
+  timer.setCharacterSize(38);
   // reset vision and selections, as they are not needed in simulation state
   map->reset_cell_selections();
   map->reset_cell_vision();
@@ -45,6 +45,7 @@ void SimulationState::update(){
         if(map->did_game_end()){
           state_manager.pop_state();
         }
+        map->do_attack();
         if(round_counter == round_count){
             state_manager.pop_state();
         }

@@ -39,9 +39,12 @@ void Cell::set_highlighted() {
 void Cell::draw(sf::RenderWindow &w) {
   w.draw(shape);
   for(auto & entity : entities){
-    if(entity != nullptr && has_vision) //
+    if(entity != nullptr && has_vision && entity->is_alive()) //
       entity->draw(w);
   }
+}
+bool Map::in_bounds(sf::Vector2f index){
+  return in_bounds_row(static_cast<int>(index.x)) && in_bounds_col(static_cast<int>(index.y));
 }
 void Cell::set_color(sf::Color c) {
   this->color = c;
@@ -252,6 +255,20 @@ bool Cell::should_update_vision_around(Side current_side){
   }
   return false;
 }
+void Cell::do_attack(Map *map){
+  for(auto entity : entities){
+    entity->attack(map);
+  }
+}
+void Map::do_attack(){
+  for (size_t i = 0; i < size.x; i++) {
+    for (size_t j = 0; j < size.y; j++) {
+      if(!cells[i][j]){
+        cells[i][j]->do_attack(this);
+      }
+    }
+  }
+}
 sf::Uint8 Cell::has_vision_opacity = 255;
 sf::Uint8 Cell::no_vision_opacity = 50;
 sf::Uint8 Cell::selected_opacity = 100;
@@ -282,7 +299,7 @@ Entity *Cell::get_attackable_entity(Side side_){
 }
 void Map::check_game_end(){
   for(Entity *nexus: nexuses){
-    if(!nexus->isAlive()){
+    if(!nexus->is_alive()){
       game_end = true;
     }
   }
@@ -335,9 +352,9 @@ std::vector<Cell*> Map::getnearbycells(sf::Vector2f pos, int distance){
   std::vector<Cell *> around;
   sf::Vector2 pos_ = {static_cast<int>(pos.x),static_cast<int>(pos.y)};
   for(int i = pos_.x-distance; i <= pos_.x+distance; i++){
-    if(inboundsrow(i)){
+    if(in_bounds_row(i)){
       for(int j = pos_.y-distance; j <= pos_.y+distance; j++){
-        if(inboundscol(j) && cells[i][j] != nullptr){
+        if(in_bounds_col(j) && cells[i][j] != nullptr){
           around.push_back(cells[i][j]);
         }
       }
@@ -387,5 +404,4 @@ void Map::move(Entity *entity, sf::Vector2f from, sf::Vector2f to){
   cells[to_index.i][to_index.j]->add_entity(entity);
   // update the vision
   update_vision();
-  //entity->update_shape_pos(position);
 }

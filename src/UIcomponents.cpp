@@ -69,6 +69,14 @@ void Button::set_position(sf::Vector2f pos) {
   shape.setPosition(pos);
   update_text_position();
 }
+void Button::set_onclick(std::function<void()> onclick_){
+  onclick = std::move(onclick_);
+}
+void Button::onclick_here(const sf::Event &e){
+  if (contains(e.mouseButton.x,e.mouseButton.y)) {
+    onclick();
+  }
+}
 void Button::draw(sf::RenderWindow& window) {
   window.draw(shape);
   window.draw(text);

@@ -35,8 +35,7 @@ void StateManager::handle_events(sf::RenderWindow &window) {
 }
 
 void StateManager::update() {
-  // Todo: implement the feature that does state changes after a game loop cycle
-  if(!states.empty()) 
+  if(!states.empty())
     states.top()->update();
 }
 void StateManager::draw(sf::RenderWindow &window) {
@@ -45,7 +44,6 @@ void StateManager::draw(sf::RenderWindow &window) {
   window.display();
 }
 
-// Todo: Don't forget to save to a file, before doing this
 void StateManager::exit() {
   while (!states.empty())
     states.pop();

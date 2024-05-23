@@ -39,9 +39,7 @@ void MainState::handle_events(sf::Event &event){
     if(!clicked_inside_textbox)
       for(auto t: text_boxes) {t.second->set_selected(false);}
     for (UI::Button* b : buttons) {
-      if (b->contains(event.mouseButton.x,event.mouseButton.y)) {
-        b->onclick();
-      }
+      b->onclick_here(event);
     }
   }
   else if(event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::BackSpace){
@@ -61,21 +59,19 @@ void MainState::handle_events(sf::Event &event){
     }
   }
 }
-MenuButton::MenuButton(Resources::Holder &h, const sf::String& str, std::function<void()> onclick_) : Button(str, std::move(onclick_)) {
+MenuButton::MenuButton(Resources::Holder &h, const sf::String& str, [[maybe_unused]]std::function<void()> onclick_) : Button(str, std::move(onclick_)) {
   // menu button specific override settings
   text.setCharacterSize(15);
   text.setFont(h.get(Resources::Type::FONT));
 }
 
 
-void MenuState::handle_events(sf::Event &e) {
-  if (e.type == sf::Event::Closed) {
+void MenuState::handle_events(sf::Event &event) {
+  if (event.type == sf::Event::Closed) {
     state_manager.exit();
-  } else if (e.type == sf::Event::MouseButtonPressed) {
+  } else if (event.type == sf::Event::MouseButtonPressed) {
     for (UI::Button* b : buttons) {
-      if (b->contains(e.mouseButton.x,e.mouseButton.y)) {
-        b->onclick();
-      }
+      b->onclick_here(event);
     }
   }
 }
@@ -107,6 +103,7 @@ ModeSelectionState::ModeSelectionState(StateManager &s, sf::RenderWindow& window
   resources_holder.load(Resources::Type::FONT, "./resources/fonts/Roboto.ttf");
 
   std::function<void()> onclick_draft = [&window, state = this](){
+    // Todo: catch here
     state->state_manager.push_state(std::make_unique<DraftState>(state->state_manager, state->setting, window));
   };
 

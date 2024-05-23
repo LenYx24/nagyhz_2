@@ -15,21 +15,21 @@
 class DraftTurn {
 public:
   /**
-    * @brief constructor, initializes it's champs and if its banphase or not
+    * @brief constructor, initializes it's champs and if its ban_phase or not
     * @param champs the champs vector which should be used for it
    */
-  DraftTurn(std::vector<Champion *> &champs,bool banphase = false) : champs(champs),banphase(banphase) {}
+  explicit DraftTurn(std::vector<Champion *> &champs,bool banphase = false) : champs(champs), ban_phase(banphase) {}
   /**
     * @brief does one turn
    */
-  void doturn(Champion *champ);
+  void do_turn(Champion *champ);
   /**
-    * @brief returns the banphase variable, true if this turn is banphase
+    * @brief returns the ban_phase variable, true if this turn is ban_phase
    */
-  bool isbanphase()const{return banphase;}
+  [[nodiscard]] bool is_ban_phase()const{return ban_phase;}
 private:
   std::vector<Champion *> &champs;
-  bool banphase;
+  bool ban_phase;
 };
 /**
   * @brief class that specializes NamedBox, to a NamedBox with the correct design
@@ -96,14 +96,14 @@ protected:
 class DraftButton : public UI::Button {
 public:
   DraftButton(
-      Resources::Holder &h, const sf::String& str, std::function<void()> onclick = []() { std::cout << "not impl" << std::endl; });
+      Resources::Holder &h, const sf::String& str, [[maybe_unused]] std::function<void()> onclick = []() { std::cout << "not impl" << std::endl; });
 };
 /**
     * @brief champbox implementation
  */
 class ChampBox : public UI::NamedBox {
 public:
-  ChampBox(std::string label, sf::RectangleShape frame, Resources::Holder &h, Champion *c) : NamedBox(label, frame, h), champ(c) {}
+  ChampBox(const std::string& label, sf::RectangleShape frame, Resources::Holder &h, Champion *c) : NamedBox(label, frame, h), champ(c) {}
   Champion *get_champ()const{return champ;}
 private:
   Champion *champ;
@@ -116,7 +116,7 @@ public:
   void update();
   void draw(sf::RenderWindow& window);
 
-  void lockin(StateManager& state_manager, sf::RenderWindow& window, Settings settings);
+  void lockin(StateManager& state_manager, sf::RenderWindow& window, const Settings& settings);
   void dont_ban();
 
 protected:

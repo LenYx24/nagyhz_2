@@ -1,15 +1,14 @@
-#include <utility>
-
 #include "../include/draft.hpp"
+
 void onclick_back(StateManager &s) {
   s.pop_state();
 }
 
-void DraftState::lockin(StateManager &s, sf::RenderWindow& window, Settings settings) {
+void DraftState::lockin(StateManager &s, sf::RenderWindow& window, const Settings& settings) {
   if (selectedchamp != nullptr) {
     elapsedtime.restart();
-    turns[turn_counter++].doturn(selectedchamp);
-    std::vector<ChampBox*>::iterator it = champlist.begin();
+    turns[turn_counter++].do_turn(selectedchamp);
+    auto it = champlist.begin();
     for(;it != champlist.end();it++){
       if((*it)->get_champ()->get_name() == selectedchamp->get_name()){
         champlist.erase(it);
@@ -34,17 +33,17 @@ void DraftState::lockin(StateManager &s, sf::RenderWindow& window, Settings sett
 }
 void DraftState::dont_ban() {
   elapsedtime.restart();
-  if(turns[turn_counter].isbanphase())
-    turns[turn_counter++].doturn(emptychamp);
+  if(turns[turn_counter].is_ban_phase())
+    turns[turn_counter++].do_turn(emptychamp);
 }
-DraftButton::DraftButton(Resources::Holder &h, const sf::String& str, std::function<void()> onclick_) : Button(str, std::move(onclick_)) {
+DraftButton::DraftButton(Resources::Holder &h, const sf::String& str, [[maybe_unused]] std::function<void()> onclick_) : Button(str, std::move(onclick_)) {
   shape.setSize({150, 70});
   text.setCharacterSize(15);
   text.setFont(h.get(Resources::Type::FONT));
 }
 DraftState::DraftState(StateManager &state_manager, const Settings& settings, sf::RenderWindow& window) : State(state_manager) {
   try{
-    IOParser::File input("./examples/champions.txt");
+    IOParser::File input(settings.champs_filepath);
     for (std::string line; std::getline(input.getfile(), line);) {
       allchamps.push_back(IOParser::create_champ(line));
     }
@@ -62,15 +61,16 @@ DraftState::DraftState(StateManager &state_manager, const Settings& settings, sf
   emptychamp = new Champion;
   emptychamp->set_name("empty");
   // create the UI components
-  sf::Vector2f windowsize = state_manager.get_size(window);
+  sf::Vector2f window_size = StateManager::get_size(window);
 
   holder.load(Resources::Type::FONT, "./resources/fonts/Roboto.ttf");
   buttons.push_back(new DraftButton(holder, "Lock in", [state = this, &window, settings]() { state->lockin(state->state_manager,window,settings); }));
   buttons.push_back(new DraftButton(holder, "Don't ban", [state = this]() { state->dont_ban(); }));
   buttons.push_back(new DraftButton(holder, "back", [&state_manager](){ onclick_back(state_manager);}));
-  sf::Vector2f buttonsize = buttons[0]->get_size();
+
+  sf::Vector2f button_size = buttons[0]->get_size();
   float margin = 5;
-  UI::Grid grid{{windowsize.x/2 -buttonsize.x*static_cast<float>(buttons.size())/2, windowsize.y-buttonsize.y -margin}, {margin, margin}};
+  UI::Grid grid{{window_size.x/2 - button_size.x*static_cast<float>(buttons.size())/2, window_size.y- button_size.y -margin}, {margin, margin}};
   std::vector<UI::GridElement *> els(buttons.begin(), buttons.end());
   grid.set_elements(els);
   grid.set_elements_pos();
@@ -84,7 +84,7 @@ DraftState::DraftState(StateManager &state_manager, const Settings& settings, sf
     champlist[i]->set_char_size(11);
     champlist[i]->set_label_color(sf::Color::Black);
   }
-  UI::Grid champgrid{{windowsize.x/2 - baseshape.getSize().x, 10}, {margin, margin}, {0, 1}};
+  UI::Grid champgrid{{window_size.x/2 - baseshape.getSize().x, 10}, {margin, margin}, {0, 1}};
   std::vector<UI::GridElement *> champels(champlist.begin(), champlist.end());
   champgrid.set_elements(champels);
   champgrid.set_elements_pos();
@@ -93,7 +93,7 @@ DraftState::DraftState(StateManager &state_manager, const Settings& settings, sf
   sf::Vector2f team_col_gap_size = {150,40};
   sf::Vector2f team_col_margin = {10,10};
   std::vector<sf::Vector2f> startposes = {
-      team_col_margin, {windowsize.x-(team_col_gap_size.x+ team_col_margin.x), team_col_margin.x}, {team_col_margin.x, windowsize.y-(team_col_gap_size.y+ team_col_margin.y) * col_gap}, {windowsize.x-(team_col_gap_size.x + team_col_margin.x), windowsize.y-(team_col_gap_size.y+ team_col_margin.y) * col_gap}};
+      team_col_margin, {window_size.x-(team_col_gap_size.x+ team_col_margin.x), team_col_margin.x}, {team_col_margin.x, window_size.y-(team_col_gap_size.y+ team_col_margin.y) * col_gap}, {window_size.x-(team_col_gap_size.x + team_col_margin.x), window_size.y-(team_col_gap_size.y+ team_col_margin.y) * col_gap}};
   for (size_t i = 0; i < 4; i++) {
     TeamCol c{holder,startposes[i], team_col_gap_size, team_col_margin.x};
     columns.push_back(c);
@@ -114,16 +114,16 @@ DraftState::DraftState(StateManager &state_manager, const Settings& settings, sf
   timer.setPosition({200, 40});
   timer.setFont(holder.get(Resources::Type::FONT));
 
-  // temporarily here, so i dont have to do the draft phase while debugging
-   //for(size_t i = 0; i < 20; i++){
-    //this->turns[turn_counter++].doturn(champlist[i]->get_champ());
-  //}
+  // temporarily here, so I don't have to do the draft phase while debugging
+   for(size_t i = 0; i < 20; i++){
+     this->turns[turn_counter++].do_turn(champlist[i]->get_champ());
+  }
   // this should be change state, but then the champions should be moved
   //state_manager.push_state(std::make_unique<GameState>(state_manager,columns[0].champs,columns[1].champs,settings, window));
 }
 
-void DraftTurn::doturn(Champion *c) {
-  champs.push_back(c);
+void DraftTurn::do_turn(Champion *champ) {
+  champs.push_back(champ);
 }
 DraftState::~DraftState() {
   for (auto & champ : allchamps)
@@ -134,8 +134,7 @@ DraftState::~DraftState() {
   for(auto champ: champlist){
     delete champ;
   }
-  if(emptychamp)
-    delete emptychamp;
+  delete emptychamp;
 }
 void DraftState::handle_events(sf::Event &e) {
   if (e.type == sf::Event::Closed) {
@@ -147,9 +146,7 @@ void DraftState::handle_events(sf::Event &e) {
         }
     }
     for (UI::Button *b : buttons) {
-      if (b->contains(e.mouseButton.x,e.mouseButton.y)) {
-        b->onclick();
-      }
+      b->onclick_here(e);
     }
   }
 }
@@ -160,37 +157,37 @@ void DraftState::update() {
   timer.setString(s);
   if ((int)elapsedtime.getElapsedTime().asSeconds() == waiting_time) {
     if(selectedchamp != nullptr){
-      turns[turn_counter++].doturn(selectedchamp);
+      turns[turn_counter++].do_turn(selectedchamp);
     }else{
-      if(turns[turn_counter].isbanphase()){
-        turns[turn_counter++].doturn(emptychamp);
+      if(turns[turn_counter].is_ban_phase()){
+        turns[turn_counter++].do_turn(emptychamp);
       }else{
         state_manager.pop_state();
       }
     }
     elapsedtime.restart();
   }
-  for (size_t i = 0; i < champlist.size(); i++) {
-    champlist[i]->set_label_color(sf::Color::Black);
+  for (auto & i : champlist) {
+    i->set_label_color(sf::Color::Black);
   }
-  if(champlist.size() == 0){
+  if(champlist.empty()){
     state_manager.pop_state();
   }
 }
 void DraftState::draw(sf::RenderWindow& window) {
   sf::Color background_color = sf::Color(220, 225, 222);
   window.clear(background_color);
-  for (size_t i = 0; i < buttons.size(); i++) {
-    buttons[i]->draw_to_window(window);
+  for (auto & button : buttons) {
+    button->draw_to_window(window);
   }
-  for (size_t i = 0; i < columns.size(); i++) {
-    columns[i].draw_to_window(window);
+  for (auto & column : columns) {
+    column.draw_to_window(window);
   }
-  for (size_t i = 0; i < champlist.size(); i++) {
-    if (selectedchamp == champlist[i]->get_champ()) {
-      champlist[i]->set_label_color({100, 100, 100});
+  for (auto & i : champlist) {
+    if (selectedchamp == i->get_champ()) {
+      i->set_label_color({100, 100, 100});
     }
-    champlist[i]->draw(window);
+    i->draw(window);
   }
   window.draw(timer);
 }
@@ -201,9 +198,9 @@ void TeamCol::setpos() {
     elements[0].set_position(pos);
     pos.y += elements[0].get_size().y + margin;
   }
-  for (size_t i = 0; i < elements.size(); i++) {
-    elements[i].set_position(pos);
-    pos.y += elements[i].get_size().y + margin;
+  for (auto & element : elements) {
+    element.set_position(pos);
+    pos.y += element.get_size().y + margin;
   }
 }
 
@@ -211,7 +208,7 @@ TeamCol::TeamCol(Resources::Holder &h, sf::Vector2f startpos,sf::Vector2f size, 
   this->startpos = startpos;
   this->margin = margin;
   for (size_t i = 0; i < 5; i++) {
-    elements.push_back(DraftNamedBox{h,size});
+    elements.emplace_back(h,size);
     elements[i].set_char_size(12);
   }
 }

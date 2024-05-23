@@ -16,9 +16,9 @@ public:
   /**
     * @brief contructor which set's bonus_dmg and bonus_hp to their respective values
     * @param dmg the new damage to use
-    * @param hp the new hp to use
+    * @param hp the new base_hp to use
    */
-  Effect(int dmg=0, int hp=0): bonus_dmg(dmg), bonus_hp(hp){}
+  explicit Effect(int dmg=0, int hp=0): bonus_dmg(dmg), bonus_hp(hp){}
   /**
     * @brief get's the bonus_dmg
    */
@@ -39,7 +39,7 @@ public:
    * checks if the two properties are zero, or not
    * @return true if both of them aren't zero
    */
-  bool not_zero()const{return bonus_dmg != 0 && bonus_hp != 0;}
+  [[nodiscard]] bool not_zero()const{return bonus_dmg != 0 && bonus_hp != 0;}
 private:
   double bonus_dmg;
   double bonus_hp;
@@ -62,10 +62,10 @@ public:
     * @param name the name of the entity
    */
   explicit Entity(std::string name = "");
-  /**
+   /**
     * @brief the method that draws the entity to the window
     * @param window the window to draw to
-   */
+    */
   virtual void draw(sf::RenderWindow &window);
   /**
     * @brief returns the base damage of the champion, without any buffs/items
@@ -73,17 +73,17 @@ public:
    */
   double get_base_dmg()const{return damage;}
   /**
-    * @brief returns the base hp, works the same way as get_base_dmg
+    * @brief returns the base base_hp, works the same way as get_base_dmg
    */
-  double get_base_hp()const{return hp;}
+  double get_base_hp()const{return base_hp;}
+  /**
+    * @brief returns the base base_hp, works the same way as get_base_dmg
+   */
+  virtual double get_max_hp()const{return base_hp;}
   /**
     * @brief returns the total damage, by adding buffs/items to the base dmg
    */
   double get_total_dmg()const{return total_damage;}
-  /**
-    * @brief returns total hp, by adding buffs/items to the base dmg
-   */
-  double get_total_hp()const{return total_hp;}
   /**
     * @brief returns the amount of experience given to the entity that kills this entity
    */
@@ -111,7 +111,7 @@ public:
   /**
     * @brief checks if the entity is alive currently
    */
-  bool isAlive() const {return alive;}
+  bool is_alive() const {return alive;}
   /**
     * @brief returns true, if this entity should be focused by other entities when trying to pick a fight
    */
@@ -121,14 +121,14 @@ public:
    */
   virtual bool gives_creep_score()const {return false;}
   /**
-    * @brief removes the given damage from the entity's total hp, and checks if the entity died by this damage
+    * @brief removes the given damage from the entity's total base_hp, and checks if the entity died by this damage
     * @param dmg the amount of damage dealt to this entity
    */
-  virtual void remove_hp(double dmg){total_hp-=dmg; check_death();}
+  void remove_hp(double dmg);
   /**
     * @brief checks if the entity died
    */
-  virtual void check_death(){if(total_hp <= 0){respawn_counter = respawn_timer;}}
+  void check_death();
   /**
     * @brief checks if the entity's shape was clicked on
    */
@@ -158,7 +158,7 @@ public:
     * @param num the number to convert
     * @return the string which should be drawn to the screen
    */
-  std::string to_ui_int_format(double num)const;
+  static std::string to_ui_int_format(double num);
   /**
     * @brief set's this entity's shape fillcolor to the given color
     * @param color the color to use
@@ -178,20 +178,25 @@ public:
    * @param entity
    */
   virtual void killed_other(Entity *entity);
+  /**
+   * @brief returns the effect of this entity, which is given if it's killed
+   * @return the effect
+   */
   virtual Effect get_effect_if_killed()const{return Effect{0,0};}
+  virtual void attack(Map *map);
 protected:
   std::string name;
 
   bool alive = true;
 
-  double max_hp = 10; // the maximum hp this entity could have
-  double hp = 10;
+  double base_hp = 10; // the base hp without any buffs
+  double current_hp = 10; // this is the hp that the entity "uses", this is the one that takes damage
   double damage = 10;
   double total_hp = 10;
   double total_damage = 10;
 
   int respawn_counter = 0; // the amount of seconds needed to respawn
-  int respawn_timer = 5; // the amount of seconds needed to respawn
+  int respawn_timer = 3; // the amount of seconds needed to respawn
   int xp_given = 10;  // the xp given to the other entity, if this one gets slain by them
   int gold_given = 30;  // the gold given to the other entity, if this one gets slain by them
 
@@ -260,22 +265,21 @@ public:
    * @param damage_
    * @param dmg_per_level_
    * @param hp_
-   * @param max_hp_
    * @param hp_per_level_
    */
-   Champion(const std::string& name_, double damage_, double dmg_per_level_, double hp_,double max_hp_, double hp_per_level_);
+   Champion(const std::string& name_, double damage_, double dmg_per_level_, double hp_, double hp_per_level_);
   /**
     * @brief destructor for champion class, frees the heap allocated properties
    */
   ~Champion() override;
   /**
-    * @brief this champion fights another entity, calculates who won, then decreases both entities hp
+    * @brief this champion fights another entity, calculates who won, then decreases both entities base_hp
     * gives the required assets to the appropriate entites (such as gold, xp, cs)
     * @param other the entity to fight
    */
   void fight(Entity *other);
   /**
-    * @brief this champion fights another champion, calculates who won, then decreases both entities hp
+    * @brief this champion fights another champion, calculates who won, then decreases both entities base_hp
     * gives the required assets to the appropriate entites (such as gold, xp, cs)
     * @param other the entity to fight
    */
@@ -285,7 +289,7 @@ public:
   */
   void update_total_dmg();
   /**
-    * @brief updates the total hp that could be dealt by the entity with all the buffs and items
+    * @brief updates the total base_hp that could be dealt by the entity with all the buffs and items
    */
   void update_total_hp();
   /**
@@ -302,6 +306,7 @@ public:
     * @param c the char to use
    */
    void set_icon(char c){icon.setString(c);}
+
    /**
     * @brief gets the champions name
     */
@@ -325,6 +330,10 @@ public:
     * @param move the gamemove to add
    */
   void add_gamemove(GameMove *move);
+  /**
+    * @brief returns the base base_hp, works the same way as get_base_dmg
+   */
+  double get_max_hp()const override;
   /**
     * @brief check's if the latest gamemove is complete, this means if it can be used up, or it needs some more data
     * @returns true if the gamemove is complete, false if not
@@ -385,15 +394,15 @@ public:
     * @param map the map to place the ward on
     * @param cell the cell on the map where the ward should be placed
    */
-  void place_ward(std::shared_ptr<Map> map, Cell *c);
+  void place_ward(const std::shared_ptr<Map>& map, Cell *c);
   /**
     * @brief describes if this entity gives vision
    */
   bool gives_vision()const override{return true;}
   /**
-    * @brief refill the hp of the champion
+    * @brief refill the base_hp of the champion
    */
-  void refill_hp(){hp = max_hp;}
+  void refill_hp(){current_hp = get_max_hp();}
   /**
     * @brief clears the gamemoves list and also deletes each from the heap, set's the current_gamemove to nullptr
    */
@@ -419,7 +428,7 @@ private:
   sf::Vector2f gamemove_index(size_t offset)const;
   int cs = 0;
   int gold = 600;
-  double hp_per_level = 0;  // the amount of hp given per level up
+  double hp_per_level = 0;  // the amount of base_hp given per level up
   double dmg_per_level = 0; // the amount of dmg given per level up
   int level = 1; // the current level of the champion
   int max_level = 18;
@@ -449,14 +458,14 @@ private:
 class Tower : public Structure {
 public:
   /**
-    * @brief set's up the towers attributes (hp,dmg)
+    * @brief set's up the towers attributes (base_hp,dmg)
    */
   Tower();
   /**
     * @brief checks if it can attack anyone in it's range, but first checks if there are entities that should be focused
     * @param map the map where it searches for entities
    */
-  void attack(std::shared_ptr<Map> &map);
+  void attack(Map *map) override;
 };
 /**
   * @brief the class for the nexus, which doesn't do damage to entities, but if it dies, the game is over
@@ -465,7 +474,7 @@ public:
 class Nexus : public Structure {
   public:
   /**
-  * @brief set's up the nexuses attributes (hp,dmg)
+  * @brief set's up the nexuses attributes (base_hp,dmg)
    */
   Nexus();
 };
@@ -478,7 +487,7 @@ class Nexus : public Structure {
 class Camp : public Entity {
 public:
   /**
-    * @brief set's up the camps attributes (hp,dmg)
+    * @brief set's up the camps attributes (base_hp,dmg)
    */
   Camp();
   /**
@@ -496,7 +505,7 @@ private:
 class Drake : public Camp{
 public:
   /**
-    * @brief set's up the dragons attributes (hp,dmg) and decides which type it should be
+    * @brief set's up the dragons attributes (base_hp,dmg) and decides which type it should be
    */
   Drake();
   /**
@@ -511,7 +520,7 @@ public:
 class Minion : public Entity {
 public:
   /**
-    * @brief set's up the minions attributes (hp,dmg)
+    * @brief set's up the minions attributes (base_hp,dmg)
     * @param side_ the team the minion is on
     * @param directions_ the vector of map positions, where the minion should go (top/mid/bot)
     * @param spawn_point the spawn_point of the minion on the minimap
@@ -520,7 +529,7 @@ public:
   /**
     * @brief describes if the minion gives vision or not
    */
-  bool gives_vision()const override{return false;}
+  bool gives_vision()const override{return true;}
   /**
     * @brief set's if minions should be focused
     * they should be focused by towers, so if a minion is under tower,
@@ -560,7 +569,7 @@ public:
     * @param map the map where they move
     * @param side_ the side on which the minions are
    */
-  void spawn(sf::Vector2f startpoint,std::vector<sf::Vector2f> directions_, std::shared_ptr<Map> map, Side side_);
+  void spawn(sf::Vector2f startpoint,const std::vector<sf::Vector2f>& directions_, const std::shared_ptr<Map>& map, Side side_);
   /**
     * @brief after the round ended, prepares for the next round
    */
@@ -623,7 +632,7 @@ public:
     * @brief does the moves on each of the champions
     * @param map the map to do the gamemoves on
    */
-  void do_moves(std::shared_ptr<Map> map);
+  void do_moves(const std::shared_ptr<Map>& map);
   /**
     * @brief returns true, if the given champ is his
     * @param c the champ to check

@@ -1,6 +1,6 @@
 #include "../include/ioparser.h"
 namespace IOParser{
-  File::File(const std::string& path){
+  File::File(const std::filesystem::path& path){
     file.open(path);
     if(!file)
       throw std::invalid_argument("wrong file path");
@@ -22,12 +22,11 @@ namespace IOParser{
       throw std::runtime_error("wrong file format");
     }
     std::string name = tokens[0];
-    double damage = std::stod(tokens[1]);
-    double dmg_per_level = std::stod(tokens[2]);
-    double hp = std::stod(tokens[3]);
-    double max_hp = hp;
-    double hp_per_level = std::stod(tokens[4]);
-    return new Champion{name,damage,dmg_per_level,hp,max_hp,hp_per_level};
+    double hp = std::stod(tokens[1]);
+    double hp_per_level = std::stod(tokens[2]);
+    double damage = std::stod(tokens[3]);
+    double dmg_per_level = std::stod(tokens[4]);
+    return new Champion{name,damage,dmg_per_level,hp,hp_per_level};
   }
   Item create_item(const std::string &line){
     std::vector<std::string> tokens = IOParser::split_string(line, ';');

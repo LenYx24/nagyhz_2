@@ -32,15 +32,15 @@ public:
   bool contains(int x, int y)const override;
 
   void draw(sf::RenderWindow& window) override;
-  inline sf::Vector2f get_size() override{
-    return shape.getSize();
-  }
-  inline sf::FloatRect get_global_bounds() const {return shape.getGlobalBounds();}
-  std::function<void()> onclick;
+  sf::Vector2f get_size() override{return shape.getSize();}
+  sf::FloatRect get_global_bounds() const {return shape.getGlobalBounds();}
+  void onclick_here(const sf::Event &e);
+  void set_onclick(std::function<void()> onclick_);
 
 protected:
   sf::RectangleShape shape;
   sf::Text text;
+  std::function<void()> onclick;
 };
 class TextBox : public GridElement {
 public:

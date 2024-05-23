@@ -28,7 +28,7 @@ int main(){
         Champion *champ = champs[0];
 
         EXPECT_EQ(champ->can_fight_back(),true);
-        EXPECT_EQ(champ->isAlive(),true);
+        EXPECT_EQ(champ->is_alive(),true);
         EXPECT_EQ(champ->should_focus(),false);
 
         champ->clear_gamemoves();
