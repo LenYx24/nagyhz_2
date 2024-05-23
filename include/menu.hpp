@@ -14,12 +14,10 @@ namespace Menu {
 
 class MenuState : public State {
 public:
-  explicit MenuState(StateManager &state_manager) :
+  explicit MenuState(StateManager &state_manager,
+                     Settings setting) :
         State(state_manager),
-        setting("examples/champions.txt",
-                "examples/items.txt",
-                "examples/game",
-                GameMode::TWO_PLAYER){}
+        setting(setting){}
   ~MenuState() override;
   void handle_events(sf::Event &event) override;
   void update() override;
@@ -32,7 +30,7 @@ protected:
 };
 class MainState : public MenuState {
 public:
-  MainState(StateManager &s, sf::RenderWindow& window);
+  MainState(StateManager &s, sf::RenderWindow& window, Settings setting);
   ~MainState() override;
   void handle_events(sf::Event &event) override;
   void draw(sf::RenderWindow& window) override;
@@ -41,7 +39,7 @@ private:
 };
 class ModeSelectionState : public MenuState {
 public:
-  ModeSelectionState(StateManager &s, sf::RenderWindow& window);
+  ModeSelectionState(StateManager &state_manager, sf::RenderWindow& window, Settings setting);
 };
 
 class MenuButton : public UI::Button {

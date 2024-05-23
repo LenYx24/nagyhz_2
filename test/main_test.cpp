@@ -62,8 +62,12 @@ int main(){
     }END
     TEST(menu,testing menustate){
       sf::Window window;
-      StateManager m;
-      Menu::MenuState state{m};
+      StateManager state_manager;
+      Settings setting{"examples/champions.txt",
+                 "examples/items.txt",
+                 "examples/game",
+                 GameMode::TWO_PLAYER};
+      Menu::MenuState state{state_manager,setting};
       sf::Event e;
       state.handle_events(e);
     }END

@@ -3,14 +3,15 @@
 #include "../include/menu.hpp"
 
 namespace Menu {
-MainState::MainState(StateManager &state_manager, sf::RenderWindow &window) : MenuState(state_manager) {
+MainState::MainState(StateManager &state_manager, sf::RenderWindow &window, Settings setting) :
+      MenuState(state_manager,setting) {
   resources_holder.load(Resources::Type::FONT, "./resources/fonts/Roboto.ttf");
 
   std::function<void()> onclick_start = [state=this,&window, &state_manager](){
     state->setting.set_champs_filepath(state->text_boxes["champs"]->get_text());
     state->setting.set_items_filepath(state->text_boxes["items"]->get_text());
-    state->setting.set_output_prefix(state->text_boxes["items"]->get_text());
-    state_manager.push_state(std::make_unique<ModeSelectionState>(state_manager,window));
+    state->setting.set_output_prefix(state->text_boxes["output"]->get_text());
+    state_manager.push_state(std::make_unique<ModeSelectionState>(state_manager,window,state->setting));
   };
   buttons.push_back(new MenuButton{resources_holder, "Start", onclick_start});
   buttons.push_back(new MenuButton{resources_holder, "Exit", [state=this](){state->state_manager.pop_state();}});
@@ -70,7 +71,8 @@ void MainState::handle_events(sf::Event &event){
     }
   }
 }
-MenuButton::MenuButton(Resources::Holder &h, const sf::String& str, [[maybe_unused]]std::function<void()> onclick_) : Button(str, std::move(onclick_)) {
+MenuButton::MenuButton(Resources::Holder &h, const sf::String& str, [[maybe_unused]]std::function<void()> onclick_)
+    : Button(str, std::move(onclick_)) {
   // menu button specific override settings
   text.setCharacterSize(15);
   text.setFont(h.get(Resources::Type::FONT));
@@ -110,15 +112,17 @@ MainState::~MainState(){
     delete textbox.second;
   }
 }
-ModeSelectionState::ModeSelectionState(StateManager &s, sf::RenderWindow& window) : MenuState(s) {
+ModeSelectionState::ModeSelectionState(StateManager &state_manager, sf::RenderWindow& window, Settings setting)
+    : MenuState(state_manager,std::move(setting)) {
   resources_holder.load(Resources::Type::FONT, "./resources/fonts/Roboto.ttf");
 
   std::function<void()> onclick_draft = [&window, state = this](){
+    std::cout << "output prefix: " << state->setting.get_output_prefix() << std::endl;
     // Todo: catch here
     state->state_manager.push_state(std::make_unique<DraftState>(state->state_manager, state->setting, window));
   };
 
-  // for now there's only game mode, but in the future there could be more
+  // for now there's _manager only game mode, but in the future there could be more
   buttons.push_back(new MenuButton{resources_holder, "Player vs Player",
                                    [state=this,onclick_draft]()
                                    {state->setting.set_gamemode(GameMode::TWO_PLAYER);onclick_draft();}});

@@ -6,7 +6,11 @@
 int main() {
   sf::RenderWindow window = sf::RenderWindow{sf::VideoMode{1280,800}, "lolmacrogame"};
   StateManager state_manager;
-  state_manager.push_state(std::make_unique<Menu::MainState>(state_manager,window));
+  Settings settings{"examples/champions.txt",
+                    "examples/items.txt",
+                    "examples/game",
+                    GameMode::TWO_PLAYER};
+  state_manager.push_state(std::make_unique<Menu::MainState>(state_manager,window, settings));
   while (state_manager.has_state()) {
     state_manager.handle_events(window);
     state_manager.update();

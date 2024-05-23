@@ -421,7 +421,11 @@ public:
    * @param spawn_point_
    */
   void set_spawn_point(Cell *spawn_point_);
-
+  /**
+   * @brief gets the current gamemoves state information
+   * @return the state info
+   */
+  std::string get_current_gamemove_state_info()const;
 
 private:
   sf::Vector2f gamemove_index(size_t offset)const;

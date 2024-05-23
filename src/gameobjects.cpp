@@ -94,6 +94,26 @@ void Champion::add_gamemove(GameMove *move){
   gamemoves.push_back(move);
   current_gamemove = gamemoves.back();
 }
+std::string Player::get_gamemoves_state()const{
+  std::string full;
+  for(auto champ: champs){
+    full += champ->get_current_gamemove_state_info();
+  }
+    return full;
+}
+std::string Champion::get_current_gamemove_state_info()const{
+  std::string info;
+  std::vector<std::string> stats = get_stats();
+  for(const auto& stat: stats){
+    info+=stat + ":";
+  }
+  if(!current_gamemove){
+    info+='\n';
+    return info;
+  }
+  info += current_gamemove->get_state_info();
+  return info;
+}
 void Champion::round_end(){
   movepoints = 3;
   current_gamemove = nullptr;

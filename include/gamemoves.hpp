@@ -20,7 +20,7 @@ public:
    */
   GameMove(): cell(nullptr) {}
   /**
-    * @brief the default destructor, doenst need to free the cell, as its not his responsibility
+    * @brief the default destructor, doesn't need to free the cell, as its not his responsibility
    */
   virtual ~GameMove() = default;
   /**
@@ -64,6 +64,17 @@ public:
    * @return true if this gamemove changes the entities position
    */
   [[nodiscard]] virtual bool changes_pos()const{return false;}
+  /**
+   * @brief gets this gamemoves state information
+   * @return
+   */
+  virtual std::string get_state_info()const;
+  /**
+   * @brief returns a specialized standard formatted output string
+   * @param name the name of the derived gamemoe
+   * @return
+   */
+  std::string get_formatted_info(const std::string& name)const;
 
 protected:
   int points = 1;
@@ -73,6 +84,7 @@ protected:
 class MoveCell : public GameMove {
 public:
   void do_move(Champion *champ, std::shared_ptr<Map> map)override;
+  std::string get_state_info()const override;
   [[nodiscard]] bool changes_pos()const override{return true;}
 };
 /**
@@ -83,6 +95,7 @@ public:
   AttackMove(){
     set_movepoints(2);
   }
+  std::string get_state_info()const override;
   void do_move(Champion *champ, std::shared_ptr<Map> map) override;
 };
 /**
@@ -93,6 +106,7 @@ public:
   PlaceWard(){
     set_movepoints(2);
   }
+  std::string get_state_info()const override;
   void do_move(Champion *champ, std::shared_ptr<Map> map) override;
 };
 /**
@@ -103,6 +117,7 @@ public:
   TeleportBase(){
     set_movepoints(2);
   }
+  std::string get_state_info()const override;
   [[nodiscard]] bool changes_pos()const override{return true;}
   void do_move(Champion *champ, std::shared_ptr<Map> map)override;
 };
