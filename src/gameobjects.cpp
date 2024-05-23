@@ -99,7 +99,7 @@ std::string Player::get_gamemoves_state()const{
   for(auto champ: champs){
     full += champ->get_current_gamemove_state_info();
   }
-    return full;
+  return full;
 }
 std::string Champion::get_current_gamemove_state_info()const{
   std::string info;
@@ -107,7 +107,7 @@ std::string Champion::get_current_gamemove_state_info()const{
   for(const auto& stat: stats){
     info+=stat + ":";
   }
-  if(!current_gamemove){
+  if(current_gamemove == nullptr){
     info+='\n';
     return info;
   }
@@ -125,6 +125,10 @@ void Champion::round_end(){
   simulation_points_counter = 1;
   // passive gold generation
   gold+=20;
+  int passive_hp_regen = 5;
+  if(current_hp+passive_hp_regen <=get_max_hp()){
+    current_hp+=passive_hp_regen;
+  }
 
   // check if any wards expired and remove them
   for(auto iter = wards.begin(); iter != wards.end(); iter++){
@@ -507,6 +511,7 @@ void Champion::do_move(std::shared_ptr<Map> map){
     if(first->get_movepoints() == simulation_points_counter && first->is_complete()){
       first->do_move(this,std::move(map));
       delete first;
+      current_gamemove = nullptr;
       gamemoves.erase(gamemoves.begin());
       simulation_points_counter = 1;
     }else{
@@ -566,20 +571,7 @@ void Player::update_champ_positions(std::shared_ptr<Map> map){
     }
   }
 }
-/*void Champion::fight(Entity *other){
-  if(!is_alive() || !other->is_alive())return;
-  std::cout << "fight " << std::endl;
-  double total_dmg = get_total_dmg();
-  double other_total_dmg = other->get_total_dmg();
-  remove_hp(other_total_dmg);
-  other->remove_hp(total_dmg);
-  if(!other->is_alive()){
-    Effect effect = other->get_effect_if_killed();
-    if(effect.not_zero()){
-      buffs.push_back(effect);
-    }
-  }
-}*/
+
 void Champion::fight(Entity *other){
   double total_dmg = get_total_dmg();
   double other_total_dmg = other->get_total_dmg();

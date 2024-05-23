@@ -7,7 +7,6 @@
 #include "resources.hpp"
 #include "statemanagement.hpp"
 #include <fstream>
-#include <sstream>
 #include <vector>
 /**
  * @brief class used to store one draft turn
@@ -18,7 +17,7 @@ public:
     * @brief constructor, initializes it's champs and if its ban_phase or not
     * @param champs the champs vector which should be used for it
    */
-  explicit DraftTurn(std::vector<Champion *> &champs,bool banphase = false) : champs(champs), ban_phase(banphase) {}
+  explicit DraftTurn(std::vector<Champion *> &champs,bool ban_phase_ = false) : champs(champs), ban_phase(ban_phase_) {}
   /**
     * @brief does one turn
    */
@@ -41,11 +40,7 @@ public:
     * @param holder the object that can get the font face for the component
     * @param size the size of the namedbox
    */
-  explicit DraftNamedBox(Resources::Holder &holder, sf::Vector2f size = {100,30}):NamedBox(holder) {
-    frame.setSize(size);
-    frame.setFillColor(sf::Color::Red);
-    label.setString("");
-  }
+  explicit DraftNamedBox(Resources::Holder &holder, sf::Vector2f size = {100,30});
 };
 /**
   * class that holds a column of champions
@@ -58,11 +53,11 @@ public:
     * @param size the size of the teamcol
     * @param margin the margin between the elements
    */
-  TeamCol(Resources::Holder &holder,sf::Vector2f startpos,sf::Vector2f size = {100,30}, float margin = 10);
+  TeamCol(Resources::Holder &holder,sf::Vector2f start_pos_,sf::Vector2f size = {100,30}, float margin = 10);
   /**
     * @brief sets the position of the team column
    */
-  void setpos();
+  void set_position();
   /**
     * @brief draws the teamcol to the window
    */
@@ -72,11 +67,10 @@ public:
    */
   [[nodiscard]] size_t champs_size()const{return champs.size();}
   /**
-    * @brief gets the champion at the given index, throws error if index is out of range
+    * @brief gets the champion at the given index
     * @param index the champ at this index
    */
   Champion *operator[](size_t index){
-    if(index >= champs.size())throw std::out_of_range("index out of range inside team column");
     return champs[index];
   }
   /**
@@ -87,7 +81,7 @@ public:
 protected:
   std::vector<DraftNamedBox> elements;
   std::vector<Champion *> champs;
-  sf::Vector2f startpos;
+  sf::Vector2f start_pos;
   float margin;
 };
 /**
@@ -99,11 +93,16 @@ public:
       Resources::Holder &h, const sf::String& str, [[maybe_unused]] std::function<void()> onclick = []() { std::cout << "not impl" << std::endl; });
 };
 /**
-    * @brief champbox implementation
+ * @brief a champion box implementation, which holds a champ
  */
 class ChampBox : public UI::NamedBox {
 public:
-  ChampBox(const std::string& label, sf::RectangleShape frame, Resources::Holder &h, Champion *c) : NamedBox(label, frame, h), champ(c) {}
+  ChampBox(const std::string& label, [[maybe_unused]]sf::RectangleShape frame, Resources::Holder &h, Champion *c)
+      : NamedBox(label, std::move(frame), h), champ(c) {}
+  /**
+   * @brief gets the champion which is held in this box
+   * @return the champion
+   */
   Champion *get_champ()const{return champ;}
 private:
   Champion *champ;
@@ -111,12 +110,20 @@ private:
 class DraftState : public State {
 public:
   DraftState(StateManager &state_manager, Settings& settings, sf::RenderWindow& window);
-  ~DraftState();
+  ~DraftState() override;
   void handle_events(sf::Event &event)override;
   void update()override;
   void draw(sf::RenderWindow& window)override;
-
-  void lockin(StateManager& state_manager, sf::RenderWindow& window, Settings& settings);
+  /**
+   * @brief locks in the currently selected champion to the correct draftstate
+   * @param state_manager
+   * @param window
+   * @param settings
+   */
+  void lock_in(StateManager& state_manager, sf::RenderWindow& window, Settings& settings);
+  /**
+   * @brief sets the currently selected champbox to an empty champion, which means the player didn't ban
+   */
   void dont_ban();
 
 protected:

@@ -46,7 +46,6 @@ SimulationState::SimulationState(
   if(!output_file){
     throw std::invalid_argument("wrong filepath");
   }
-  output_file << "test" << std::endl;
 }
 void SimulationState::handle_events(sf::Event &event){
     if (event.type == sf::Event::Closed) {

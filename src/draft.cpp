@@ -4,7 +4,7 @@ void onclick_back(StateManager &s) {
   s.pop_state();
 }
 
-void DraftState::lockin(StateManager &s, sf::RenderWindow& window, Settings &settings) {
+void DraftState::lock_in(StateManager &state_manager, sf::RenderWindow& window, Settings &settings) {
   if (selected_champ != nullptr) {
     elapsed_time.restart();
     turns[turn_counter++].do_turn(selected_champ);
@@ -28,7 +28,7 @@ void DraftState::lockin(StateManager &s, sf::RenderWindow& window, Settings &set
       p2champs[i] = new Champion;
       *p2champs[i] = *columns[1][i];
     }
-    state_manager.change_state(std::make_unique<GameState>(s,p1champs,p2champs,settings, window));
+    state_manager.change_state(std::make_unique<GameState>(state_manager,p1champs,p2champs,settings, window));
   }
 }
 void DraftState::dont_ban() {
@@ -41,19 +41,18 @@ DraftButton::DraftButton(Resources::Holder &h, const sf::String& str, [[maybe_un
   text.setCharacterSize(15);
   text.setFont(h.get(Resources::Type::FONT));
 }
+DraftNamedBox::DraftNamedBox(Resources::Holder &holder, sf::Vector2f size):NamedBox(holder) {
+  frame.setSize(size);
+  frame.setFillColor(sf::Color::Red);
+  label.setString("");
+}
 DraftState::DraftState(StateManager &state_manager, Settings& settings, sf::RenderWindow& window) : State(state_manager) {
-  try{
-    IOParser::File input(settings.get_champs_filepath());
-    for (std::string line; std::getline(input.getfile(), line);) {
-      all_champs.push_back(IOParser::create_champ(line));
-    }
-    if (all_champs.size() < 10) {
-      throw std::invalid_argument("Not enough champions listed in the file, you need at least 10 champions to play!");
-    }
-  }catch(const std::invalid_argument& err){
-    std::cout << err.what() << std::endl;
-    state_manager.pop_state();
-    return;
+  IOParser::File input(settings.get_champs_filepath());
+  for (std::string line; std::getline(input.getfile(), line);) {
+    all_champs.push_back(IOParser::create_champ(line));
+  }
+  if (all_champs.size() < 10) {
+    throw std::invalid_argument("Not enough champions listed in the file, you need at least 10 champions to play!");
   }
 
 
@@ -66,7 +65,7 @@ DraftState::DraftState(StateManager &state_manager, Settings& settings, sf::Rend
   holder.load(Resources::Type::FONT, "./resources/fonts/Roboto.ttf");
   buttons.push_back(new DraftButton(holder, "Lock in",
                                     [state = this, &window, &settings]()
-                                    { state->lockin(state->state_manager,window,settings); }));
+                                    { state->lock_in(state->state_manager, window, settings); }));
   buttons.push_back(new DraftButton(holder, "Don't ban", [state = this]() { state->dont_ban(); }));
   buttons.push_back(new DraftButton(holder, "back", [&state_manager](){ onclick_back(state_manager);}));
 
@@ -101,7 +100,7 @@ DraftState::DraftState(StateManager &state_manager, Settings& settings, sf::Rend
   for (size_t i = 0; i < 4; i++) {
     TeamCol c{holder,startposes[i], team_col_gap_size, team_col_margin.x};
     columns.push_back(c);
-    columns[i].setpos();
+    columns[i].set_position();
   }
 
   //initializing turns
@@ -196,8 +195,8 @@ void DraftState::draw(sf::RenderWindow& window) {
   window.draw(timer);
 }
 
-void TeamCol::setpos() {
-  sf::Vector2f pos = startpos;
+void TeamCol::set_position() {
+  sf::Vector2f pos = start_pos;
   if (!elements.empty()) {
     elements[0].set_position(pos);
     pos.y += elements[0].get_size().y + margin;
@@ -208,11 +207,11 @@ void TeamCol::setpos() {
   }
 }
 
-TeamCol::TeamCol(Resources::Holder &h, sf::Vector2f startpos,sf::Vector2f size, float margin) {
-  this->startpos = startpos;
+TeamCol::TeamCol(Resources::Holder &holder, sf::Vector2f start_pos_,sf::Vector2f size, float margin) {
+  this->start_pos = start_pos_;
   this->margin = margin;
   for (size_t i = 0; i < 5; i++) {
-    elements.emplace_back(h,size);
+    elements.emplace_back(holder,size);
     elements[i].set_char_size(12);
   }
 }

@@ -8,7 +8,7 @@
 namespace IOParser{
   class File{
   public:
-    File(const std::filesystem::path& path);
+    explicit File(const std::filesystem::path& path);
     ~File(){file.close();}
     std::fstream &getfile(){return file;}
   private:

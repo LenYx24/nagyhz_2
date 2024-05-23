@@ -67,12 +67,19 @@ GameState::GameState(StateManager &state_manager,
   sf::RectangleShape item_shape{{150, 60}};
   item_shape.setOutlineColor({200, 15, 45});
   for (size_t i = 0; i < allitems.size(); i++) {
-    std::string item_stats = allitems[i].get_name() + "\ndmg: " + std::to_string(allitems[i].get_bonus_dmg()) + "\nhp: " + std::to_string(allitems[i].get_bonus_hp()) + "\ngold: " + std::to_string(allitems[i].get_gold_value());
+    std::string item_stats = allitems[i].get_name() +
+                             "\ndmg: " + std::to_string(allitems[i].get_bonus_dmg()) +
+                             "\nhp: " + std::to_string(allitems[i].get_bonus_hp()) +
+                             "\ngold: " + std::to_string(allitems[i].get_gold_value());
     items_boxes.push_back(new ItemBox{item_stats, item_shape, h, &allitems[i]});
     items_boxes[i]->set_char_size(11);
     items_boxes[i]->set_label_color(sf::Color::Black);
   }
-  UI::Grid items_grid{{window_size.x - item_shape.getSize().x, 60}, {5, 5}, {0, 1}};
+  UI::Grid items_grid{{
+                          window_size.x - item_shape.getSize().x, 60},
+                      {5, 5},
+                      {0, 1}
+  };
   std::vector<UI::GridElement *> item_elements(items_boxes.begin(), items_boxes.end());
   items_grid.set_elements(item_elements);
   items_grid.set_elements_pos();

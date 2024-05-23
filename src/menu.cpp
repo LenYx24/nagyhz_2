@@ -84,7 +84,13 @@ void MenuState::handle_events(sf::Event &event) {
     state_manager.exit();
   } else if (event.type == sf::Event::MouseButtonPressed) {
     for (UI::Button* b : buttons) {
-      b->onclick_here(event);
+      try{
+        b->onclick_here(event);
+      }catch(const std::invalid_argument& error){
+        std::cout << "invalid argument exception: " <<error.what() << std::endl;
+        state_manager.exit();
+        return;
+      }
     }
   }
 }
@@ -117,8 +123,6 @@ ModeSelectionState::ModeSelectionState(StateManager &state_manager, sf::RenderWi
   resources_holder.load(Resources::Type::FONT, "./resources/fonts/Roboto.ttf");
 
   std::function<void()> onclick_draft = [&window, state = this](){
-    std::cout << "output prefix: " << state->setting.get_output_prefix() << std::endl;
-    // Todo: catch here
     state->state_manager.push_state(std::make_unique<DraftState>(state->state_manager, state->setting, window));
   };
 

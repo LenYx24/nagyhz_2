@@ -46,7 +46,7 @@ void PlaceWard::do_move(Champion *champ, std::shared_ptr<Map> map){
 }
 void AttackMove::do_move(Champion *champ, std::shared_ptr<Map> map){
     map->check_game_end();
-    if(!cell)throw std::runtime_error("gamemove was not finished");
+    if(!cell)return;
     Entity *other = cell->get_first_entity();
     if(champ->get_side() != other->get_side())
       champ->fight(other);
