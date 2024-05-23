@@ -530,7 +530,7 @@ void Player::update_champ_positions(std::shared_ptr<Map> map){
     }
   }
 }
-void Champion::fight(Entity *other){
+/*void Champion::fight(Entity *other){
   if(!is_alive() || !other->is_alive())return;
   std::cout << "fight " << std::endl;
   double total_dmg = get_total_dmg();
@@ -543,24 +543,26 @@ void Champion::fight(Entity *other){
       buffs.push_back(effect);
     }
   }
-}
-void Champion::fight(Champion *other){
+}*/
+void Champion::fight(Entity *other){
   double total_dmg = get_total_dmg();
   double other_total_dmg = other->get_total_dmg();
   // if one of them can kill the other
-  if(total_dmg >= current_hp || other_total_dmg >= total_hp){
-    double chance = ((total_dmg+other_total_dmg)/total_dmg + (total_hp+other->current_hp)/total_hp) /2;
-    int ran = rand();
-    std::cout << "change for the fight: " << chance << std::endl;
-    std::cout << "random number: " << ran << std::endl;
-    // the champ won
-    if(chance <= ran){
-      other->remove_hp(damage);
-      killed_other(other);
-    }
-    else{ // the other entity won
-      remove_hp(other_total_dmg);
-      other->killed_other(this);
+  if(other->can_fight_back()){
+    if(total_dmg >= current_hp || other_total_dmg >= total_hp){
+      double chance = ((total_dmg+other_total_dmg)/total_dmg + (total_hp+other->current_hp)/total_hp) /2;
+      int ran = rand();
+      std::cout << "change for the fight: " << chance << std::endl;
+      std::cout << "random number: " << ran << std::endl;
+      // the champ won
+      if(chance <= ran){
+        other->remove_hp(damage);
+        killed_other(other);
+      }
+      else{ // the other entity won
+        remove_hp(other_total_dmg);
+        other->killed_other(this);
+      }
     }
   }
   else{

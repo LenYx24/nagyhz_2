@@ -279,12 +279,6 @@ public:
    */
   void fight(Entity *other);
   /**
-    * @brief this champion fights another champion, calculates who won, then decreases both entities base_hp
-    * gives the required assets to the appropriate entites (such as gold, xp, cs)
-    * @param other the entity to fight
-   */
-  void fight(Champion *other);
-  /**
     * @brief updates the total dmg that could be dealt by the entity with all the buffs and items
   */
   void update_total_dmg();
