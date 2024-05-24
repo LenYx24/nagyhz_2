@@ -9,8 +9,10 @@ Entity::Entity(std::string name) : name(std::move(name)) {
 }
 
 void Ward::do_move(){
-  cooldown--;
-  if(cooldown == 0){
+  if(cooldown > 0){
+    cooldown--;
+  }
+  else{
     alive = false;
   }
 }
@@ -23,6 +25,10 @@ Champion::Champion(const std::string& name_, double damage_, double dmg_per_leve
   hp_per_level = hp_per_level_;
   icon.setCharacterSize(10);
   icon.setFillColor(sf::Color::White);
+}
+Ward::Ward():cooldown(9){
+  set_color(sf::Color{186,48,133});
+  alive=true;
 }
 Player::Player(std::vector<Champion*> champs):side(Side::BLUE),starter(false){
   this->champs = std::move(champs);
@@ -103,7 +109,10 @@ void Player::round_end(std::shared_ptr<Map> &map){
     minion_timer = 0;
   }
   for(auto & champ : champs){
-    champ->round_end();
+    champ->round_end(map);
+  }
+  for(auto wave: minion_waves){
+    wave.round_end();
   }
 }
 void Champion::add_gamemove(GameMove *move){
@@ -130,7 +139,7 @@ std::string Champion::get_current_gamemove_state_info()const{
   info += current_gamemove->get_state_info();
   return info;
 }
-void Champion::round_end(){
+void Champion::round_end(std::shared_ptr<Map> map){
   movepoints = 3;
   current_gamemove = nullptr;
   for(GameMove *move : gamemoves){
@@ -149,28 +158,15 @@ void Champion::round_end(){
 
   // check if any wards expired and remove them
   for(auto iter = wards.begin(); iter != wards.end(); iter++){
-    if(!(*iter)->is_alive()){
-      // erase returns the next element after the erased one,
-      // this way we can delete elements while looping through the vector
-      // Todo: check if this ward deletion works
+    if(*iter != nullptr && !(*iter)->is_alive()){
+      std::cout << "despawning ward" << std::endl;
+      map->de_spawn(*iter,(*iter)->get_real_cell()->get_index());
       delete *iter;
-      iter = wards.erase(iter);
+      wards.erase(iter);
+      *iter = nullptr;
+      break;
     }
   }
-}
-void Champion::update_total_dmg(){
-  double total_dmg_ = get_base_dmg();
-  for(auto &item: items){
-    total_dmg_+= item->get_bonus_dmg();
-  }
-  total_damage = total_dmg_;
-}
-void Champion::update_total_hp(){
-  double total_hp_ = get_base_hp();
-  for(auto &item: items){
-    total_hp_+= item->get_bonus_hp();
-  }
-  total_hp = total_hp_;
 }
 void Entity::update_shape_pos(sf::Vector2f pos){
   shape.setPosition(pos + sf::Vector2f{5,5});
@@ -233,6 +229,11 @@ std::vector<std::string> Entity::get_stats()const{
   stats.push_back("current_hp: "+to_ui_int_format(current_hp));
   stats.push_back("max_hp: "+to_ui_int_format(get_max_hp()));
   stats.push_back("damage: "+to_ui_int_format(damage));
+  return stats;
+}
+std::vector<std::string> Ward::get_stats()const{
+  std::vector<std::string> stats = Entity::get_stats();
+  stats.emplace_back("cooldown: "+ to_ui_int_format(cooldown));
   return stats;
 }
 std::vector<std::string> Champion::get_stats()const{
@@ -356,6 +357,7 @@ void Player::set_side(Side side_){
    check_death();
  }
 void Tower::attack(Map *map){
+  std::cout << "attack" << std::endl;
   if(!is_alive())return;
   // checks if there are nearby enemies, and attacks them
   std::vector<Cell *> nearby_cells = map->getnearbycells(cell->get_index());
@@ -437,8 +439,6 @@ void Champion::add_item(Item *item){
     items.push_back(item);
     gold -= item->get_gold_value();
   }
-  update_total_dmg();
-  update_total_hp();
 }
 sf::Vector2f Champion::gamemove_index(size_t offset)const{
   if(!current_gamemove)
@@ -575,6 +575,7 @@ void Minion::do_move(const std::shared_ptr<Map> &map){
   // if there are enemies on the next cell the minion wants to go to, then it attacks the enemy
   Entity *enemy = next_cell->get_attackable_entity(side);
   if(enemy != nullptr){
+    std::cout << "minion found an enemy" << std::endl;
     enemy->remove_hp(damage);
     remove_hp(enemy->get_total_dmg());
   }
@@ -590,7 +591,7 @@ void Player::set_simulation(bool sim){
   }
   is_simulation = sim;
 }
-void Player::update_champ_positions(std::shared_ptr<Map> map){
+void Player::update_champ_positions(const std::shared_ptr<Map>& map){
   for(auto & champ : champs){
     if(is_simulation){
       map->move(champ,
@@ -610,9 +611,9 @@ void Champion::fight(Entity *other){
   // if one of them can kill the other
   if(other->can_fight_back()
       &&
-      (total_dmg >= current_hp || other_total_dmg >= total_hp)){
+      (total_dmg >= other->get_current_hp() || other_total_dmg >= current_hp)){
     std::cout << "champion fight" << std::endl;
-    double chance = ((total_dmg+other_total_dmg)/total_dmg + (total_hp+other->get_current_hp())/total_hp) /2;
+    double chance = ((total_dmg+other_total_dmg)/total_dmg + (current_hp+other->get_current_hp())/current_hp) /2;
     int ran = rand();
     std::cout << "change for the fight: " << chance << std::endl;
     std::cout << "random number: " << ran << std::endl;
@@ -650,7 +651,5 @@ void Champion::add_xp(int xp_){
     base_hp +=hp_per_level;
     level++;
     xp_cutoff += level_xp_increase;
-    update_total_dmg();
-    update_total_hp();
   }
 }

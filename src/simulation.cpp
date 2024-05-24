@@ -6,46 +6,33 @@ SimulationState::SimulationState(
     std::vector<Player *> &players,
     std::shared_ptr<Map> &map,
     sf::RenderWindow& window,
-    Settings& settings_, StateManager& state_manager,
+    Settings& settings_,
+    StateManager& state_manager,
+    std::ofstream &output_file_,
     std::function<void()> callback_)
       :
       State(state_manager),
       settings(settings_),
-      players(players)
+      players(players),
+      output_file(output_file_)
       {
   this->map = map;
   this->callback = std::move(callback_);
   // load font
-  h.load(Resources::Type::FONT, "./resources/fonts/Roboto.ttf");
+  holder.load(Resources::Type::FONT, "./resources/fonts/Roboto.ttf");
   // create the UI components:
   sf::Vector2f window_size = StateManager::get_size(window);
-  title = new UI::NamedBox{h};
+  title = new UI::NamedBox{holder};
   title->set_position({window_size.x/2.f - 150,10});
   // set timer
   elapsed_time.restart();
   timer.setPosition({100, 200});
-  timer.setFont(h.get(Resources::Type::FONT));
+  timer.setFont(holder.get(Resources::Type::FONT));
   timer.setCharacterSize(38);
   // reset vision and selections, as they are not needed in simulation state
   map->reset_cell_selections();
   map->reset_cell_vision();
   // create the file
-  std::time_t time = std::time(nullptr);
-  std::tm *now = std::localtime(&time);
-  std::string filename = this->settings.get_output_prefix();
-  filename+="_";
-
-  filename+= std::to_string(now->tm_year)
-              + ":"+std::to_string(now->tm_mon+1)
-              + ":"+std::to_string(now->tm_mday)
-              + ":"+std::to_string(now->tm_hour)
-              + ":"+std::to_string(now->tm_min)
-              + ":"+std::to_string(now->tm_sec);
-  filename += ".txt";
-  output_file = std::ofstream(filename);
-  if(!output_file){
-    throw std::invalid_argument("wrong filepath");
-  }
 }
 void SimulationState::handle_events(sf::Event &event){
     if (event.type == sf::Event::Closed) {

@@ -31,7 +31,17 @@ void DraftState::lock_in(StateManager &state_manager, sf::RenderWindow& window, 
       p2champs[i] = new Champion;
       *p2champs[i] = *columns[1][i];
     }
-    state_manager.change_state(std::make_unique<GameState>(state_manager,p1champs,p2champs,settings, window));
+    try{
+      state_manager.change_state(std::make_unique<GameState>(state_manager,p1champs,p2champs,settings, window));
+    }catch(const std::invalid_argument& err){
+      for(auto champ: p1champs){
+        delete champ;
+      }
+      for(auto champ: p2champs){
+        delete champ;
+      }
+      throw err;
+    }
   }
 }
 
@@ -170,7 +180,13 @@ void DraftState::handle_events(sf::Event &event) {
         }
     }
     for (UI::Button *b : buttons) {
-      b->onclick_here(event);
+      try{
+        b->onclick_here(event);
+      }catch(const std::invalid_argument &err){
+        std::cout << "invalid argument: "<< err.what() << std::endl;
+        state_manager.exit();
+        return;
+      }
     }
   }
 }
@@ -207,7 +223,7 @@ void DraftState::draw(sf::RenderWindow& window) {
   sf::Color background_color = sf::Color(220, 225, 222);
   window.clear(background_color);
   for (auto & button : buttons) {
-    button->draw_to_window(window);
+    button->draw(window);
   }
   for (auto & column : columns) {
     column.draw_to_window(window);

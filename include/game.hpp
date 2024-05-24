@@ -101,5 +101,7 @@ private:
   // timer
   sf::Text timer;
   sf::Clock elapsed_time;
+  // output
+  std::ofstream output_file;
 };
 #endif

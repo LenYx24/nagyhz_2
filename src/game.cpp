@@ -32,7 +32,7 @@ GameState::GameState(StateManager &state_manager,
   h.load(Resources::Type::FONT, "./resources/fonts/Roboto.ttf");
   // create the UI components:
   sf::Vector2f window_size = StateManager::get_size(window);
-  // todo: get the gamebuttons sizes, and position it accordingly
+
   buttons.push_back(new GameButton(h, "End my turn",
                                    [state = this]() {state->end_turn();},
                                    {80,40}));
@@ -40,13 +40,13 @@ GameState::GameState(StateManager &state_manager,
                                    [&state_manager]() { state_manager.pop_state(); },
                                    {80, window_size.y-50}));
 
-  gamemove_buttons.push_back(new GameButton(h, "move",
+  gamemove_buttons.push_back(new GameButton(h, "move 1 points",
                                             [state = this]() { state->onclick_gamemove(); }));
-  gamemove_buttons.push_back(new GameButton(h, "attack",
+  gamemove_buttons.push_back(new GameButton(h, "attack 2 points",
                                             [state = this]() { state->onclick_attack(); }));
-  gamemove_buttons.push_back(new GameButton(h, "ward",
+  gamemove_buttons.push_back(new GameButton(h, "ward 2 points",
                                             [state = this]() { state->onclick_ward(); }));
-  gamemove_buttons.push_back(new GameButton(h, "base",
+  gamemove_buttons.push_back(new GameButton(h, "base 3 points",
                                             [state = this]() { state->onclick_base(); }));
   gamemove_buttons.push_back(new GameButton(h, "reset gamemove",
                                             [state = this]() { state->onclick_reset_gamemove(); }));
@@ -117,13 +117,18 @@ GameState::GameState(StateManager &state_manager,
   };
   create_simulation = [state = this, &window, simulation_ended](){
     state->state_manager.push_state(std::make_unique<SimulationState>(
-        state->players, state->map, window, state->settings,state->state_manager,simulation_ended)
+        state->players, state->map,
+        window,
+        state->settings,
+        state->state_manager,
+        state->output_file,
+        simulation_ended)
     );
   };
 
   // seed the random generator
   srand(static_cast<unsigned>(time(nullptr)));
-  // Todo: randomly select starter champ
+  // set the current player
   currentplayer = player_1;
   currentplayer->set_starter(true);
   selectedchamp = nullptr;
@@ -133,6 +138,23 @@ GameState::GameState(StateManager &state_manager,
   // update the vision
   map->update_vision_side(currentplayer->get_side());
   map->update_vision();
+
+  std::time_t time = std::time(nullptr);
+  std::tm *now = std::localtime(&time);
+  std::string filename = this->settings.get_output_prefix();
+  filename+="_";
+
+  filename+= std::to_string(now->tm_year)
+              + ":"+std::to_string(now->tm_mon+1)
+              + ":"+std::to_string(now->tm_mday)
+              + ":"+std::to_string(now->tm_hour)
+              + ":"+std::to_string(now->tm_min)
+              + ":"+std::to_string(now->tm_sec);
+  filename += ".txt";
+  output_file = std::ofstream(filename);
+  if(!output_file){
+    throw std::invalid_argument("wrong filepath");
+  }
 }
 void GameState::next_player(){
   if(currentplayer == nullptr){
@@ -228,11 +250,11 @@ void GameState::show_cell_info(sf::Vector2f index){
           "\nx: "+std::to_string(row)+
           "\ny: "+std::to_string(col),shape,h};
   stat_label->set_char_size(12);
-  stat_label->set_position({70,200});
+  stat_label->set_position({70,100});
   stat_labels.push_back(stat_label);
 }
 void GameState::show_stats(std::vector<std::string> &stats){
-  sf::Vector2f startpos{70,300};
+  sf::Vector2f startpos{70,200};
   sf::RectangleShape shape{{100,30}};
   shape.setFillColor(sf::Color::Black);
   for(const auto & i : stats){
@@ -255,7 +277,13 @@ void GameState::handle_events(sf::Event &e) {
     state_manager.exit();
   } else if (e.type == sf::Event::MouseButtonPressed) {
     for (GameButton *b : buttons) {
-      b->onclick_here(e);
+      try{
+        b->onclick_here(e);
+      }catch(const std::runtime_error& err){
+        std::cout << err.what() << std::endl;
+        state_manager.exit();
+        return;
+      }
     }
     for (GameButton *b : gamemove_buttons) {
       b->onclick_here(e);
@@ -286,10 +314,10 @@ void GameState::handle_events(sf::Event &e) {
         map->update_vision();
 
         clicked_cell->set_highlighted();
-        Entity *clickedentity = clicked_cell->get_entity_clicked(e.mouseButton.x, e.mouseButton.y);
-        if(clickedentity != nullptr){
+        Entity *clicked_entity = clicked_cell->get_entity_clicked(e.mouseButton.x, e.mouseButton.y);
+        if(clicked_entity != nullptr){
           selectedchamp = currentplayer->get_selected_champs(clicked_cell->get_index());
-          stats = clickedentity->get_stats();
+          stats = clicked_entity->get_stats();
         }
       }
       show_stats(stats);
@@ -305,7 +333,13 @@ void GameState::update() {
   // check if round should end, if the current players champs can't move anymore
   if (static_cast<int>(elapsed_time.getElapsedTime().asSeconds()) == time_left
       || currentplayer->check_round_end()) {
-    end_turn();
+    try{
+      end_turn();
+    }catch(const std::runtime_error& err){
+      std::cout << err.what() << std::endl;
+      state_manager.exit();
+      return;
+    }
   }
   // check game end
   if(map->did_game_end()){
@@ -316,10 +350,10 @@ void GameState::draw(sf::RenderWindow& window) {
   sf::Color background_color = sf::Color(220, 225, 222);
   window.clear(background_color);
   for (auto & button : buttons) {
-    button->draw_to_window(window);
+    button->draw(window);
   }
   for (auto & gamemovebutton : gamemove_buttons) {
-    gamemovebutton->draw_to_window(window);
+    gamemovebutton->draw(window);
   }
   for(auto & label : labels){
     label->draw(window);

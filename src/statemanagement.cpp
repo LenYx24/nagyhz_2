@@ -26,7 +26,7 @@ void StateManager::update_state(){
     exit();
   }
 }
-void StateManager::handle_events(sf::RenderWindow &window) {
+void StateManager::handle_events(sf::RenderWindow &window)const {
   sf::Event e{};
   while (window.pollEvent(e)){
     if(!states.empty())

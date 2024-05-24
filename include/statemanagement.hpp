@@ -42,7 +42,7 @@ public:
    * @brief handles the events of the application, and calls the appropriate method of the current state
    * @param window the window that gives the events
    */
-  void handle_events(sf::RenderWindow &window);
+  void handle_events(sf::RenderWindow &window)const;
   /**
    * @brief calls the current state's update method
    */

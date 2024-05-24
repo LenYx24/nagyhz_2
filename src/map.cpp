@@ -137,7 +137,7 @@ Map::Map(sf::Vector2f pos) {
         Camp *baron = new Camp;
         baron->set_name("baron");
         baron->set_color(sf::Color{130,50,170});
-        // Todo: set it's effect to minionbuff
+        baron->setEffect(Effect{20,20});
         cells[i][j]->add_entity(baron);
         break;
       }
@@ -243,8 +243,8 @@ Map::~Map() {
   }
 }
 Cell::~Cell(){
-  for(size_t i = 0; i < entities.size(); i++){
-    if(entities[i] != nullptr)delete entities[i];
+  for(auto & entitie : entities){
+    if(entitie != nullptr)delete entitie;
   }
 }
 bool Cell::should_update_vision_around(Side current_side){
@@ -292,8 +292,8 @@ void Map::update_vision(){
   }
 }
 Entity *Cell::get_attackable_entity(Side side_){
-  for(auto & entitie : entities){
-    if(entitie->get_side() != side_)return entitie;
+  for(auto & entity : entities){
+    if(entity->get_side() != side_ && entity->is_alive())return entity;
   }
   return nullptr;
 }

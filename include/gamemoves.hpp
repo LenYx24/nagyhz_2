@@ -92,9 +92,13 @@ class AttackMove : public GameMove {
 public:
   AttackMove(){
     set_movepoints(2);
+    other = nullptr;
   }
+  void finish(Cell *cell_)override;
   [[nodiscard]] std::string get_state_info()const override;
   void do_move(Champion *champ, std::shared_ptr<Map> map) override;
+private:
+  Entity *other; // the other entity to attack
 };
 /**
   * @brief the class that implements the ward placing mechanism

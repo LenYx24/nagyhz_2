@@ -69,25 +69,23 @@ void Button::set_position(sf::Vector2f pos) {
   shape.setPosition(pos);
   update_text_position();
 }
-void Button::set_onclick(std::function<void()> onclick_){
-  onclick = std::move(onclick_);
-}
 void Button::onclick_here(const sf::Event &e){
   if (contains(e.mouseButton.x,e.mouseButton.y)) {
     onclick();
   }
 }
+NamedBox::NamedBox(Resources::Holder &holder){
+  label.setFont(holder.get(Resources::Type::FONT));
+}
 void Button::draw(sf::RenderWindow& window) {
   window.draw(shape);
+  update_text_position();
   window.draw(text);
 }
 void Button::update_text_position() {
-  text.setPosition(shape.getPosition().x - text.getLocalBounds().width / 2.f, shape.getPosition().y - text.getLocalBounds().height / 1.5f);
-}
-void Button::draw_to_window(sf::RenderWindow &w) {
-  w.draw(shape);
-  update_text_position();
-  w.draw(text);
+  text.setPosition(
+      shape.getPosition().x - text.getLocalBounds().width / 2.f,
+      shape.getPosition().y - text.getLocalBounds().height / 1.5f);
 }
 NamedBox::NamedBox(const std::string& label, sf::RectangleShape frame, Resources::Holder &h) {
   this->label.setString(label);
@@ -113,10 +111,10 @@ sf::Vector2f NamedBox::get_size() {
   return frame.getSize();
 }
 
-void NamedBox::draw(sf::RenderWindow& w) {
-  w.draw(frame);
+void NamedBox::draw(sf::RenderWindow& window) {
+  window.draw(frame);
   label.setPosition(frame.getPosition() + sf::Vector2f{5, 5});
-  w.draw(label);
+  window.draw(label);
 }
 
 void Grid::set_elements_pos() {
@@ -138,4 +136,5 @@ sf::FloatRect Grid::get_global_bounds() const {
 void Grid::set_elements(std::vector<GridElement *> elements_) {
   elements = std::move(elements_);
 }
-Grid::Grid(sf::Vector2f start_pos, sf::Vector2f margin_, sf::Vector2f direction_) : start_pos(start_pos), margin(margin_), direction(direction_) {}
+Grid::Grid(sf::Vector2f start_pos, sf::Vector2f margin_, sf::Vector2f direction_) :
+      start_pos(start_pos), margin(margin_), direction(direction_) {}

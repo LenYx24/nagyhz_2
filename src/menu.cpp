@@ -99,7 +99,7 @@ void MenuState::draw(sf::RenderWindow& window) {
   sf::Color background_color = sf::Color(220, 225, 222);
   window.clear(background_color);
   for (auto & button : buttons) {
-    button->draw_to_window(window);
+    button->draw(window);
   }
 }
 void MainState::draw(sf::RenderWindow& window){

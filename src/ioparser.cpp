@@ -19,7 +19,7 @@ namespace IOParser{
   Champion *create_champ(const std::string &line){
     std::vector<std::string> tokens = IOParser::split_string(line, ';');
     if(tokens.size() < 5){
-      throw std::runtime_error("wrong file format");
+      throw std::invalid_argument("wrong file format");
     }
     std::string name = tokens[0];
     double hp = std::stod(tokens[1]);
@@ -31,7 +31,7 @@ namespace IOParser{
   Item create_item(const std::string &line){
     std::vector<std::string> tokens = IOParser::split_string(line, ';');
     if(tokens.size() < 4){
-      throw std::runtime_error("wrong file format");
+      throw std::invalid_argument("wrong file format");
     }
     std::string name = tokens[0];
     int gold_value = std::stoi(tokens[1]);

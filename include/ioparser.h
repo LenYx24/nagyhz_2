@@ -6,10 +6,21 @@
 #include <fstream>
 #include "gameobjects.hpp"
 namespace IOParser{
+/**
+ * @brief a file holder that closes the file
+ */
   class File{
   public:
+    /**
+     * @brief opens the file at the given path, throws error if the path is wrong
+     * @param path the filepath
+     */
     explicit File(const std::filesystem::path& path);
     ~File(){file.close();}
+    /**
+     * @brief gets the opened file
+     * @return the file
+     */
     std::fstream &getfile(){return file;}
   private:
     std::fstream file;

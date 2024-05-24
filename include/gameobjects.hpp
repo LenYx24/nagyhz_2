@@ -83,7 +83,7 @@ public:
   /**
     * @brief returns the total damage, by adding buffs/items to the base dmg
    */
-  double get_total_dmg()const{return total_damage;}
+  double get_total_dmg()const{ return damage;}
   /**
     * @brief returns the amount of experience given to the entity that kills this entity
    */
@@ -184,10 +184,9 @@ public:
    */
   virtual void killed_other(Entity *entity);
   /**
-   * @brief returns the effect of this entity, which is given if it's killed
-   * @return the effect
+   * @brief does an attack on its surrounding area
+   * @param map the map to attack on
    */
-  virtual Effect get_effect_if_killed()const{return Effect{0,0};}
   virtual void attack(Map *map);
 protected:
   std::string name;
@@ -197,8 +196,6 @@ protected:
   double base_hp = 10; // the base hp without any buffs
   double current_hp = 10; // this is the hp that the entity "uses", this is the one that takes damage
   double damage = 10;
-  double total_hp = 10;
-  double total_damage = 10;
 
   int respawn_counter = 0; // the amount of seconds needed to respawn
   int respawn_timer = 3; // the amount of seconds needed to respawn
@@ -250,10 +247,19 @@ public:
     * @brief default contsructor
     * initializes the ward's cooldown and it's color
    */
-  Ward():cooldown(5){set_color(sf::Color{25,25,25});}
+  Ward();
+  /**
+   * @brief does a gamemove with the ward, which means check if it expired yet
+   */
   void do_move();
+  /**
+   * @brief gets the stats of this ward
+   * @return
+   */
+  std::vector<std::string> get_stats()const;
+
 private:
-  int cooldown; // the amount of rounds needed for the ward to disappear
+  int cooldown; // the amount of gamemove steps (so 3 in 1 round) needed for the ward to disappear
 };
 /**
   * @brief class for describing champions, they're a type of entities that the players can manipulate with gamemoves
@@ -283,14 +289,6 @@ public:
     * @param other the entity to fight
    */
   void fight(Entity *other);
-  /**
-    * @brief updates the total dmg that could be dealt by the entity with all the buffs and items
-  */
-  void update_total_dmg();
-  /**
-    * @brief updates the total base_hp that could be dealt by the entity with all the buffs and items
-   */
-  void update_total_hp();
   /**
     * @brief adds an item to the champions item list if the required criteria is met
     * @param item the one to add to the list
@@ -377,8 +375,9 @@ public:
   /**
     * @brief after a round ends (e.g. both players finished their turns) the champion ends it,
     * reset's the necessary variables, prepares for the upcoming round
+    * @param map the map is there if there are entities to remove
    */
-  void round_end();
+  void round_end(std::shared_ptr<Map> map);
   /**
     * @brief adds xp to the champion, and also checks if the champion leveled up with this xp
    */
@@ -627,11 +626,6 @@ public:
    */
   [[nodiscard]] bool is_gamemove_active() const;
   /**
-    * @brief set's gamemove active to the given value
-    * @param active true if there's a gamemove active, false if not
-   */
-  void set_gamemove_active(bool active);
-  /**
     * @brief does the moves on each of the champions
     * @param map the map to do the gamemoves on
    */
@@ -674,7 +668,7 @@ public:
     * @brief update all of its champion position to the appropriate positions on the map
     * @param map the map is needed to determine where a given cell is
    */
-  void update_champ_positions(std::shared_ptr<Map> map);
+  void update_champ_positions(const std::shared_ptr<Map>& map);
   /**
     * @brief set's the current players side
     * @param side the team where the player is on
