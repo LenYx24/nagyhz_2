@@ -260,6 +260,21 @@ void Cell::do_attack(Map *map){
     entity->attack(map);
   }
 }
+void Map::update(){
+  for (size_t i = 0; i < size.x; i++) {
+    for (size_t j = 0; j < size.y; j++) {
+      if(!cells[i][j]){
+        cells[i][j]->update();
+      }
+    }
+  }
+}
+void Cell::update(){
+  for(auto entity: entities){
+    // update entity
+    entity->respawn();
+  }
+}
 void Map::do_attack(){
   for (size_t i = 0; i < size.x; i++) {
     for (size_t j = 0; j < size.y; j++) {

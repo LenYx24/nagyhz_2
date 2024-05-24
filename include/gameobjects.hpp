@@ -68,15 +68,6 @@ public:
     */
   virtual void draw(sf::RenderWindow &window);
   /**
-    * @brief returns the base damage of the champion, without any buffs/items
-    * only leveling up changes the base value
-   */
-  double get_base_dmg()const{return damage;}
-  /**
-    * @brief returns the base base_hp, works the same way as get_base_dmg
-   */
-  double get_base_hp()const{return base_hp;}
-  /**
     * @brief returns the base base_hp, works the same way as get_base_dmg
    */
   virtual double get_max_hp()const{return base_hp;}
@@ -134,6 +125,11 @@ public:
     * @brief checks if the entity died
    */
   void check_death();
+  /**
+   * @brief if the entity isn't alive then should try to revive them,
+   * but generally this feature is not enabled, only the entities who want to use it should implement it
+   */
+   virtual void respawn(){}
   /**
     * @brief checks if the entity's shape was clicked on
    */
@@ -497,6 +493,7 @@ public:
     * @param e the effect to save
    */
   void setEffect(Effect e){effect = e;}
+  void respawn()override;
 private:
   Effect effect;
 };
@@ -514,6 +511,7 @@ public:
     * @brief decides the type of effect that should be given by slaying this dragon
    */
   void decide_which_type();
+  void respawn()override;
 };
 /**
   * @brief class for minions,

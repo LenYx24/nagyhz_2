@@ -142,6 +142,10 @@ public:
    * @param map
    */
   void do_attack(Map *map);
+  /**
+   * @brief tells its entities to update themselves
+   */
+  void update();
  
 private:
   std::vector<Entity *> entities;
@@ -228,6 +232,10 @@ public:
     * @param pos the position where to de_spawn it from
    */
   void de_spawn(Entity *entity, sf::Vector2f pos);
+  /**
+   * @brief tell's every one of its cells to update its contents
+   */
+  void update();
   /**
     * @brief returns the cell clicked on
     * @param x coordinate

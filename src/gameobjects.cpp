@@ -332,6 +332,9 @@ Champion::~Champion(){
   for(auto & gamemove : gamemoves){
     delete gamemove;
   }
+  for(auto ward: wards){
+    delete ward;
+  }
 }
 
 void Champion::finish_gamemove(Cell *cell){
@@ -356,6 +359,23 @@ void Player::set_side(Side side_){
    current_hp-=dmg;
    check_death();
  }
+void Camp::respawn(){
+ if(!is_alive()){
+   respawn_counter--;
+   if(respawn_counter == 0){
+     alive = true;
+   }
+ }
+}
+void Drake::respawn(){
+  if(!is_alive()){
+    Camp::respawn();
+    // if it changed to alive, that means it respawned
+    if(is_alive()){
+      decide_which_type();
+    }
+  }
+}
 void Tower::attack(Map *map){
   std::cout << "attack" << std::endl;
   if(!is_alive())return;
@@ -505,7 +525,8 @@ void MinionWave::round_end(){
   }
 }
 void Champion::set_spawn_point(Cell *spawn_point_){
-  if(spawn_point_ != nullptr)spawn_point = spawn_point_;
+  if(spawn_point_ != nullptr)
+    spawn_point = spawn_point_;
 }
 void Player::set_spawn_point(Cell *spawn_point_){
   if(spawn_point_ != nullptr){
