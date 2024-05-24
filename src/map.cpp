@@ -269,12 +269,9 @@ Map::~Map() {
   }
 }
 Cell::~Cell(){
-  std::cout << "starting to delete entities for current cell" << std::endl;
   for(auto & entity : entities){
-    std::cout << "deleted entity name: " << entity->get_stats()[0] << std::endl;
     delete entity;
   }
-  std::cout << "deleted entities for current cell" << std::endl;
 }
 bool Cell::should_update_vision_around(Side current_side){
   for(auto & entity : entities){
@@ -345,7 +342,6 @@ Entity *Cell::get_attackable_entity(Side side_){
 bool Map::check_game_end(){
   for(Entity *nexus: nexuses){
     if(!nexus->is_alive()){
-      std::cout << "nexus just died, game ended!" << std::endl;
       return true;
     }
   }

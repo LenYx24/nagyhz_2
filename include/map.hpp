@@ -185,9 +185,7 @@ public:
 class Wall : public Cell {
 public:
   Wall();
-  /**
-    * @brief set's the cells property of moving here to false
-   */
+  bool can_ward_here()const override{return false;}
   bool can_move_here()const override{return false;};
 };
 /**
@@ -225,6 +223,8 @@ public:
   void draw(sf::RenderWindow& window);
   /**
     * @brief spawns an entity on the given position to the map
+    * !the entity which gets spawned onto the map will be freed up when the map destructs!
+    * despawn the given entity if you don't want this to happen
     * @param entity the entity to spawn
     * @param pos the position where to spawn it
    */

@@ -116,4 +116,18 @@ int main(){
       map->de_spawn(champ);
       delete champ;
     }END
+    TEST(champion, warding){
+      auto champ = new Champion{"anivia",100,5,200,20};
+      std::shared_ptr<Map> map = std::make_shared<Map>(sf::Vector2f{0,0});
+      champ->set_cell(map->getcell({0,0}));
+      // create the move, finish it and add it to the champion
+      auto move = new PlaceWard;
+      sf::Vector2 newpos_index = sf::Vector2f{1,1};
+      move->finish(map->getcell(newpos_index));
+      champ->add_gamemove(move);
+      champ->do_move(map);
+
+      map->de_spawn(champ);
+      delete champ;
+    }END
 }

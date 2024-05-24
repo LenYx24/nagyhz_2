@@ -14,7 +14,6 @@ void Ward::do_move(){
   }
   else{
     alive = false;
-    std::cout << "ward expired" << std::endl;
   }
 }
 Champion::Champion(const std::string& name_, double damage_, double dmg_per_level_, double hp_, double hp_per_level_){
@@ -160,7 +159,6 @@ void Champion::round_end(const std::shared_ptr<Map>& map){
   // check if any wards expired and remove them
   for(auto iter = wards.begin(); iter != wards.end(); iter++){
     if(*iter != nullptr && !(*iter)->is_alive()){
-      std::cout << "this ward isnt alive, trying to remove it" << std::endl;
       map->de_spawn(*iter);
       delete *iter;
       iter = wards.erase(iter);
@@ -332,7 +330,6 @@ Champion::~Champion(){
     delete gamemove;
   }
   for(auto ward: wards){
-    std::cout << "deleting ward" << std::endl;
     delete ward;
   }
 }
@@ -383,7 +380,6 @@ void Drake::respawn(){
     Camp::respawn();
     // if it changed to alive, that means it respawned
     if(is_alive()){
-      std::cout << "the drake just respawned" << std::endl;
       decide_which_type();
     }
   }
@@ -401,7 +397,6 @@ void Tower::attack(Map *map){
       if(target != nullptr){
         if((try_attack_focusables && target->should_focus())
             || (!try_attack_focusables && !target->should_focus())){
-          std::cout << "tower attacked other entity" << std::endl;
           target->remove_hp(damage);
           remove_hp(target->get_total_dmg());
           break;
@@ -605,10 +600,8 @@ void Champion::do_move(std::shared_ptr<Map> map){
   }
   for(auto it = buffs.begin(); it != buffs.end(); it++){
     if((*it).update_expire()){
-      std::cout << "buff expired" << std::endl;
       // only one buffs gets deleted at a time
       buffs.erase(it);
-      std::cout << "buff expired deleted" << std::endl;
       break;
     }
   }
@@ -674,14 +667,11 @@ void Champion::fight(Entity *other){
   if(other->can_fight_back()
       &&
       (total_dmg >= other->get_current_hp() || other_total_dmg >= current_hp)){
-    std::cout << "champion fight" << std::endl;
     double this_wins = other->get_current_hp() / total_dmg;
     double other_wins = current_hp / other_total_dmg;
     // the threshold until this entity wins between 0 and 100
     double threshold = (other_wins / (this_wins+other_wins))*100;
     int ran = rand() % 100 + 1;
-    std::cout << "chance for the fight: " << threshold << std::endl;
-    std::cout << "random number: " << ran << std::endl;
     // the champ won
     if(ran <= threshold){
       other->remove_hp(damage);
@@ -705,7 +695,6 @@ void Champion::killed_other(Entity *other){
   if(!other->is_alive()){
     if (other->gives_creep_score())
       cs++;
-    std::cout << "add xp given: " << other->get_xp_given() << std::endl;
     add_xp(other->get_xp_given());
     gold += other->get_gold_given();
     buffs.push_back(other->get_buff_given());
@@ -725,7 +714,6 @@ void Champion::add_xp(int xp_){
   xp+=xp_;
   if(xp >= xp_cutoff && level < max_level){
     // then level up
-    std::cout << "levelup" << std::endl;
     xp = 0;
     damage+=dmg_per_level;
     base_hp +=hp_per_level;
