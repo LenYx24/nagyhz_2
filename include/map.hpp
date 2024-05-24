@@ -146,8 +146,9 @@ public:
   void do_attack(Map *map);
   /**
    * @brief tells its entities to update themselves
+   * @param map the map
    */
-  void update();
+  void update(Map *map);
  
 private:
   std::vector<Entity *> entities;
@@ -324,12 +325,9 @@ public:
   void update_vision_side(Side side_){vision_side = side_;}
   /**
     * @brief checks if the game has concluded
+    * @return true if game ended
    */
-  void check_game_end();
-  /**
-    * @brief returns true if the game end, false otherwise
-   */
-  bool did_game_end(){check_game_end();return game_end;}
+  bool check_game_end();
   /**
    * @brief disables vision on the map
    */

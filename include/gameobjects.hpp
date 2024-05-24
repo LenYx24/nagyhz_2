@@ -89,10 +89,14 @@ public:
    */
   int get_xp_given()const{return xp_given;}
   /**
-   * returns the current hp of this entity
+   * gets the current hp of this entity
    * @return the hp
    */
   double get_current_hp()const{return current_hp;}
+  /**
+    * @brief refill the base_hp of the champion
+   */
+  void refill_hp(){current_hp = get_max_hp();}
   /**
    * @brief gets the buff given to the other enemy, if this one gets killed
    * @return the buff
@@ -105,7 +109,7 @@ public:
   /**
     * @brief set's which team(side) is the entity on
    */
-  void set_side(Side side_){side = side_;}
+  virtual void set_side(Side side_){side = side_;}
   /**
     * @brief gets the current team the entity is on
    */
@@ -208,7 +212,7 @@ protected:
   double damage = 10;
 
   int respawn_counter = 0; // the amount of seconds needed to respawn
-  int respawn_timer = 3; // the amount of seconds needed to respawn
+  int respawn_timer = 6; // the amount of seconds needed to respawn
   int xp_given = 10;  // the xp given to the other entity, if this one gets slain by them
   int gold_given = 30;  // the gold given to the other entity, if this one gets slain by them
 
@@ -314,7 +318,7 @@ public:
    */
    void set_icon(char c){icon.setString(c);}
    double get_total_dmg()const override;
-
+   void set_side(Side side_)override;
    /**
     * @brief gets the champions name
     */
@@ -414,10 +418,6 @@ public:
    */
   bool gives_vision()const override{return true;}
   /**
-    * @brief refill the base_hp of the champion
-   */
-  void refill_hp(){current_hp = get_max_hp();}
-  /**
     * @brief clears the gamemoves list and also deletes each from the heap, set's the current_gamemove to nullptr
    */
   void clear_gamemoves();
@@ -450,9 +450,9 @@ private:
   double dmg_per_level = 0; // the amount of dmg given per level up
   int level = 1; // the current level of the champion
   int max_level = 18;
-  int level_xp_increase = 10; // the amount of xp which is added to xp_cutoff at every levelup
+  int level_xp_increase = 5; // the amount of xp which is added to xp_cutoff at every levelup
   int xp = 0;        // the current amount of xp
-  int xp_cutoff = 100; // the amount of xp needed to level up
+  int xp_cutoff = 40; // the amount of xp needed to level up
 
   int movepoints = 3;
 

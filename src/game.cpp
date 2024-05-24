@@ -28,6 +28,22 @@ GameState::GameState(StateManager &state_manager,
   for (std::string line; std::getline(input.getfile(), line);) {
     all_items.push_back(IOParser::create_item(line));
   }
+  std::time_t time = std::time(nullptr);
+  std::tm *now = std::localtime(&time);
+  std::string filename = this->settings.get_output_prefix();
+  filename+="_";
+
+  filename+= std::to_string(now->tm_year)
+              + ":"+std::to_string(now->tm_mon+1)
+              + ":"+std::to_string(now->tm_mday)
+              + ":"+std::to_string(now->tm_hour)
+              + ":"+std::to_string(now->tm_min)
+              + ":"+std::to_string(now->tm_sec);
+  filename += ".txt";
+  output_file = std::ofstream(filename);
+  if(!output_file){
+    throw std::invalid_argument("wrong filepath");
+  }
   // load font
   h.load(Resources::Type::FONT, "./resources/fonts/Roboto.ttf");
   // create the UI components:
@@ -89,6 +105,7 @@ GameState::GameState(StateManager &state_manager,
   timer.setPosition({250, 10});
   timer.setFont(h.get(Resources::Type::FONT));
   timer.setCharacterSize(18);
+  timer.setFillColor({sf::Color::Black});
   // create players
   auto *player_1 = new Player{std::move(p1champs)};
   auto *player_2 = new Player{std::move(p2champs)};
@@ -135,23 +152,6 @@ GameState::GameState(StateManager &state_manager,
   // update the vision
   map->update_vision_side(current_player->get_side());
   map->update_vision();
-
-  std::time_t time = std::time(nullptr);
-  std::tm *now = std::localtime(&time);
-  std::string filename = this->settings.get_output_prefix();
-  filename+="_";
-
-  filename+= std::to_string(now->tm_year)
-              + ":"+std::to_string(now->tm_mon+1)
-              + ":"+std::to_string(now->tm_mday)
-              + ":"+std::to_string(now->tm_hour)
-              + ":"+std::to_string(now->tm_min)
-              + ":"+std::to_string(now->tm_sec);
-  filename += ".txt";
-  output_file = std::ofstream(filename);
-  if(!output_file){
-    throw std::invalid_argument("wrong filepath");
-  }
 }
 void GameState::next_player(){
   if(current_player == nullptr){
@@ -247,7 +247,7 @@ void GameState::onclick_ward(){
   else delete move;
 }
 void GameState::show_cell_info(sf::Vector2f index){
-  sf::RectangleShape shape{{100,60}};
+  sf::RectangleShape shape{{140,50}};
   shape.setFillColor(sf::Color::Black);
   for(auto & label : stat_labels){
     delete label;
@@ -347,7 +347,7 @@ void GameState::update() {
     }
   }
   // check game end
-  if(map->did_game_end()){
+  if(map->check_game_end()){
     state_manager.pop_state();
   }
 }

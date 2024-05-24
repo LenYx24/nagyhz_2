@@ -29,6 +29,7 @@ SimulationState::SimulationState(
   timer.setPosition({100, 200});
   timer.setFont(holder.get(Resources::Type::FONT));
   timer.setCharacterSize(38);
+  timer.setFillColor(sf::Color::Black);
   // reset vision and selections, as they are not needed in simulation state
   map->reset_cell_selections();
   map->reset_cell_vision();
@@ -48,17 +49,17 @@ void SimulationState::update(){
         elapsed_time.restart();
         // do one turn
         for(auto & player : players){
-          // this gives us the current save to save to the file
+          // this gives us the current save to the file state
           std::string gamemoves_state = player->get_gamemoves_state();
           output_file << gamemoves_state << '\n';
 
           player->do_moves(map);
         }
-        if(map->did_game_end()){
+        if(map->check_game_end()){
+          std::cout << "the game has just ended" << std::endl;
           state_manager.pop_state();
         }
         map->update();
-        map->do_attack();
         if(round_counter == round_count){
             state_manager.pop_state();
         }

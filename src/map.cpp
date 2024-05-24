@@ -239,12 +239,14 @@ void Map::spawn(Entity *entity, sf::Vector2f pos) {
 }
 void Map::de_spawn(Entity *entity){
   Cell *cell = entity->get_real_cell();
-  if(!cell)return;
   sf::Vector2f pos = cell->get_index();
   posindex pindex = toposindex(pos);
   bool removed = cells[pindex.i][pindex.j]->remove_entity(entity);
   // this means the entity was not found at the given cell
   // then we look around to see if its on the map
+  if(removed){
+    std::cout << "successfully removed" << std::endl;
+  }
   if(!removed){
     for(size_t i = 0; i < size_x; i++){
       for(size_t j = 0; j < size_y; j++){
@@ -268,8 +270,8 @@ Map::~Map() {
   }
 }
 Cell::~Cell(){
-  for(auto & entitie : entities){
-    if(entitie != nullptr)delete entitie;
+  for(auto & entity : entities){
+    delete entity;
   }
 }
 bool Cell::should_update_vision_around(Side current_side){
@@ -289,15 +291,17 @@ void Map::update(){
   for (size_t i = 0; i < size_x; i++) {
     for (size_t j = 0; j < size_y; j++) {
       if(!cells[i][j]){
-        cells[i][j]->update();
+        cells[i][j]->update(this);
       }
     }
   }
 }
-void Cell::update(){
+void Cell::update(Map *map){
   for(auto entity: entities){
     // update entity
+    std::cout << "cell update" << std::endl;
     entity->respawn();
+    entity->attack(map);
   }
 }
 void Map::do_attack(){
@@ -337,12 +341,14 @@ Entity *Cell::get_attackable_entity(Side side_){
   }
   return nullptr;
 }
-void Map::check_game_end(){
+bool Map::check_game_end(){
   for(Entity *nexus: nexuses){
     if(!nexus->is_alive()){
-      game_end = true;
+      std::cout << "nexus just died, game ended!" << std::endl;
+      return true;
     }
   }
+  return false;
 }
 void Cell::set_vision(bool has_vision_){
   has_vision = has_vision_;
