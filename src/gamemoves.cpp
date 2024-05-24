@@ -55,7 +55,7 @@ void AttackMove::do_move(Champion *champ, std::shared_ptr<Map> map){
       champ->fight(other);
 }
 void AttackMove::finish(Cell *cell_){
-  set_cell(cell_)
+  set_cell(cell_);
   if(get_cell() != nullptr)
     other = get_cell()->get_first_entity();
 }
