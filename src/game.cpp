@@ -34,11 +34,11 @@ GameState::GameState(StateManager &state_manager,
   filename+="_";
 
   filename+= std::to_string(now->tm_year)
-              + ":"+std::to_string(now->tm_mon+1)
-              + ":"+std::to_string(now->tm_mday)
-              + ":"+std::to_string(now->tm_hour)
-              + ":"+std::to_string(now->tm_min)
-              + ":"+std::to_string(now->tm_sec);
+              + "_"+std::to_string(now->tm_mon+1)
+              + "_"+std::to_string(now->tm_mday)
+              + "_"+std::to_string(now->tm_hour)
+              + "_"+std::to_string(now->tm_min)
+              + "_"+std::to_string(now->tm_sec);
   filename += ".txt";
   output_file = std::ofstream(filename);
   if(!output_file){
