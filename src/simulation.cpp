@@ -55,10 +55,6 @@ void SimulationState::update(){
 
           player->do_moves(map);
         }
-        if(map->check_game_end()){
-          std::cout << "the game has just ended" << std::endl;
-          state_manager.pop_state();
-        }
         map->update();
         if(round_counter == round_count){
             state_manager.pop_state();

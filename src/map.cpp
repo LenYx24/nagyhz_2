@@ -106,6 +106,7 @@ Map::Map(sf::Vector2f pos) {
       case 't': {
         cells[i][j] = new Ground{};
         auto tower = new Tower;
+        tower->set_cell(cells[i][j]);
         tower->set_side(Side::RED);
         cells[i][j]->add_entity(tower);
         break;
@@ -122,6 +123,7 @@ Map::Map(sf::Vector2f pos) {
         cells[i][j] = new Ground{};
         auto nexus = new Nexus;
         nexus->set_side(Side::RED);
+        nexuses.push_back(nexus);
         cells[i][j]->add_entity(nexus);
         break;
       }
@@ -141,10 +143,10 @@ Map::Map(sf::Vector2f pos) {
       // baron
       case 'a': {
         cells[i][j] = new Ground{};
-        Camp *baron = new Camp;
+        Camp *baron = new Camp{300,30};
         baron->set_name("baron");
         baron->set_color(sf::Color{130,50,170});
-        baron->set_effect(Effect{20, 20, true, 9});
+        baron->set_effect(Effect{200, 200, true, 9});
         cells[i][j]->add_entity(baron);
         break;
       }
@@ -244,9 +246,6 @@ void Map::de_spawn(Entity *entity){
   bool removed = cells[pindex.i][pindex.j]->remove_entity(entity);
   // this means the entity was not found at the given cell
   // then we look around to see if its on the map
-  if(removed){
-    std::cout << "successfully removed" << std::endl;
-  }
   if(!removed){
     for(size_t i = 0; i < size_x; i++){
       for(size_t j = 0; j < size_y; j++){
@@ -270,13 +269,16 @@ Map::~Map() {
   }
 }
 Cell::~Cell(){
+  std::cout << "starting to delete entities for current cell" << std::endl;
   for(auto & entity : entities){
+    std::cout << "deleted entity name: " << entity->get_stats()[0] << std::endl;
     delete entity;
   }
+  std::cout << "deleted entities for current cell" << std::endl;
 }
 bool Cell::should_update_vision_around(Side current_side){
-  for(size_t i = 0; i < entities.size(); i++){
-    if(entities[i]->get_side() == current_side && entities[i]->gives_vision()){
+  for(auto & entity : entities){
+    if(entity->get_side() == current_side && entity->gives_vision() && entity->is_alive()){
       return true;
     }
   }
@@ -290,7 +292,7 @@ void Cell::do_attack(Map *map){
 void Map::update(){
   for (size_t i = 0; i < size_x; i++) {
     for (size_t j = 0; j < size_y; j++) {
-      if(!cells[i][j]){
+      if(cells[i][j] != nullptr){
         cells[i][j]->update(this);
       }
     }
@@ -299,7 +301,6 @@ void Map::update(){
 void Cell::update(Map *map){
   for(auto entity: entities){
     // update entity
-    std::cout << "cell update" << std::endl;
     entity->respawn();
     entity->attack(map);
   }
@@ -435,7 +436,7 @@ void Map::select_attackable_entities(Champion *champ){
 }
 bool Cell::can_attack_entity(Side enemy_side_)const{
   for(Entity *entity: entities){
-    if(entity->get_side() != enemy_side_)return true;
+    if(entity->get_side() != enemy_side_ && entity->is_alive())return true;
   }
   return false;
 }

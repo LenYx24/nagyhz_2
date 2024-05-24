@@ -212,7 +212,7 @@ protected:
   double damage = 10;
 
   int respawn_counter = 0; // the amount of seconds needed to respawn
-  int respawn_timer = 6; // the amount of seconds needed to respawn
+  int respawn_timer = 8; // the amount of seconds needed to respawn
   int xp_given = 10;  // the xp given to the other entity, if this one gets slain by them
   int gold_given = 30;  // the gold given to the other entity, if this one gets slain by them
 
@@ -397,7 +397,7 @@ public:
     * reset's the necessary variables, prepares for the upcoming round
     * @param map the map is there if there are entities to remove
    */
-  void round_end(std::shared_ptr<Map> map);
+  void round_end(const std::shared_ptr<Map>& map);
   /**
     * @brief adds xp to the champion, and also checks if the champion leveled up with this xp
    */
@@ -505,14 +505,21 @@ class Nexus : public Structure {
 class Camp : public Entity {
 public:
   /**
-    * @brief set's up the camps attributes (base_hp,dmg)
+   * @brief constructs a camp with the given stats
+   * @param hp_
+   * @param dmg_
    */
-  Camp();
+  Camp(double hp_=100, double dmg_=15);
   /**
     * @brief set's the effect given by slaying this camp
     * @param e the effect to save
    */
   void set_effect(Effect e){effect = e;}
+  /**
+   * @brief set's the basic stats for this camp
+   * @param hp
+   * @param dmg
+   */
   Effect get_buff_given()const override{return effect;}
   void respawn()override;
 private:

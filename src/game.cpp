@@ -265,7 +265,7 @@ void GameState::show_cell_info(sf::Vector2f index){
 }
 void GameState::show_stats(std::vector<std::string> &stats){
   sf::Vector2f startpos{70,200};
-  sf::RectangleShape shape{{100,30}};
+  sf::RectangleShape shape{{140,28}};
   shape.setFillColor(sf::Color::Black);
   for(const auto & i : stats){
     auto *stat_label = new UI::NamedBox{i,shape,h};
@@ -348,6 +348,7 @@ void GameState::update() {
   }
   // check game end
   if(map->check_game_end()){
+    std::cout << "game ended" << std::endl;
     state_manager.pop_state();
   }
 }

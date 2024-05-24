@@ -26,6 +26,7 @@ Champion::Champion(const std::string& name_, double damage_, double dmg_per_leve
   hp_per_level = hp_per_level_;
   icon.setCharacterSize(10);
   icon.setFillColor(sf::Color::White);
+  xp_given = 60;
 }
 Ward::Ward():cooldown(9){
   set_color(sf::Color{186,48,133});
@@ -139,7 +140,7 @@ std::string Champion::get_current_gamemove_state_info()const{
   info += current_gamemove->get_state_info();
   return info;
 }
-void Champion::round_end(std::shared_ptr<Map> map){
+void Champion::round_end(const std::shared_ptr<Map>& map){
   movepoints = 3;
   current_gamemove = nullptr;
   for(GameMove *move : gamemoves){
@@ -227,7 +228,7 @@ std::vector<std::string> Entity::get_stats()const{
   stats.push_back("name: "+name);
   stats.push_back("current_hp: "+to_ui_int_format(current_hp));
   stats.push_back("max_hp: "+to_ui_int_format(get_max_hp()));
-  stats.push_back("damage: "+to_ui_int_format(damage));
+  stats.push_back("damage: "+to_ui_int_format(get_total_dmg()));
   return stats;
 }
 std::vector<std::string> Ward::get_stats()const{
@@ -247,13 +248,13 @@ std::vector<std::string> Champion::get_stats()const{
   }
   stats.emplace_back("buffs: " + std::to_string(buffs.size()));
   for(auto & buff : buffs){
-    std::string b_hp = std::to_string(buff.get_bonus_hp());
-    std::string b_dmg = std::to_string(buff.get_bonus_dmg());
-    std::string buff_stat = "bonus hp: ";
+    std::string b_hp = to_ui_int_format(buff.get_bonus_hp());
+    std::string b_dmg = to_ui_int_format(buff.get_bonus_dmg());
+    std::string buff_stat = "bonus(hp: ";
     buff_stat += b_hp;
-    stats.push_back(buff_stat);
-    buff_stat = " bonus dmg: ";
+    buff_stat += " dmg: ";
     buff_stat += b_dmg;
+    stats.push_back(buff_stat);
   }
   return stats;
 }
@@ -276,11 +277,11 @@ Tower::Tower(){
   xp_given = 40;
   shape.setFillColor(sf::Color{230,10,90});
 }
-Camp::Camp(){
+Camp::Camp(double hp_, double dmg_){
   name = "camp";
-  base_hp = 100;
+  base_hp = hp_;
   current_hp = base_hp;
-  damage = 15;
+  damage = dmg_;
   xp_given = 30;
   set_side(Side::NEUTRAL);
   shape.setFillColor(sf::Color{130,100,230});
@@ -314,7 +315,6 @@ void Champion::remove_last_gamemove(){
       current_gamemove = nullptr;
   }
 }
-
 Champion *Player::get_selected_champs(sf::Vector2f index){
   for(int i = static_cast<int>(champs.size())-1; i >=0; i--){
     auto current_index = static_cast<size_t>(i);
@@ -345,7 +345,6 @@ void Champion::finish_gamemove(Cell *cell){
 }
 void Entity::check_death(){
   if(current_hp <= 0){
-    std::cout << "entity died" << std::endl;
     respawn_counter = respawn_timer;
     alive = false;
   }
@@ -371,12 +370,9 @@ void Champion::set_side(Side side_){
    }
  }
 void Camp::respawn(){
- std::cout << "the camp is trying to respawn" << std::endl;
  if(!is_alive()){
-   std::cout << "respawn counter: " << respawn_counter << std::endl;
    respawn_counter--;
    if(respawn_counter <= 0){
-     std::cout << "the camp just respawned" << std::endl;
      alive = true;
      refill_hp();
    }
@@ -392,12 +388,9 @@ void Drake::respawn(){
     }
   }
 }
-void Entity::attack(Map *){
-  std::cout << "entity attacked" << std::endl;
-}
+void Entity::attack(Map *){}
 void Tower::attack(Map *map){
-  std::cout << "tower attack" << std::endl;
-  if(!is_alive())return;
+  if(!is_alive() || cell == nullptr)return;
   // checks if there are nearby enemies, and attacks them
   std::vector<Cell *> nearby_cells = map->getnearbycells(cell->get_index());
   // first check if there are focusable entities to attack
@@ -405,10 +398,14 @@ void Tower::attack(Map *map){
   for(size_t j = 0; j < 2; j++){
     for(auto & nearby_cell : nearby_cells){
       Entity *target = nearby_cell->get_attackable_entity(side);
-      if(target != nullptr && try_attack_focusables && target->should_focus()){
-        target->remove_hp(damage);
-        remove_hp(target->get_total_dmg());
-        break;
+      if(target != nullptr){
+        if((try_attack_focusables && target->should_focus())
+            || (!try_attack_focusables && !target->should_focus())){
+          std::cout << "tower attacked other entity" << std::endl;
+          target->remove_hp(damage);
+          remove_hp(target->get_total_dmg());
+          break;
+        }
       }
     }
     // if not, then try to attack anything that is enemy
@@ -417,6 +414,9 @@ void Tower::attack(Map *map){
 }
 Drake::Drake(){
   set_name("drake");
+  base_hp = 200;
+  current_hp = base_hp;
+  damage = 50;
   shape.setFillColor(sf::Color{235,200,60});
   decide_which_type();
 }
@@ -580,7 +580,6 @@ void Champion::do_move(std::shared_ptr<Map> map){
     respawn_counter--;
     if(respawn_counter == 0){
       refill_hp();
-      std::cout << "is spawnpoint nullptr? " << (spawn_point == nullptr) << std::endl;
       if(spawn_point!=nullptr){
         map->move(this,cell->get_index(),spawn_point->get_index());
         cell = spawn_point;
@@ -607,7 +606,10 @@ void Champion::do_move(std::shared_ptr<Map> map){
   for(auto it = buffs.begin(); it != buffs.end(); it++){
     if((*it).update_expire()){
       std::cout << "buff expired" << std::endl;
-      it = buffs.erase(it);
+      // only one buffs gets deleted at a time
+      buffs.erase(it);
+      std::cout << "buff expired deleted" << std::endl;
+      break;
     }
   }
 }
@@ -721,8 +723,6 @@ double Champion::get_total_dmg()const {
 }
 void Champion::add_xp(int xp_){
   xp+=xp_;
-  std::cout << "xp cutoff:" << xp_cutoff << std::endl;
-  std::cout << "max level:" << max_level << std::endl;
   if(xp >= xp_cutoff && level < max_level){
     // then level up
     std::cout << "levelup" << std::endl;

@@ -152,6 +152,7 @@ DraftState::DraftState(StateManager &state_manager, Settings& settings, sf::Rend
   // setup timer
   timer.setPosition({200, 40});
   timer.setFont(holder.get(Resources::Type::FONT));
+  timer.setFillColor(sf::Color::Black);
   elapsed_time.restart();
 }
 void DraftTurn::do_turn(Champion *champ) {
