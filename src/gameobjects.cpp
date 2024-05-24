@@ -151,7 +151,7 @@ void Champion::round_end(std::shared_ptr<Map> map){
   // passive gold generation
   gold+=20;
   // passive hp regen
-  int passive_hp_regen = 5;
+  int passive_hp_regen = 2;
   if(current_hp+passive_hp_regen <=get_max_hp()){
     current_hp+=passive_hp_regen;
   }
@@ -160,7 +160,7 @@ void Champion::round_end(std::shared_ptr<Map> map){
   for(auto iter = wards.begin(); iter != wards.end(); iter++){
     if(*iter != nullptr && !(*iter)->is_alive()){
       std::cout << "despawning ward" << std::endl;
-      map->de_spawn(*iter,(*iter)->get_real_cell()->get_index());
+      map->de_spawn(*iter);
       delete *iter;
       wards.erase(iter);
       *iter = nullptr;
@@ -440,9 +440,15 @@ void Player::clear_gamemoves(){
     champ->clear_gamemoves();
   }
 }
-void Player::despawn_champs(std::shared_ptr<Map> &map){
+void Player::despawn_from_map(std::shared_ptr<Map> &map){
   for(Champion *champ: champs){
-    map->de_spawn(champ, champ->get_real_cell()->get_index());
+    champ->despawn_wards(map);
+    map->de_spawn(champ);
+  }
+}
+void Champion::despawn_wards(std::shared_ptr<Map> map){
+  for(auto ward: wards){
+    map->de_spawn(ward);
   }
 }
 Player::~Player(){
@@ -596,7 +602,7 @@ void Minion::do_move(const std::shared_ptr<Map> &map){
   // if there are enemies on the next cell the minion wants to go to, then it attacks the enemy
   Entity *enemy = next_cell->get_attackable_entity(side);
   if(enemy != nullptr){
-    std::cout << "minion found an enemy" << std::endl;
+    std::cout << "minion found an enemy, hp: "<< current_hp << std::endl;
     enemy->remove_hp(damage);
     remove_hp(enemy->get_total_dmg());
   }
@@ -635,7 +641,7 @@ void Champion::fight(Entity *other){
       (total_dmg >= other->get_current_hp() || other_total_dmg >= current_hp)){
     std::cout << "champion fight" << std::endl;
     double chance = ((total_dmg+other_total_dmg)/total_dmg + (current_hp+other->get_current_hp())/current_hp) /2;
-    int ran = rand();
+    int ran = rand() % 2 +1;
     std::cout << "change for the fight: " << chance << std::endl;
     std::cout << "random number: " << ran << std::endl;
     // the champ won
@@ -662,7 +668,16 @@ void Champion::killed_other(Entity *other){
   add_xp(other->get_xp_given());
   gold += other->get_gold_given();
 }
-
+double Champion::get_total_dmg()const {
+  double dmg = damage;
+  for(auto item: items){
+    dmg+=item->get_bonus_dmg();
+  }
+  for(auto buff : buffs){
+    dmg+=buff.get_bonus_dmg();
+  }
+  return dmg;
+}
 void Champion::add_xp(int xp_){
   xp+=xp_;
   if(xp >= xp_cutoff && level < max_level){

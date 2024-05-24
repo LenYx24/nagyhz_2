@@ -34,28 +34,28 @@ std::string PlaceWard::get_state_info()const{
 
 void MoveCell::do_move(Champion *champ, std::shared_ptr<Map> map){
     if(champ == nullptr)return;
-    map->move(champ, champ->get_real_cell()->get_index(), cell->get_index());
-    champ->set_cell(cell);
+    map->move(champ, champ->get_real_cell()->get_index(), get_cell()->get_index());
+    champ->set_cell(get_cell());
 }
 void TeleportBase::do_move(Champion *champ, std::shared_ptr<Map> map){
     if(champ == nullptr)return;
-    map->move(champ, champ->get_real_cell()->get_index(), cell->get_index());
-    champ->set_cell(cell);
+    map->move(champ, champ->get_real_cell()->get_index(), get_cell()->get_index());
+    champ->set_cell(get_cell());
     champ->refill_hp();
 }
 void PlaceWard::do_move(Champion *champ, std::shared_ptr<Map> map){
    if(champ == nullptr)return;
-    champ->place_ward(map,cell);
+    champ->place_ward(map,get_cell());
     map->update_vision();
 }
 void AttackMove::do_move(Champion *champ, std::shared_ptr<Map> map){
-    if(!cell || !champ) return;
+    if(!get_cell() || !champ) return;
     map->check_game_end();
     if(champ->get_side() != other->get_side())
       champ->fight(other);
 }
 void AttackMove::finish(Cell *cell_){
-  cell = cell_;
-  if(cell != nullptr)
-    other = cell->get_first_entity();
+  set_cell(cell_)
+  if(get_cell() != nullptr)
+    other = get_cell()->get_first_entity();
 }

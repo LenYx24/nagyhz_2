@@ -57,6 +57,7 @@ void SimulationState::update(){
         if(map->did_game_end()){
           state_manager.pop_state();
         }
+        map->update();
         map->do_attack();
         if(round_counter == round_count){
             state_manager.pop_state();

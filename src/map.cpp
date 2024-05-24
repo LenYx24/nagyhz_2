@@ -71,13 +71,20 @@ Map::Map(sf::Vector2f pos) {
   std::string map_filename = "resources/map.txt";
   std::ifstream file(map_filename);
   if (!file) {
-    throw std::runtime_error("error with opening "+map_filename);
+    throw std::invalid_argument("error with opening "+map_filename);
   }
-  for (size_t i = 0; i < size.x; i++) {
+  // first set every cell to a nullptr
+  for(size_t i = 0; i < size_x; i++){
+    for(size_t j = 0; j < size_y; j++){
+      cells[i][j] = nullptr;
+    }
+  }
+  // load the map
+  for (size_t i = 0; i < size_x; i++) {
     std::string line;
     std::getline(file, line);
     size_t line_index = 0;
-    for (size_t j = 0; j < size.y; j++) {
+    for (size_t j = 0; j < size_y; j++) {
       switch (line[line_index]) {
       case 'o': {
         cells[i][j] = new Ground{};
@@ -172,8 +179,8 @@ Map::Map(sf::Vector2f pos) {
         break;
       }
       default: {
-        throw std::invalid_argument("err: wrong symbol: " + std::to_string(line[line_index]));
         cells[i][j] = nullptr;
+        throw std::invalid_argument("err: wrong symbol: " + std::to_string(line[line_index]));
         break;
       }
       }
@@ -186,18 +193,18 @@ Map::Map(sf::Vector2f pos) {
   }
   file.close();
 }
-void Map::draw(sf::RenderWindow &w) {
-  for (size_t i = 0; i < size.x; i++) {
-    for (size_t j = 0; j < size.y; j++) {
+void Map::draw(sf::RenderWindow &window) {
+  for (size_t i = 0; i < size_x; i++) {
+    for (size_t j = 0; j < size_y; j++) {
       if (cells[i][j] != nullptr) {
-        cells[i][j]->draw(w);
+        cells[i][j]->draw(window);
       }
     }
   }
 }
 void Map::reset_cell_selections(){
-  for (size_t i = 0; i < size.x; i++) {
-    for (size_t j = 0; j < size.y; j++) {
+  for (size_t i = 0; i < size_x; i++) {
+    for (size_t j = 0; j < size_y; j++) {
       if (cells[i][j] != nullptr) {
         cells[i][j]->unselect();
         cells[i][j]->reset_selection_color();
@@ -206,8 +213,8 @@ void Map::reset_cell_selections(){
   }
 }
 void Map::reset_cell_vision(){
-  for (size_t i = 0; i < size.x; i++) {
-    for (size_t j = 0; j < size.y; j++) {
+  for (size_t i = 0; i < size_x; i++) {
+    for (size_t j = 0; j < size_y; j++) {
       if (cells[i][j] != nullptr) {
         cells[i][j]->reset_vision_color();
       }
@@ -215,8 +222,8 @@ void Map::reset_cell_vision(){
   }
 }
 void Map::disable_vision() {
-  for (size_t i = 0; i < size.x; i++) {
-    for (size_t j = 0; j < size.y; j++) {
+  for (size_t i = 0; i < size_x; i++) {
+    for (size_t j = 0; j < size_y; j++) {
       if (cells[i][j] != nullptr) {
         cells[i][j]->reset_vision_color();
       }
@@ -230,15 +237,33 @@ void Map::spawn(Entity *entity, sf::Vector2f pos) {
   posindex pindex = toposindex(pos);
   cells[pindex.i][pindex.j]->add_entity(entity);
 }
-void Map::de_spawn(Entity *entity, sf::Vector2f pos){
+void Map::de_spawn(Entity *entity){
+  Cell *cell = entity->get_real_cell();
+  if(!cell)return;
+  sf::Vector2f pos = cell->get_index();
   posindex pindex = toposindex(pos);
-  cells[pindex.i][pindex.j]->remove_entity(entity);
+  bool removed = cells[pindex.i][pindex.j]->remove_entity(entity);
+  // this means the entity was not found at the given cell
+  // then we look around to see if its on the map
+  if(!removed){
+    for(size_t i = 0; i < size_x; i++){
+      for(size_t j = 0; j < size_y; j++){
+        if(cells[i][j] != nullptr){
+          bool did_remove = cells[i][j]->remove_entity(entity);
+          // if we removed the entity from the map, then successfully return
+          if(did_remove)return;
+        }
+      }
+    }
+  }
 }
 Map::~Map() {
-  for (size_t i = 0; i < size.x; i++) {
-    for (size_t j = 0; j < size.y; j++) {
-      if(cells[i][j] != nullptr)
+  for (size_t i = 0; i < size_x; i++) {
+    for (size_t j = 0; j < size_y; j++) {
+      if(cells[i][j] != nullptr){
         delete cells[i][j];
+        cells[i][j] = nullptr;
+      }
     }
   }
 }
@@ -261,8 +286,8 @@ void Cell::do_attack(Map *map){
   }
 }
 void Map::update(){
-  for (size_t i = 0; i < size.x; i++) {
-    for (size_t j = 0; j < size.y; j++) {
+  for (size_t i = 0; i < size_x; i++) {
+    for (size_t j = 0; j < size_y; j++) {
       if(!cells[i][j]){
         cells[i][j]->update();
       }
@@ -276,8 +301,8 @@ void Cell::update(){
   }
 }
 void Map::do_attack(){
-  for (size_t i = 0; i < size.x; i++) {
-    for (size_t j = 0; j < size.y; j++) {
+  for (size_t i = 0; i < size_x; i++) {
+    for (size_t j = 0; j < size_y; j++) {
       if(!cells[i][j]){
         cells[i][j]->do_attack(this);
       }
@@ -288,13 +313,13 @@ sf::Uint8 Cell::has_vision_opacity = 255;
 sf::Uint8 Cell::no_vision_opacity = 50;
 sf::Uint8 Cell::selected_opacity = 100;
 void Map::update_vision(){
-  for(size_t i = 0; i < size.x; i++){
-    for(size_t j = 0; j < size.y; j++){
+  for(size_t i = 0; i < size_x; i++){
+    for(size_t j = 0; j < size_y; j++){
       cells[i][j]->set_vision(false);
     }
   }
-  for (size_t i = 0; i < size.x; i++) {
-    for (size_t j = 0; j < size.y; j++) {
+  for (size_t i = 0; i < size_x; i++) {
+    for (size_t j = 0; j < size_y; j++) {
       bool should_update = cells[i][j]->should_update_vision_around(vision_side);
       if(should_update){
         sf::Vector2f pos = {static_cast<float>(i),static_cast<float>(j)};
@@ -336,14 +361,17 @@ void Cell::add_entity(Entity *entity) {
   entities.push_back(entity);
   update_entities_shape(shape.getPosition());
 }
-void Cell::remove_entity(Entity *entity){
+bool Cell::remove_entity(Entity *entity){
   auto element = std::find(entities.begin(),entities.end(),entity);
-  if(element != entities.end())
+  if(element != entities.end()){
     entities.erase(element);
+    return true;
+  }
+  return false;
 }
 Cell *Map::get_clicked_cell(const int x, const int y) {
-  for (size_t i = 0; i < size.x; i++) {
-    for (size_t j = 0; j < size.y; j++) {
+  for (size_t i = 0; i < size_x; i++) {
+    for (size_t j = 0; j < size_y; j++) {
       if (cells[i][j]->contains(x, y)) {
         return cells[i][j];
       }
@@ -367,10 +395,12 @@ std::vector<Cell*> Map::getnearbycells(sf::Vector2f pos, int distance){
   std::vector<Cell *> around;
   sf::Vector2 pos_ = {static_cast<int>(pos.x),static_cast<int>(pos.y)};
   for(int i = pos_.x-distance; i <= pos_.x+distance; i++){
-    if(in_bounds_row(i)){
+    if(in_bounds_row(static_cast<int>(i))){
       for(int j = pos_.y-distance; j <= pos_.y+distance; j++){
-        if(in_bounds_col(j) && cells[i][j] != nullptr){
-          around.push_back(cells[i][j]);
+        size_t index_i = static_cast<size_t>(i);
+        size_t index_j = static_cast<size_t>(j);
+        if(in_bounds_col(j) && cells[index_i][index_j] != nullptr){
+          around.push_back(cells[index_i][index_j]);
         }
       }
     }

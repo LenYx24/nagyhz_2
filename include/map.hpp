@@ -5,6 +5,7 @@
 #include <filesystem>
 #include <memory>
 #include <fstream>
+#include <array>
 enum class Side;
 /**
   * @brief the base class for a cell on the map
@@ -62,8 +63,9 @@ public:
   /**
     * @brief removes the entity from the entity list
     * @param entity the entity to remove
+    * @return true if the entity was found and removed
    */
-  virtual void remove_entity(Entity *entity);
+  virtual bool remove_entity(Entity *entity);
   /**
     * @brief sets the cell's color
     * @param color the color to set it to
@@ -229,9 +231,8 @@ public:
   /**
     * @brief despawns an entity on the given position to the map
     * @param entity the entity to de_spawn
-    * @param pos the position where to de_spawn it from
    */
-  void de_spawn(Entity *entity, sf::Vector2f pos);
+  void de_spawn(Entity *entity);
   /**
    * @brief tell's every one of its cells to update its contents
    */
@@ -251,7 +252,7 @@ public:
   /**
     * @brief gets the amount of cells that are on the map
    */
-  [[nodiscard]] sf::Vector2u get_cell_grid_size()const{return size;}
+  [[nodiscard]] sf::Vector2u get_cell_grid_size()const{return sf::Vector2u{size_x,size_y};}
   /**
     * @brief gets the currently selected champion
    */
@@ -290,12 +291,12 @@ public:
     * @brief checks if the given number is a good index inside the map
     * @param p the x coordinate
    */
-  bool in_bounds_row(int p){return 0 <= p && p < static_cast<int>(size.x);}
+  bool in_bounds_row(int p){return 0 <= p && p < static_cast<int>(size_x);}
   /**
     * @brief checks if the given number is a good index inside the map
     * @param p the y coordinate
    */
-  bool in_bounds_col(int p){return 0 <= p && p < static_cast<int>(size.x);}
+  bool in_bounds_col(int p){return 0 <= p && p < static_cast<int>(size_y);}
   /**
    * @brief checks if the given index is inside the map or in other words valid
    * @return true if its inside, false otherwise
@@ -350,11 +351,13 @@ private:
   bool game_end = false;
   Side vision_side; // the side which has vision
   sf::Vector2f position;
-  sf::Vector2u size = {20,20};
+  static constexpr size_t size_x = 20;
+  static constexpr size_t size_y = 20;
   sf::Vector2f cellsize = {30,30};
   std::vector<Entity *> nexuses;
-// Todo: use std array
-  Cell *cells[20][20];
+
+  std::array<std::array<Cell*,size_x>,size_y> cells;
+  //Cell *cells[20][20];
 };
 
 #endif

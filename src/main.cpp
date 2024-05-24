@@ -3,6 +3,8 @@
 #include "../include/menu.hpp"
 
 int main() {
+  // seed the random generator
+  srand(static_cast<unsigned>(time(nullptr)));
   sf::RenderWindow window = sf::RenderWindow{sf::VideoMode{1280,800}, "lolmacrogame"};
   StateManager state_manager;
   Settings settings{"examples/champions.txt",

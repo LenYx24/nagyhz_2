@@ -74,7 +74,7 @@ public:
   /**
     * @brief returns the total damage, by adding buffs/items to the base dmg
    */
-  double get_total_dmg()const{ return damage;}
+  virtual double get_total_dmg()const{ return damage;}
   /**
     * @brief returns the amount of experience given to the entity that kills this entity
    */
@@ -299,6 +299,7 @@ public:
     * @param c the char to use
    */
    void set_icon(char c){icon.setString(c);}
+   double get_total_dmg()const override;
 
    /**
     * @brief gets the champions name
@@ -353,6 +354,11 @@ public:
    * @brief removes the last gamemove from this champion
    */
   void remove_last_gamemove();
+  /**
+   * @brief despawns the champions wards from the map
+   * @param map
+   */
+  void despawn_wards(std::shared_ptr<Map> map);
   /**
     * @brief update the champion's shape position, to match where it should be on the map
     * @param pos the position to change to
@@ -689,10 +695,10 @@ public:
    */
   void clear_gamemoves();
   /**
-    * @brief despawns the champions from the map
+    * @brief despawns the player's entites from the map
     * @param map the map where they should be removed from
    */
-  void despawn_champs(std::shared_ptr<Map> &map);
+  void despawn_from_map(std::shared_ptr<Map> &map);
   /**
    * returns the current gamemoves state informations
    * @return a block of text describing the gamemove state

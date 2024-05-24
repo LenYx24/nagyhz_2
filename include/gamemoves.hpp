@@ -66,15 +66,25 @@ public:
    * @brief gets this gamemoves state information
    * @return
    */
-  virtual std::string get_state_info()const;
+  [[nodiscard]] virtual std::string get_state_info()const;
   /**
    * @brief returns a specialized standard formatted output string
    * @param name the name of the derived gamemoe
    * @return
    */
-  std::string get_formatted_info(const std::string& name)const;
-
+  [[nodiscard]] std::string get_formatted_info(const std::string& name)const;
 protected:
+  /**
+   * @brief gets the cell of this gamemove
+   * @return the cell
+   */
+  [[nodiscard]] Cell *get_cell()const{return cell;}
+  /**
+   * @brief sets the cell given in params
+   * @param cell_ the new cell
+   */
+  void set_cell(Cell *cell_){cell = cell_;}
+private:
   int points = 1;
   Cell *cell; // the cell to move to
 };
@@ -117,7 +127,7 @@ public:
 class TeleportBase : public GameMove {
 public:
   TeleportBase(){
-    set_movepoints(2);
+    set_movepoints(3);
   }
   [[nodiscard]] std::string get_state_info()const override;
   [[nodiscard]] bool changes_pos()const override{return true;}
