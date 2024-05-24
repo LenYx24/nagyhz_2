@@ -144,7 +144,7 @@ Map::Map(sf::Vector2f pos) {
         Camp *baron = new Camp;
         baron->set_name("baron");
         baron->set_color(sf::Color{130,50,170});
-        baron->setEffect(Effect{20,20});
+        baron->set_effect(Effect{20, 20, true, 9});
         cells[i][j]->add_entity(baron);
         break;
       }
@@ -160,7 +160,7 @@ Map::Map(sf::Vector2f pos) {
         Camp *c = new Camp;
         c->set_name("red buff");
         c->set_color(sf::Color{250,50,50});
-        c->setEffect(Effect{10,0});
+        c->set_effect(Effect{10, 0, true, 9});
         cells[i][j]->add_entity(c);
         break;
       }
@@ -170,7 +170,7 @@ Map::Map(sf::Vector2f pos) {
         Camp *c = new Camp;
         c->set_name("blue buff");
         c->set_color(sf::Color{50,50,250});
-        c->setEffect(Effect{0,10});
+        c->set_effect(Effect{0, 10,true,9});
         cells[i][j]->add_entity(c);
         break;
       }

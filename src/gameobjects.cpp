@@ -407,12 +407,12 @@ void Drake::decide_which_type(){
   switch(type){
     case 0:{
       e.set_bonus_dmg(10);
-      setEffect(e);
+      set_effect(e);
       break;
     }
     case 1:{
       e.set_bonus_hp(10);
-      setEffect(e);
+      set_effect(e);
       break;
     }
     default:{
@@ -467,8 +467,8 @@ void Champion::add_item(Item *item){
   }
 }
 sf::Vector2f Champion::gamemove_index(size_t offset)const{
-  if(!current_gamemove)
-    throw std::runtime_error("current game move is a nullptr");
+  if(!current_gamemove || !cell)
+    return {-1,-1};
 
   int last_index = static_cast<int>(gamemoves.size()) - 1;
   for(int i = last_index - static_cast<int>(offset); i >= 0; i--){
@@ -477,9 +477,16 @@ sf::Vector2f Champion::gamemove_index(size_t offset)const{
       return gamemoves[index]->position_cell()->get_index();
     }
   }
-  if(cell == nullptr)
-    return {-1,-1};
   return cell->get_index();
+}
+bool Effect::update_expire(){
+  if(expires){
+    cooldown--;
+    if(cooldown <= 0){
+      return true;
+    }
+  }
+  return false;
 }
 sf::Vector2f Champion::last_gamemove_index()const{
   return gamemove_index(0);
@@ -576,6 +583,11 @@ void Champion::do_move(std::shared_ptr<Map> map){
   for(auto & ward : wards){
     ward->do_move();
   }
+  for(auto it = buffs.begin(); it != buffs.end(); it++){
+    if((*it).update_expire()){
+      it = buffs.erase(it);
+    }
+  }
 }
 void MinionWave::do_move(const std::shared_ptr<Map> &map){
   for(auto minion: minions){
@@ -667,6 +679,7 @@ void Champion::killed_other(Entity *other){
     cs++;
   add_xp(other->get_xp_given());
   gold += other->get_gold_given();
+  buffs.push_back(other->get_buff_given());
 }
 double Champion::get_total_dmg()const {
   double dmg = damage;

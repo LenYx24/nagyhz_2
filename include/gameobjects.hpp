@@ -17,8 +17,11 @@ public:
     * @brief contructor which set's bonus_dmg and bonus_hp to their respective values
     * @param dmg the new damage to use
     * @param hp the new base_hp to use
+    * @param expires if the effect expires after some time
+    * @param cooldown the time it takes to expire
    */
-  explicit Effect(int dmg=0, int hp=0): bonus_dmg(dmg), bonus_hp(hp){}
+  explicit Effect(int dmg=0, int hp=0, bool expires=false,int cooldown=0):
+        bonus_dmg(dmg), bonus_hp(hp),cooldown(cooldown),expires(expires){}
   /**
     * @brief get's the bonus_dmg
    */
@@ -40,9 +43,15 @@ public:
    * @return true if both of them aren't zero
    */
   [[nodiscard]] bool not_zero()const{return bonus_dmg != 0 && bonus_hp != 0;}
+  /**
+   * @brief decreases the cooldown and checks if the effect has expired
+   */
+  bool update_expire();
 private:
   double bonus_dmg;
   double bonus_hp;
+  double cooldown = 0;
+  bool expires;
 };
 /**
  * @brief the enum that holds which team the entity is on
@@ -84,6 +93,11 @@ public:
    * @return the hp
    */
   double get_current_hp()const{return current_hp;}
+  /**
+   * @brief gets the buff given to the other enemy, if this one gets killed
+   * @return the buff
+   */
+  virtual Effect get_buff_given()const{return Effect{0,0};}
   /**
     * @brief returns the amount of gold given to the entity that kills this entity
    */
@@ -252,7 +266,7 @@ public:
    * @brief gets the stats of this ward
    * @return
    */
-  std::vector<std::string> get_stats()const;
+  std::vector<std::string> get_stats()const override;
 
 private:
   int cooldown; // the amount of gamemove steps (so 3 in 1 round) needed for the ward to disappear
@@ -498,7 +512,8 @@ public:
     * @brief set's the effect given by slaying this camp
     * @param e the effect to save
    */
-  void setEffect(Effect e){effect = e;}
+  void set_effect(Effect e){effect = e;}
+  Effect get_buff_given()const override{return effect;}
   void respawn()override;
 private:
   Effect effect;

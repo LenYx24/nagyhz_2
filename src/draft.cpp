@@ -19,8 +19,7 @@ void DraftState::lock_in(StateManager &state_manager, sf::RenderWindow& window, 
     selected_champ = nullptr;
   }
   if(turn_counter == final_turn_count){
-    if(columns.size() < 2)
-      throw std::runtime_error("not enough columns");
+    if(columns.size() < 2)return;
     std::vector<Champion *> p1champs{columns[0].champs_size()};
     std::vector<Champion *> p2champs{columns[1].champs_size()};
     for(size_t i = 0; i < columns[0].champs_size(); i++){

@@ -126,7 +126,7 @@ public:
    */
   void dont_ban();
 
-protected:
+private:
   // resources
   Resources::Holder holder;
   // main
