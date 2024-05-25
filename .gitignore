@@ -4,7 +4,6 @@ build_linux/*
 linuxbuild/*
 cmake-build-debug/*
 build/*
-docs/*
 out/*
 test/bin/*
 html
