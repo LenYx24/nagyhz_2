@@ -1,3 +1,0 @@
-/mnt/c/Users/LenY/dev/uni/sem_2/nagyhz_2/CMakeFiles/CMakeTmp/CMakeFiles/cmTC_64a60.dir
-/mnt/c/Users/LenY/dev/uni/sem_2/nagyhz_2/CMakeFiles/CMakeTmp/CMakeFiles/edit_cache.dir
-/mnt/c/Users/LenY/dev/uni/sem_2/nagyhz_2/CMakeFiles/CMakeTmp/CMakeFiles/rebuild_cache.dir
